@@ -95,6 +95,7 @@ const HomeLayout = () => {
             }}
           >
             <Sider
+            width={280}
               collapsible
               collapsed={collapsed}
               onCollapse={(value) => setCollapsed(value)}
