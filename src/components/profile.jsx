@@ -13,7 +13,7 @@ const Profile = () => (
         color: "white",
         fontFamily: 'BlinkMacSystemFont',
     }} wrap size={16}>
-        <Avatar size={52} icon={<UserOutlined />} />User123
+        <Avatar style={{background: '#00a0e4'}} size={52} icon={<UserOutlined />} />User123
     </Space>
 );
 
