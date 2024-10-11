@@ -1,5 +1,6 @@
 import React from 'react';
-import { Table, Button } from 'antd';
+import { Table, Button, Row, Col } from 'antd';
+import {SearchOutlined} from '@ant-design/icons';
 import '../styles/table-styles.css';
 
 const columns = [
@@ -58,26 +59,39 @@ const data = [
         consumer: 'client',
         currentState: 'ongoing',
     },
+
+
 ];
 
 const ContractNegotiations = () => {
     return (
-        <div style={{ width:'90%', margin: 'auto', border: 'solid' }}>
-            <div >
-                <Table
-                    style={{ width: '60%', padding: '2%' }}
-                    className="table-contracts"
-                    columns={columns}
-                    dataSource={data}
-                />
-            </div>
-            <div style={{ width:'40%'}}>
-                <Button size='large' type="primary">Verify</Button>
-                <Button size='large' type="primary">Terminate</Button>
-                <Button size='large' type="primary">Request</Button>
-                <Button size='large' type="primary">Accept</Button>
-                <Button size='large' type="primary">Terminate</Button>
-            </div>
+        <div style={{ width: '100%', margin: 'auto', border: 'solid' }}>
+            <Row />
+            <Col span={8} style={{ display: 'flex', gap: '10px', justifyContent: 'space-between', padding: '2%' }}>
+                <Button size='large' type="primary">Request Contract</Button>
+                <Button size='large' type="primary">Send Offer</Button>
+                <Button size='large' type="primary">Filter by</Button>
+                <Button size='large' type="primary">Sort by</Button>
+                <Button size='large' icon={<SearchOutlined />} type="primary">Search</Button>
+            </Col>
+            <Row gutter={16}>
+                <Col span={16}>
+                    <Table
+                        style={{ padding: '2%' }}
+                        className="table-contracts"
+                        columns={columns}
+                        dataSource={data}
+                        pagination={{ pageSize: 5 }}
+                    />
+                </Col>
+                <Col span={8} style={{ display: 'flex', flexDirection: 'column', gap: '10px', justifyContent: 'flex-start', alignItems: 'flex-end', padding: '2%' }}>
+                    <Button size='large' type="primary">Verify</Button>
+                    <Button size='large' type="primary">Terminate</Button>
+                    <Button size='large' type="primary">Request</Button>
+                    <Button size='large' type="primary">Accept</Button>
+                    <Button size='large' type="primary">Terminate</Button>
+                </Col>
+            </Row>
         </div>
     );
 };
