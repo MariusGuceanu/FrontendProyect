@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { Breadcrumb, Flex, Layout, Menu, theme } from 'antd';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { Layout, Menu, theme } from 'antd';
 import Items from '../components/menuItems';
 import Profile from '../components/profile';
-
+import Dashboard from '../pages/dashboard';
+import ContractNegotiations from '../pages/contractNegotiations';
 const { Header, Content, Sider } = Layout;
 
 <Items />
@@ -14,86 +16,81 @@ const HomeLayout = () => {
   } = theme.useToken();
 
   return (
-    <Layout
-      style={{
-        minHeight: '100vh',
-      }}
-    >
-      <Header
+
+      <Layout
         style={{
-          padding: 0,
-          background: '#0c306b',
-          width: '100%',
-          minHeight: 210,
-          alignContent: 'start'
+          minHeight: '100vh',
         }}
       >
-        <div>
-          <Profile/>
-        </div>
-
-        <div style={{
-          padding: '0 16px',
-
-        }}>
-          <h2 style={{ color: 'white', textAlign: 'center', }}>Data space: Railway data space </h2>
-
-        </div>
-      </Header>
-
-      <Layout>
-        <Content
+        <Header
           style={{
-            margin: '0',
+            padding: 0,
+            background: '#06222e',
+            width: '100%',
+            minHeight: 210,
+            alignContent: 'start'
           }}
         >
-          <Layout
+          <div>
+            <Profile />
+          </div>
+
+          <div style={{
+            padding: '0 16px',
+
+          }}>
+            <h2 style={{ color: 'white', textAlign: 'center', }}>Data space: Railway data space </h2>
+
+          </div>
+        </Header>
+
+        <Layout>
+          <Content
             style={{
-              background: colorBgContainer,
-              borderRadius: borderRadiusLG,
+              margin: '0',
             }}
           >
-            <Sider
-              width={280}
-              collapsible
-              collapsed={collapsed}
-              onCollapse={(value) => setCollapsed(value)}
+            <Layout
               style={{
-                background: '#001529',
-              }}
-            >
-              <Menu theme="dark"
-                defaultSelectedKeys={['1']}
-                mode="inline"
-                items={Items()} />
-            </Sider>
-
-            <Content
-              style={{
-                padding: '24px',
-                minHeight: 825,
                 background: colorBgContainer,
-                alignContent: 'center'
+                borderRadius: borderRadiusLG,
               }}
             >
-              <Breadcrumb
+              <Sider
+                width={280}
+                collapsible
+                collapsed={collapsed}
+                onCollapse={(value) => setCollapsed(value)}
                 style={{
-                  marginBottom: '16px',
-                  fontSize: 50,
-                  display: 'flex',
-                  justifyContent: 'center'
+                  background: '#001529',
                 }}
-                items={[
-                  { title: 'Select from the sider' },
-                  { title: '' }
-                ]}
-              />
+              >
+                <Menu theme="dark"
+                  defaultSelectedKeys={['1']}
+                  mode="inline"
+                  items={Items()} />
+              </Sider>
 
-            </Content>
-          </Layout>
-        </Content>
+              <Content
+                style={{
+                  padding: '24px',
+                  minHeight: 825,
+                  background: colorBgContainer,
+                  alignContent: 'center'
+                }}
+              >
+                
+                <Routes>
+                  <Route path="/dashboard" element={<Dashboard/>} />
+                  <Route path="/contract-negotiations" element={<ContractNegotiations />} />
+
+                </Routes>
+              </Content>
+            </Layout>
+          </Content>
+        </Layout>
       </Layout>
-    </Layout>
+
   );
 };
 

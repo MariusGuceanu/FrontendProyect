@@ -1,12 +1,12 @@
-import React from 'react'
-import { Routes, Route } from "react-router-dom";
-import { HomePage } from "./pages/home";
-import "./App.css";
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import HomeLayout from './layouts/homeLayout';
 
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<HomePage />} />
+      {/* Define la ruta para el HomeLayout */}
+      <Route path="*" element={<HomeLayout />} />
     </Routes>
   );
 }
