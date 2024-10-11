@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Breadcrumb, Flex, Layout, Menu, theme } from 'antd';
 import Items from '../components/menuItems';
+import Profile from '../components/profile';
 
 const { Header, Content, Sider } = Layout;
 
-<Items/>
+<Items />
 
 const HomeLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -23,13 +24,20 @@ const HomeLayout = () => {
           padding: 0,
           background: '#0c306b',
           width: '100%',
-          minHeight: 150,
+          minHeight: 210,
+          alignContent: 'start'
         }}
       >
+        <div>
+          <Profile/>
+        </div>
+
         <div style={{
           padding: '0 16px',
+
         }}>
           <h2 style={{ color: 'white', textAlign: 'center', }}>Data space: Railway data space </h2>
+
         </div>
       </Header>
 
@@ -54,10 +62,10 @@ const HomeLayout = () => {
                 background: '#001529',
               }}
             >
-              <Menu theme="dark" 
-              defaultSelectedKeys={['1']} 
-              mode="inline" 
-              items={Items()} />
+              <Menu theme="dark"
+                defaultSelectedKeys={['1']}
+                mode="inline"
+                items={Items()} />
             </Sider>
 
             <Content
