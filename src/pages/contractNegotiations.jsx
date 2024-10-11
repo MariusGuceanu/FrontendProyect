@@ -59,15 +59,46 @@ const data = [
         consumer: 'client',
         currentState: 'ongoing',
     },
-
+    {
+        key: '5',
+        processId: 'ceitId',
+        tittle: 'Ceit',
+        provider: 'ceit',
+        consumer: 'client',
+        currentState: 'ongoing',
+    },
+    {
+        key: '6',
+        processId: 'ceitId',
+        tittle: 'Ceit',
+        provider: 'ceit',
+        consumer: 'client',
+        currentState: 'ongoing',
+    },
+    {
+        key: '7',
+        processId: 'ceitId',
+        tittle: 'Ceit',
+        provider: 'ceit',
+        consumer: 'client',
+        currentState: 'ongoing',
+    },
+    {
+        key: '8',
+        processId: 'ceitId',
+        tittle: 'Ceit',
+        provider: 'ceit',
+        consumer: 'client',
+        currentState: 'ongoing',
+    },
 
 ];
 
 const ContractNegotiations = () => {
     return (
         <div style={{ width: '100%', margin: 'auto', border: 'solid' }}>
-            <Row />
-            <Col span={8} style={{ display: 'flex', gap: '10px', justifyContent: 'space-between', padding: '2%' }}>
+            <Row gutter={16}/>
+            <Col span={24} style={{ display: 'flex', gap: '10px', justifyContent: 'space-evenly', padding: '2%' }}>
                 <Button size='large' type="primary">Request Contract</Button>
                 <Button size='large' type="primary">Send Offer</Button>
                 <Button size='large' type="primary">Filter by</Button>
@@ -81,7 +112,7 @@ const ContractNegotiations = () => {
                         className="table-contracts"
                         columns={columns}
                         dataSource={data}
-                        pagination={{ pageSize: 5 }}
+                        pagination={{ pageSize: 6 }}
                     />
                 </Col>
                 <Col span={8} style={{ display: 'flex', flexDirection: 'column', gap: '10px', justifyContent: 'flex-start', alignItems: 'flex-end', padding: '2%' }}>
