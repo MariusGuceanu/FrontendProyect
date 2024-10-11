@@ -17,79 +17,77 @@ const HomeLayout = () => {
 
   return (
 
-      <Layout
+    <Layout
+      style={{
+        minHeight: '100vh',
+      }}
+    >
+      <Header
         style={{
-          minHeight: '100vh',
+          padding: 0,
+          background: '#001529',
+          width: '100%',
+          minHeight: 210,
+          alignContent: 'start'
         }}
       >
-        <Header
-          style={{
-            padding: 0,
-            background: '#06222e',
-            width: '100%',
-            minHeight: 210,
-            alignContent: 'start'
-          }}
-        >
-          <div>
-            <Profile />
-          </div>
+        <div>
+          <Profile />
+        </div>
 
-          <div style={{
-            padding: '0 16px',
+        <div style={{
+          padding: '0 16px',
 
-          }}>
-            <h2 style={{ color: 'white', textAlign: 'center', }}>Data space: Railway data space </h2>
+        }}>
+          <h2 style={{ color: 'white', textAlign: 'center', }}>Data space: Railway data space </h2>
 
-          </div>
-        </Header>
+        </div>
+      </Header>
 
-        <Layout>
-          <Content
+      <Layout>
+        <Content
+          style={{ margin: '0', }}>
+          <Layout
             style={{
-              margin: '0',
+              background: colorBgContainer,
+              borderRadius: borderRadiusLG,
             }}
           >
-            <Layout
+            <Sider
+              width={280}
+              collapsible
+              collapsed={collapsed}
+              onCollapse={(value) => setCollapsed(value)}
               style={{
-                background: colorBgContainer,
-                borderRadius: borderRadiusLG,
+                background: '#001529',
               }}
             >
-              <Sider
-                width={280}
-                collapsible
-                collapsed={collapsed}
-                onCollapse={(value) => setCollapsed(value)}
-                style={{
-                  background: '#001529',
-                }}
-              >
-                <Menu theme="dark"
-                  defaultSelectedKeys={['1']}
-                  mode="inline"
-                  items={Items()} />
-              </Sider>
+              <Menu theme="dark"
+                defaultSelectedKeys={['1']}
+                mode="inline"
+                items={Items()} />
+            </Sider>
 
-              <Content
-                style={{
-                  padding: '24px',
-                  minHeight: 825,
-                  background: colorBgContainer,
-                  alignContent: 'center'
-                }}
-              >
-                
-                <Routes>
-                  <Route path="/dashboard" element={<Dashboard/>} />
-                  <Route path="/contract-negotiations" element={<ContractNegotiations />} />
+            <Content
+              style={{
+                padding: '24px',
+                minHeight: 825,
+                background: colorBgContainer,
+                alignContent: 'center'
 
-                </Routes>
-              </Content>
-            </Layout>
-          </Content>
-        </Layout>
+              }}
+            >
+
+              <Routes>
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/contract-negotiations" element={<ContractNegotiations />} />
+
+              </Routes>
+            </Content>
+          </Layout>
+        </Content>
       </Layout>
+    </Layout>
 
   );
 };
