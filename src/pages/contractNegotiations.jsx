@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table } from 'antd';
+import { Table, Button } from 'antd';
 import '../styles/table-styles.css';
 
 const columns = [
@@ -62,16 +62,23 @@ const data = [
 
 const ContractNegotiations = () => {
     return (
-        <div >
-            <Table
-                style={{width:'60%'}}
-                className="table-contracts"
-                columns={columns}
-                dataSource={data}
-            />
+        <div style={{ width:'90%', margin: 'auto', border: 'solid' }}>
+            <div >
+                <Table
+                    style={{ width: '60%', padding: '2%' }}
+                    className="table-contracts"
+                    columns={columns}
+                    dataSource={data}
+                />
+            </div>
+            <div style={{ width:'40%'}}>
+                <Button size='large' type="primary">Verify</Button>
+                <Button size='large' type="primary">Terminate</Button>
+                <Button size='large' type="primary">Request</Button>
+                <Button size='large' type="primary">Accept</Button>
+                <Button size='large' type="primary">Terminate</Button>
+            </div>
         </div>
-
-        
     );
 };
 
