@@ -1,7 +1,76 @@
-import React from 'react';
-import { Table, Button, Row, Col } from 'antd';
-import {SearchOutlined} from '@ant-design/icons';
+import React, { useState } from 'react';
+import { Table, Button, Row, Col, Dropdown, Menu, Checkbox } from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
 import '../styles/table-styles.css';
+
+
+const initialData = [
+    {
+        key: '1',
+        processId: 'ceitOne',
+        tittle: 'Ceita',
+        provider: 'ceita',
+        consumer: 'clienta',
+        currentState: 'ongoing',
+    },
+    {
+        key: '2',
+        processId: 'ceitTwo',
+        tittle: 'Ceitb',
+        provider: '',
+        consumer: 'clientb',
+        currentState: 'terminated',
+    },
+    {
+        key: '3',
+        processId: 'ceitThree',
+        tittle: 'Ceitc',
+        provider: 'ceitc',
+        consumer: '',
+        currentState: 'ongoing',
+    },
+    {
+        key: '4',
+        processId: 'ceitFour',
+        tittle: 'Ceitd',
+        provider: 'ceitd',
+        consumer: 'clientd',
+        currentState: 'ongoing',
+    },
+    {
+        key: '5',
+        processId: 'ceitFive',
+        tittle: 'Ceite',
+        provider: 'ceite',
+        consumer: '',
+        currentState: 'ongoing',
+    },
+    {
+        key: '6',
+        processId: 'ceitSix',
+        tittle: 'Ceitf',
+        provider: '',
+        consumer: 'clientf',
+        currentState: 'terminated',
+    },
+    {
+        key: '7',
+        processId: 'ceitSeven',
+        tittle: 'Ceitg',
+        provider: 'ceitg',
+        consumer: '',
+        currentState: 'terminated',
+    },
+    {
+        key: '8',
+        processId: 'ceitId',
+        tittle: 'Ceit',
+        provider: '',
+        consumer: '',
+        currentState: 'ongoing',
+    },
+
+];
 
 const columns = [
     {
@@ -26,104 +95,120 @@ const columns = [
         dataIndex: 'currentState',
     },
 ];
-const data = [
-    {
-        key: '1',
-        processId: 'ceitId',
-        tittle: 'Ceit',
-        provider: 'ceit',
-        consumer: 'client',
-        currentState: 'ongoing',
-    },
-    {
-        key: '2',
-        processId: 'ceitId',
-        tittle: 'Ceit',
-        provider: 'ceit',
-        consumer: 'client',
-        currentState: 'ongoing',
-    },
-    {
-        key: '3',
-        processId: 'ceitId',
-        tittle: 'Ceit',
-        provider: 'ceit',
-        consumer: 'client',
-        currentState: 'ongoing',
-    },
-    {
-        key: '4',
-        processId: 'ceitId',
-        tittle: 'Ceit',
-        provider: 'ceit',
-        consumer: 'client',
-        currentState: 'ongoing',
-    },
-    {
-        key: '5',
-        processId: 'ceitId',
-        tittle: 'Ceit',
-        provider: 'ceit',
-        consumer: 'client',
-        currentState: 'ongoing',
-    },
-    {
-        key: '6',
-        processId: 'ceitId',
-        tittle: 'Ceit',
-        provider: 'ceit',
-        consumer: 'client',
-        currentState: 'ongoing',
-    },
-    {
-        key: '7',
-        processId: 'ceitId',
-        tittle: 'Ceit',
-        provider: 'ceit',
-        consumer: 'client',
-        currentState: 'ongoing',
-    },
-    {
-        key: '8',
-        processId: 'ceitId',
-        tittle: 'Ceit',
-        provider: 'ceit',
-        consumer: 'client',
-        currentState: 'ongoing',
-    },
-
-];
 
 const ContractNegotiations = () => {
+    const [filteredData, setFilteredData] = useState(initialData)
+    const [sortOrder, setSortOrder] = useState({});
+    const [filterOptions, setFilterOptions] = useState({
+        all: false,
+        providers: false,
+        consumers: false,
+    })
+
+    const handleFilterChange = (checkedValues) => {
+        const updatedFilters = {
+            all: checkedValues.includes('all'),
+            providers: checkedValues.includes('providers'),
+            consumers: checkedValues.includes('consumers'),
+        };
+        setFilterOptions(updatedFilters);
+        applyFilter(updatedFilters);
+    };
+
+    const applyFilter = (filters) => {
+        let filtered = initialData;
+
+        if (filters.all) {
+            filtered = initialData.filter(item => item.provider && item.consumer);
+        } else {
+            if (filters.providers) {
+                filtered = filtered.filter(item => item.provider);
+            }
+            if (filters.consumers) {
+                filtered = filtered.filter(item => item.consumer);
+            }
+        }
+
+        setFilteredData(filtered);
+    };
+
+    const handleSortClick = (sortBy) => {
+        const order = sortOrder[sortBy] === 'ascend' ? 'descend' : 'ascend';
+        const sorted = [...filteredData].sort((a, b) => {
+            if (order === 'ascend') {
+                return a[sortBy].localeCompare(b[sortBy]);
+            } else {
+                return b[sortBy].localeCompare(a[sortBy]);
+            }
+        });
+
+        setSortOrder({ [sortBy]: order });
+        setFilteredData(sorted);
+    };
+
+    const filterMenu = (
+        <Checkbox.Group onChange={handleFilterChange} style={{ display: 'flex', flexDirection: 'column' }}>
+            <Checkbox value="all">All</Checkbox>
+            <Checkbox value="providers">Providers</Checkbox>
+            <Checkbox value="consumers">Consumers</Checkbox>
+        </Checkbox.Group>
+    );
+
+    const sortMenu = (
+        <Menu>
+            <Menu.Item onClick={() => handleSortClick('processId')}>Process Id</Menu.Item>
+            <Menu.Item onClick={() => handleSortClick('tittle')}>Tittle</Menu.Item>
+            <Menu.Item onClick={() => handleSortClick('provider')}>Provider</Menu.Item>
+            <Menu.Item onClick={() => handleSortClick('consumer')}>Consumers</Menu.Item>
+        </Menu>
+    );
+
     return (
-        <div style={{ width: '100%', margin: 'auto', border: 'solid' }}>
-            <Row gutter={16}/>
-            <Col span={24} style={{ display: 'flex', gap: '10px', justifyContent: 'space-evenly', padding: '2%' }}>
-                <Button size='large' type="primary">Request Contract</Button>
-                <Button size='large' type="primary">Send Offer</Button>
-                <Button size='large' type="primary">Filter by</Button>
-                <Button size='large' type="primary">Sort by</Button>
-                <Button size='large' icon={<SearchOutlined />} type="primary">Search</Button>
-            </Col>
-            <Row gutter={16}>
-                <Col span={16}>
-                    <Table
-                        style={{ padding: '2%' }}
-                        className="table-contracts"
-                        columns={columns}
-                        dataSource={data}
-                        pagination={{ pageSize: 6 }}
-                    />
+        <>
+            <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+                <Button style={{ width: '35%', padding: 30 }} size='large' type="primary">Ongoing Processes</Button>
+                <Button style={{ width: '35%', padding: 30 }} size='large' type="primary">History</Button>
+            </div>
+            <div style={{ width: '100%', margin: 'auto', border: 'solid', borderRadius: 10, }}>
+                <Row gutter={16} />
+                <Col span={24} style={{ display: 'flex', gap: '10px', justifyContent: 'space-evenly', padding: '2%' }}>
+                    {/* contract buttons */}
+                    <Button style={{ width: '15%' }} size='large' type="primary">Request Contract</Button>
+                    <Button style={{ width: '15%' }} size='large' type="primary">Send Offer</Button>
+                    {/* filtering, sorting and searching buttons */}
+                    <Dropdown overlay={filterMenu} trigger={['click']}>
+                        <Button style={{ width: '15%' }} size='large' type="primary">Filter by</Button>
+                    </Dropdown>
+                    <Dropdown overlay={sortMenu} trigger={['click']}>
+                        <Button style={{ width: '15%' }} size='large' type="primary">Sort by</Button>
+                    </Dropdown>
+                    <Button style={{ width: '15%' }} size='large' icon={<SearchOutlined />} type="primary">Search</Button>
                 </Col>
-                <Col span={8} style={{ display: 'flex', flexDirection: 'column', gap: '10px', justifyContent: 'flex-start', alignItems: 'flex-end', padding: '2%' }}>
-                    <Button size='large' type="primary">Verify</Button>
-                    <Button size='large' type="primary">Terminate</Button>
-                    <Button size='large' type="primary">Request</Button>
-                    <Button size='large' type="primary">Accept</Button>
-                    <Button size='large' type="primary">Terminate</Button>
-                </Col>
-            </Row>
-        </div>
+                <Row gutter={16}>
+                    <Col span={16}>
+                        <Table
+                            style={{ padding: '2%' }}
+                            className="table-contracts"
+                            columns={columns}
+                            dataSource={filteredData}
+                            pagination={{ pageSize: 50 }}
+                            scroll={{ y: 55 * 5 }}
+                        />
+                    </Col>
+                    <Col span={8} style={{ display: 'flex', flexDirection: 'column', gap: '10px', justifyContent: 'flex-start', alignItems: 'flex-start', padding: '2%', marginTop: '3%' }}>
+                        <Col style={{ display: 'flex', gap: '10px', justifyContent: 'space-evenly' }}>
+                            <Button size='large' type="primary">Verify</Button>
+                            <Button size='large' type="primary">Terminate</Button>
+                        </Col>
+                        <Col style={{ display: 'flex', gap: '10px', justifyContent: 'space-evenly' }}>
+                            <Button size='large' type="primary">Request</Button>
+                            <Button size='large' type="primary">Accept</Button>
+                            <Button size='large' type="primary">Terminate</Button>
+                        </Col>
+                    </Col>
+                </Row>
+            </div>
+        </>
     );
 };
 
