@@ -1,7 +1,17 @@
 import React, { useState } from 'react';
-import { Table, Button, Row, Col, Dropdown, Menu, Checkbox, Modal, Form } from 'antd';
+import {
+    Table, Button,
+    Row, Col,
+    Dropdown, Menu,
+    Checkbox, Modal,
+    Form, Input,
+    Divider,
+} from 'antd';
+const { Search } = Input;
+
 import { DownOutlined, SearchOutlined } from '@ant-design/icons';
 import '../styles/table-styles.css';
+
 
 // Static data for the table
 const initialData = [
@@ -22,9 +32,30 @@ const columns = [
     { title: 'Current state', dataIndex: 'currentState', },
 ];
 
+const onSearch = (value, _e, info) => console.log(info?.source, value);
+
 const ContractNegotiations = () => {
 
+    {/*  // Select Ids
+
+    const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+
+    const onSelectChange = (newSelectedRowKeys) => {
+        console.log('selectedRowKeys changed: ', newSelectedRowKeys);
+        setSelectedRowKeys(newSelectedRowKeys);
+    };
+
+    const rowSelection = {
+        selectedRowKeys,
+        onChange: onSelectChange,
+    };
+
+    */}
+
+    // Filter and sorter states
     const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
+    const [inputValue, setInputValue] = useState('');
+
     const [isOfferModalOpen, setIsOfferModalOpen] = useState(false);
 
     // Request modal functions
@@ -37,6 +68,9 @@ const ContractNegotiations = () => {
     const handleRequestCancel = () => {
         setIsRequestModalOpen(false);
     };
+    const handleInputChange = (e) => {
+        setInputValue(e.target.value);
+    }
 
     // Offer modal functions
     const showOfferModal = () => {
@@ -49,6 +83,7 @@ const ContractNegotiations = () => {
         setIsOfferModalOpen(false);
     };
 
+    // Filter and sorter states
     const [filteredData, setFilteredData] = useState(initialData)
     const [sortOrder, setSortOrder] = useState({});
     const [filterOptions, setFilterOptions] = useState({
@@ -138,15 +173,36 @@ const ContractNegotiations = () => {
 
                     {/* Request contract form display */}
                     <Button onClick={showRequestModal} style={{ width: '15%' }} size='large' type="primary">Request Contract</Button>
-                    <Modal width={1000} open={isRequestModalOpen} onOk={handleRequestOk} onCancel={handleRequestCancel}>
+                    <Modal width={800} open={isRequestModalOpen} onOk={handleRequestOk} onCancel={handleRequestCancel}>
                         <h2>Contract Form</h2>
-                        <Form name='requestEndPoint' labelCol={{ span: 8, }} wrapperCol={{ span: 16, }} style={{ maxWidth: 600, }} initialValues={{ remember: true, }}>
-                            <Form.Item label="Provider's Endpoint"
+                        <Form className='formRequest' name='requestEndPoint' labelCol={{ span: 8, }} wrapperCol={{ span: 16, }} style={{ maxWidth: 600, }} initialValues={{ remember: true, }}>
+                            <Form.Item label="Provider's Endpoint : "
                                 name="ProvidersEp"
                                 rules={[{
                                     required: true,
                                     message: 'Insert your url endpoint'
                                 }]}>
+                                <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
+                                    <Input value={inputValue}
+                                        onChange={handleInputChange} />
+                                    <Button type="primary" disabled={!inputValue} style={{ marginLeft: '10px' }}>Self-Description</Button>
+                                </div>
+                            </Form.Item>
+                            <Divider style={{ borderColor: '#1e4792' }}></Divider>
+                            <p>
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare,
+                                quae sunt a te dicta? Refert tamen, quo modo. Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                                Minus, quam expedita ipsam quibusdam dignissimos aperiam accusamus architecto! Aliquid provident
+                                explicabo placeat, perspiciatis tempora possimus quod corrupti obcaecati minus commodi repudiandae?
+                            </p>
+                            <Divider style={{ borderColor: '#1e4792' }} ></Divider>
+                            <Form.Item label="Offer ID :"
+                                name="OfferId"
+                                rules={[{
+                                    required: true,
+                                    message: 'Provide an UUID'
+                                }]}>
+                                <Input></Input>
                             </Form.Item>
                         </Form>
                     </Modal>
@@ -165,7 +221,8 @@ const ContractNegotiations = () => {
                     <Dropdown overlay={sortMenu} trigger={['click']}>
                         <Button style={{ width: '15%' }} icon={<DownOutlined />} iconPosition='end' size='large' type="primary">Sort by</Button>
                     </Dropdown>
-                    <Button style={{ width: '15%' }} size='large' icon={<SearchOutlined />} type="primary">Search</Button>
+                    <Search size='large' color='dark' placeholder="input search text" allowClear onSearch={onSearch} style={{ width: 200, }}
+                    />
                 </Col>
                 <Row gutter={16}>
                     <Col span={18}>
@@ -174,6 +231,7 @@ const ContractNegotiations = () => {
                             className="table-contracts"
                             columns={columns}
                             dataSource={filteredData}
+                            // rowSelection={rowSelection}
                             pagination={{ pageSize: 50 }}
                             scroll={{ y: 55 * 5 }}
                         />
