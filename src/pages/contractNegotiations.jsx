@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { Table, Button, Row, Col, Dropdown, Menu, Checkbox } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
+import { Table, Button, Row, Col, Dropdown, Menu, Checkbox, Modal } from 'antd';
+import { DownCircleOutlined, DownOutlined, SearchOutlined } from '@ant-design/icons';
 import '../styles/table-styles.css';
 
-
+// Static data for the table
 const initialData = [
     {
         key: '1',
         processId: 'ceitOne',
-        tittle: 'Ceita',
+        title: 'Ceita',
         provider: 'ceita',
         consumer: 'clienta',
         currentState: 'ongoing',
@@ -16,7 +16,7 @@ const initialData = [
     {
         key: '2',
         processId: 'ceitTwo',
-        tittle: 'Ceitb',
+        title: 'Ceitb',
         provider: '',
         consumer: 'clientb',
         currentState: 'terminated',
@@ -24,7 +24,7 @@ const initialData = [
     {
         key: '3',
         processId: 'ceitThree',
-        tittle: 'Ceitc',
+        title: 'Ceitc',
         provider: 'ceitc',
         consumer: '',
         currentState: 'ongoing',
@@ -32,7 +32,7 @@ const initialData = [
     {
         key: '4',
         processId: 'ceitFour',
-        tittle: 'Ceitd',
+        title: 'Ceitd',
         provider: 'ceitd',
         consumer: 'clientd',
         currentState: 'ongoing',
@@ -40,7 +40,7 @@ const initialData = [
     {
         key: '5',
         processId: 'ceitFive',
-        tittle: 'Ceite',
+        title: 'Ceite',
         provider: 'ceite',
         consumer: '',
         currentState: 'ongoing',
@@ -48,7 +48,7 @@ const initialData = [
     {
         key: '6',
         processId: 'ceitSix',
-        tittle: 'Ceitf',
+        title: 'Ceitf',
         provider: '',
         consumer: 'clientf',
         currentState: 'terminated',
@@ -56,7 +56,7 @@ const initialData = [
     {
         key: '7',
         processId: 'ceitSeven',
-        tittle: 'Ceitg',
+        title: 'Ceitg',
         provider: 'ceitg',
         consumer: '',
         currentState: 'terminated',
@@ -64,7 +64,7 @@ const initialData = [
     {
         key: '8',
         processId: 'ceitId',
-        tittle: 'Ceit',
+        title: 'Ceit',
         provider: '',
         consumer: '',
         currentState: 'ongoing',
@@ -72,15 +72,15 @@ const initialData = [
 
 ];
 
+// Table columns
 const columns = [
     {
         title: 'Process ID',
         dataIndex: 'processId',
-        render: (text) => <a>{text}</a>,
     },
     {
-        title: 'Tittle',
-        dataIndex: 'tittle',
+        title: 'Title',
+        dataIndex: 'title',
     },
     {
         title: 'Provider',
@@ -97,6 +97,21 @@ const columns = [
 ];
 
 const ContractNegotiations = () => {
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const showModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const handleOk = () => {
+        setIsModalOpen(false);
+    };
+
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
+
     const [filteredData, setFilteredData] = useState(initialData)
     const [sortOrder, setSortOrder] = useState({});
     const [filterOptions, setFilterOptions] = useState({
@@ -105,32 +120,40 @@ const ContractNegotiations = () => {
         consumers: false,
     })
 
-    const handleFilterChange = (checkedValues) => {
-        const updatedFilters = {
-            all: checkedValues.includes('all'),
-            providers: checkedValues.includes('providers'),
-            consumers: checkedValues.includes('consumers'),
-        };
-        setFilterOptions(updatedFilters);
-        applyFilter(updatedFilters);
-    };
+    //Filter logic
 
-    const applyFilter = (filters) => {
-        let filtered = initialData;
+    const handleFilterChange = (option) => {
+        const newFilterOptions = { ...filterOptions }
 
-        if (filters.all) {
-            filtered = initialData.filter(item => item.provider && item.consumer);
+        if (option === 'all') {
+            const newState = !filterOptions.all
+            newFilterOptions.all = newState
+            newFilterOptions.providers = newState
+            newFilterOptions.consumers = newState
         } else {
-            if (filters.providers) {
-                filtered = filtered.filter(item => item.provider);
+            newFilterOptions[option] = !filterOptions[option];
+            if (newFilterOptions.providers || newFilterOptions.consumers) {
+                newFilterOptions.all = false
             }
-            if (filters.consumers) {
-                filtered = filtered.filter(item => item.consumer);
-            }
+        }
+
+        setFilterOptions(newFilterOptions);
+
+        let filtered = initialData;
+        if (newFilterOptions.all) {
+            filtered = initialData.filter(item => item.provider && item.consumer);
+        } else if (newFilterOptions.providers && newFilterOptions.consumers) {
+            filtered = initialData.filter(item => item.provider && item.consumer);
+        } else if (newFilterOptions.providers) {
+            filtered = initialData.filter(item => item.provider);
+        } else if (newFilterOptions.consumers) {
+            filtered = initialData.filter(item => item.consumer);
         }
 
         setFilteredData(filtered);
     };
+
+    // Sorter logic
 
     const handleSortClick = (sortBy) => {
         const order = sortOrder[sortBy] === 'ascend' ? 'descend' : 'ascend';
@@ -146,22 +169,32 @@ const ContractNegotiations = () => {
         setFilteredData(sorted);
     };
 
+    // Filter and Sorter menu creation
+
     const filterMenu = (
-        <Checkbox.Group onChange={handleFilterChange} style={{ display: 'flex', flexDirection: 'column' }}>
-            <Checkbox value="all">All</Checkbox>
-            <Checkbox value="providers">Providers</Checkbox>
-            <Checkbox value="consumers">Consumers</Checkbox>
-        </Checkbox.Group>
+        <Menu onClick={(e) => e.stopPropagation()}>
+            <Menu.Item key="1">
+                <Checkbox checked={filterOptions.all} onChange={() => handleFilterChange('all')}>All of them</Checkbox>
+            </Menu.Item>
+            <Menu.Item key="2">
+                <Checkbox checked={filterOptions.providers} onChange={() => handleFilterChange('providers')}>Providers</Checkbox>
+            </Menu.Item>
+            <Menu.Item key="3">
+                <Checkbox checked={filterOptions.consumers} onChange={() => handleFilterChange('consumers')}>Consumers</Checkbox>
+            </Menu.Item>
+        </Menu>
     );
 
     const sortMenu = (
-        <Menu>
+        <Menu onClick={(e) => e.stopPropagation()}>
             <Menu.Item onClick={() => handleSortClick('processId')}>Process Id</Menu.Item>
-            <Menu.Item onClick={() => handleSortClick('tittle')}>Tittle</Menu.Item>
+            <Menu.Item onClick={() => handleSortClick('title')}>Title</Menu.Item>
             <Menu.Item onClick={() => handleSortClick('provider')}>Provider</Menu.Item>
             <Menu.Item onClick={() => handleSortClick('consumer')}>Consumers</Menu.Item>
         </Menu>
     );
+
+    // All content display
 
     return (
         <>
@@ -169,18 +202,25 @@ const ContractNegotiations = () => {
                 <Button style={{ width: '35%', padding: 30 }} size='large' type="primary">Ongoing Processes</Button>
                 <Button style={{ width: '35%', padding: 30 }} size='large' type="primary">History</Button>
             </div>
+
             <div style={{ width: '100%', margin: 'auto', border: 'solid', borderRadius: 10, }}>
                 <Row gutter={16} />
                 <Col span={24} style={{ display: 'flex', gap: '10px', justifyContent: 'space-evenly', padding: '2%' }}>
-                    {/* contract buttons */}
-                    <Button style={{ width: '15%' }} size='large' type="primary">Request Contract</Button>
+
+                    {/* Request contract display */}
+                    <Button onClick={showModal} style={{ width: '15%' }} size='large' type="primary">Request Contract</Button>
+                    <Modal width={1000} open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+                        <p>Contract Form</p>
+                        <p>Contract Form</p>
+                        <p>Contract Form</p>
+                    </Modal>
+
                     <Button style={{ width: '15%' }} size='large' type="primary">Send Offer</Button>
-                    {/* filtering, sorting and searching buttons */}
-                    <Dropdown overlay={filterMenu} trigger={['click']}>
-                        <Button style={{ width: '15%' }} size='large' type="primary">Filter by</Button>
+                    <Dropdown getPopupContainer={(trigger) => trigger.parentNode} overlay={filterMenu} trigger={['click']}>
+                        <Button style={{ width: '15%' }} icon={<DownOutlined />} iconPosition='end' size='large' type="primary">Filter by</Button>
                     </Dropdown>
                     <Dropdown overlay={sortMenu} trigger={['click']}>
-                        <Button style={{ width: '15%' }} size='large' type="primary">Sort by</Button>
+                        <Button style={{ width: '15%' }} icon={<DownOutlined />} iconPosition='end' size='large' type="primary">Sort by</Button>
                     </Dropdown>
                     <Button style={{ width: '15%' }} size='large' icon={<SearchOutlined />} type="primary">Search</Button>
                 </Col>
