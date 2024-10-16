@@ -15,20 +15,12 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
             <Option value="https://">https://</Option>
         </Select>
     );
-    const selectAfter = (
-        <Select defaultValue=".com">
-            <Option value=".com">.com</Option>
-            <Option value=".jp">.jp</Option>
-            <Option value=".cn">.cn</Option>
-            <Option value=".org">.org</Option>
-        </Select>
-    );
 
     return (
         <Modal width={1000} open={isModalOpen} onOk={handleOk} onCancel={handleCancel}
             footer={[
                 <div key="footer" style={{ display: 'flex', justifyContent: 'space-evenly', padding: 10 }}>
-                    <Button style={{ width: '20%' }} key="request" type="primary" size="large" icon={<SendOutlined />} onClick={handleOk}>
+                    <Button style={{ width: '20%' }} key="request" type="primary" size="large" icon={<SendOutlined />} iconPosition='end' onClick={handleOk}>
                         Request
                     </Button>
                     <Button style={{ width: '20%' }} key="cancel" type="primary" size="large" onClick={handleCancel}>
@@ -45,7 +37,7 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
                     rules={[{ required: true, message: 'Insert your URL endpoint' }]}
                 >
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <Input addonBefore={selectBefore} addonAfter={selectAfter} value={inputValue} onChange={handleInputChange} />
+                        <Input addonBefore={selectBefore} value={inputValue} onChange={handleInputChange} />
                         <Button type="primary" disabled={!inputValue} style={{ marginLeft: '10px' }}>Self-Description</Button>
                     </div>
                 </Form.Item>

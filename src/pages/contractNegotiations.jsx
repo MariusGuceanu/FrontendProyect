@@ -47,6 +47,13 @@ const ContractNegotiations = () => {
     const [isOfferModalOpen, setIsOfferModalOpen] = useState(false);
     const [filteredData, setFilteredData] = useState(initialData)
 
+    const selectBefore = (
+        <Select defaultValue="http://">
+            <Option value="http://">http://</Option>
+            <Option value="https://">https://</Option>
+        </Select>
+    );
+
     // Request modal functions
     const showRequestModal = () => {
         setIsRequestModalOpen(true);
@@ -90,10 +97,27 @@ const ContractNegotiations = () => {
 
                     {/* Offer form display */}
                     <Button onClick={showOfferModal} style={{ width: '15%' }} size='large' type="primary">Send Offer</Button>
-                    <Modal width={1000} open={isOfferModalOpen} onOk={handleOfferOk} onCancel={handleOfferCancel}>
-                        <p>Offer Form</p>
-                        <p>Offer Form</p>
-                        <p>Offer Form</p>
+                    <Modal width={1000} open={isOfferModalOpen} onOk={handleOfferOk} onCancel={handleOfferCancel}
+                        footer={[
+                            <div key="footer" style={{ display: 'flex', justifyContent: 'space-evenly', padding: 10 }}>
+                                <Button style={{ width: '20%' }} key="request" type="primary" size="large" icon={<SendOutlined />} iconPosition='end' onClick={handleOfferOk}>
+                                    Send Offer
+                                </Button>
+                                <Button style={{ width: '20%' }} key="cancel" type="primary" size="large" onClick={handleOfferCancel}>
+                                    Cancel
+                                </Button>
+                            </div>
+                        ]}
+                    >
+                        <Form labelCol={{ span: 9 }} wrapperCol={{ span: 24 }} style={{ maxWidth: 800 }}>
+                            <h2>Offer Form</h2>
+                            <Form.Item label="Consumer's Endpoint :" name="ConsumersEp" rules={[{ required: true, message: 'Provide a valid UUID' }]}>
+                                <Input addonBefore={selectBefore} style={{ width: '80%' }} />
+                            </Form.Item>
+                            <Form.Item label="Offer ID :" name="OfferId" rules={[{ required: true, message: 'Provide a valid UUID' }]}>
+                                <Input style={{ width: '80%' }} />
+                            </Form.Item>
+                        </Form>
                     </Modal>
 
                     <FilterC setFilteredData={setFilteredData} initialData={initialData} />
