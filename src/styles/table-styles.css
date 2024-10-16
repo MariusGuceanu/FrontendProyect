@@ -6,6 +6,7 @@
 .table-contracts .ant-table {
   background: #1c2755;
   font-size: auto;
+  scrollbar-color: rgba(255,255,255,255) rgba(5, 5, 5, 0.06);
 }
 
 .table-contracts tr:hover td {
@@ -35,5 +36,3 @@
 .ant-btn-primary:hover {
   background-color: #1e4792;
 }
-
-

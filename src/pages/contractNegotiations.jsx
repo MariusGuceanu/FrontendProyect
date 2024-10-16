@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import {Table, Button, Row, Col, Modal, Select, Form, Input, Divider} from 'antd';
+import { Table, Button, Row, Col, Modal, Select, Form, Input, Divider } from 'antd';
 const { Search } = Input;
 import { SendOutlined } from '@ant-design/icons';
 import '../styles/table-styles.css';
-import SorterC from '../components/sortMenu';
-import FilterC from '../components/filterMenu';
-
+import SorterC from '../components/contractComponents/sortMenu';
+import FilterC from '../components/contractComponents/filterMenu';
+import RequestModal from '../components/contractComponents/contractForm';
 
 // Static data for the table
 const initialData = [
@@ -31,27 +31,21 @@ const onSearch = (value, _e, info) => console.log(info?.source, value);
 const ContractNegotiations = () => {
 
     /*  // Select Ids
-    
         const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-    
         const onSelectChange = (newSelectedRowKeys) => {
             console.log('selectedRowKeys changed: ', newSelectedRowKeys);
             setSelectedRowKeys(newSelectedRowKeys);
         };
-    
         const rowSelection = {
             selectedRowKeys,
             onChange: onSelectChange,
         };
-    
         */
 
     // Defining States
     const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
-    const [inputValue, setInputValue] = useState('');
     const [isOfferModalOpen, setIsOfferModalOpen] = useState(false);
     const [filteredData, setFilteredData] = useState(initialData)
-
 
     // Request modal functions
     const showRequestModal = () => {
@@ -78,22 +72,6 @@ const ContractNegotiations = () => {
         setIsOfferModalOpen(false);
     };
 
-    const selectBefore = (
-        <Select defaultValue="http://">
-            <Option value="http://">http://</Option>
-            <Option value="https://">https://</Option>
-        </Select>
-    );
-    const selectAfter = (
-        <Select defaultValue=".com">
-            <Option value=".com">.com</Option>
-            <Option value=".jp">.jp</Option>
-            <Option value=".cn">.cn</Option>
-            <Option value=".org">.org</Option>
-        </Select>
-    );
-
-
     // All content display
     return (
         <>
@@ -107,48 +85,8 @@ const ContractNegotiations = () => {
                 <Col span={24} style={{ display: 'flex', gap: '10px', justifyContent: 'space-evenly', padding: '2%' }}>
 
                     {/* Request contract form display */}
-                    <Button onClick={showRequestModal} style={{ width: '15%' }} size='large' type="primary">Request Contract</Button>
-                    <Modal width={800} open={isRequestModalOpen} onOk={handleRequestOk} onCancel={handleRequestCancel}
-                        footer={[
-                            <div style={{ display: 'flex', justifyContent: 'space-evenly', padding: 10 }}>
-                                <Button style={{ width: '20%' }} key="request" type='primary' size='large' icon={<SendOutlined />} iconPosition='end' onClick={handleRequestOk}>Request</Button>
-                                <Button style={{ width: '20%' }} key="cancel" type='primary' size='large' onClick={handleRequestCancel}>Cancel</Button>
-                            </div>
-                        ]}>
-                        <h2>Contract Form</h2>
-                        <Form className='formRequest' name='requestEndPoint' labelCol={{ span: 8, }} wrapperCol={{ span: 16, }} style={{ maxWidth: 600, }} initialValues={{ remember: true, }}>
-                            <Form.Item label="Provider's Endpoint : "
-                                name="ProvidersEp"
-                                rules={[{
-                                    required: true,
-                                    message: 'Insert your url endpoint'
-                                }]}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                    <Input addonBefore={selectBefore}
-                                        addonAfter={selectAfter}
-                                        value={inputValue}
-                                        onChange={handleInputChange} />
-                                    <Button type="primary" disabled={!inputValue} style={{ marginLeft: '10px' }}>Self-Description</Button>
-                                </div>
-                            </Form.Item>
-                            <Divider style={{ borderColor: '#1e4792' }}></Divider>
-                            <div style={{ width: '40%', margin: 'auto', alignContent: 'center', textAlign: 'center' }}>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare,
-                                quae sunt a te dicta? Refert tamen, quo modo. Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                                Minus, quam expedita ipsam quibusdam dignissimos aperiam accusamus architecto! Aliquid provident
-                                explicabo placeat, perspiciatis tempora possimus quod corrupti obcaecati minus commodi repudiandae?
-                            </div>
-                            <Divider style={{ borderColor: '#1e4792' }} ></Divider>
-                            <Form.Item label="Offer ID :"
-                                name="OfferId"
-                                rules={[{
-                                    required: true,
-                                    message: 'Provide an UUID'
-                                }]}>
-                                <Input style={{ width: '80%' }}></Input>
-                            </Form.Item>
-                        </Form>
-                    </Modal>
+                    <Button onClick={showRequestModal} style={{ width: '15%' }} size="large" type="primary">Request Contract</Button>
+                    <RequestModal isModalOpen={isRequestModalOpen} handleOk={handleRequestOk} handleCancel={handleRequestCancel} />
 
                     {/* Offer form display */}
                     <Button onClick={showOfferModal} style={{ width: '15%' }} size='large' type="primary">Send Offer</Button>
