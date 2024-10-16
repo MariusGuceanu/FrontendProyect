@@ -17,7 +17,7 @@ function getItem(label, key, icon, children) {
     };
 }
 
-const Items = () => [
+const SiderItems = () => [
     {
         key: 'sub1',
         label: 'Ceit Connector',
@@ -99,4 +99,4 @@ const Items = () => [
     },
 ];
 
-export default Items;
+export default SiderItems;

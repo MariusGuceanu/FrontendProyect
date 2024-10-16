@@ -1,16 +1,10 @@
 import React, { useState } from 'react';
-import {
-    Table, Button,
-    Row, Col,
-    Dropdown, Menu,
-    Checkbox, Modal,
-    Form, Input,
-    Divider,
-} from 'antd';
+import {Table, Button, Row, Col, Modal, Select, Form, Input, Divider} from 'antd';
 const { Search } = Input;
-
-import { DownOutlined, SearchOutlined } from '@ant-design/icons';
+import { SendOutlined } from '@ant-design/icons';
 import '../styles/table-styles.css';
+import SorterC from '../components/sortMenu';
+import FilterC from '../components/filterMenu';
 
 
 // Static data for the table
@@ -36,27 +30,28 @@ const onSearch = (value, _e, info) => console.log(info?.source, value);
 
 const ContractNegotiations = () => {
 
-    {/*  // Select Ids
+    /*  // Select Ids
+    
+        const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+    
+        const onSelectChange = (newSelectedRowKeys) => {
+            console.log('selectedRowKeys changed: ', newSelectedRowKeys);
+            setSelectedRowKeys(newSelectedRowKeys);
+        };
+    
+        const rowSelection = {
+            selectedRowKeys,
+            onChange: onSelectChange,
+        };
+    
+        */
 
-    const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-
-    const onSelectChange = (newSelectedRowKeys) => {
-        console.log('selectedRowKeys changed: ', newSelectedRowKeys);
-        setSelectedRowKeys(newSelectedRowKeys);
-    };
-
-    const rowSelection = {
-        selectedRowKeys,
-        onChange: onSelectChange,
-    };
-
-    */}
-
-    // Filter and sorter states
+    // Defining States
     const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
     const [inputValue, setInputValue] = useState('');
-
     const [isOfferModalOpen, setIsOfferModalOpen] = useState(false);
+    const [filteredData, setFilteredData] = useState(initialData)
+
 
     // Request modal functions
     const showRequestModal = () => {
@@ -83,81 +78,21 @@ const ContractNegotiations = () => {
         setIsOfferModalOpen(false);
     };
 
-    // Filter and sorter states
-    const [filteredData, setFilteredData] = useState(initialData)
-    const [sortOrder, setSortOrder] = useState({});
-    const [filterOptions, setFilterOptions] = useState({
-        all: false,
-        providers: false,
-        consumers: false,
-    })
-
-    //Filter logic
-    const handleFilterChange = (option) => {
-        const newFilterOptions = { ...filterOptions }
-
-        if (option === 'all') {
-            const newState = !filterOptions.all
-            newFilterOptions.all = newState
-            newFilterOptions.providers = newState
-            newFilterOptions.consumers = newState
-        } else {
-            newFilterOptions[option] = !filterOptions[option];
-            if (newFilterOptions.providers || newFilterOptions.consumers) {
-                newFilterOptions.all = false
-            }
-        }
-        setFilterOptions(newFilterOptions);
-
-        let filtered = initialData;
-        if (newFilterOptions.all) {
-            filtered = initialData.filter(item => item.provider && item.consumer);
-        } else if (newFilterOptions.providers && newFilterOptions.consumers) {
-            filtered = initialData.filter(item => item.provider && item.consumer);
-        } else if (newFilterOptions.providers) {
-            filtered = initialData.filter(item => item.provider);
-        } else if (newFilterOptions.consumers) {
-            filtered = initialData.filter(item => item.consumer);
-        }
-        setFilteredData(filtered);
-    };
-
-    // Sorter logic
-    const handleSortClick = (sortBy) => {
-        const order = sortOrder[sortBy] === 'ascend' ? 'descend' : 'ascend';
-        const sorted = [...filteredData].sort((a, b) => {
-            if (order === 'ascend') {
-                return a[sortBy].localeCompare(b[sortBy]);
-            } else {
-                return b[sortBy].localeCompare(a[sortBy]);
-            }
-        });
-        setSortOrder({ [sortBy]: order });
-        setFilteredData(sorted);
-    };
-
-    // Filter and Sorter menu creation
-    const filterMenu = (
-        <Menu onClick={(e) => e.stopPropagation()}>
-            <Menu.Item key="1">
-                <Checkbox checked={filterOptions.all} onChange={() => handleFilterChange('all')}>All of them</Checkbox>
-            </Menu.Item>
-            <Menu.Item key="2">
-                <Checkbox checked={filterOptions.providers} onChange={() => handleFilterChange('providers')}>Providers</Checkbox>
-            </Menu.Item>
-            <Menu.Item key="3">
-                <Checkbox checked={filterOptions.consumers} onChange={() => handleFilterChange('consumers')}>Consumers</Checkbox>
-            </Menu.Item>
-        </Menu>
+    const selectBefore = (
+        <Select defaultValue="http://">
+            <Option value="http://">http://</Option>
+            <Option value="https://">https://</Option>
+        </Select>
     );
-    const sortMenu = (
-        <Menu onClick={(e) => e.stopPropagation()}>
-            <Menu.Item onClick={() => handleSortClick('processId')}>Process Id</Menu.Item>
-            <Menu.Item onClick={() => handleSortClick('title')}>Title</Menu.Item>
-            <Menu.Item onClick={() => handleSortClick('provider')}>Provider</Menu.Item>
-            <Menu.Item onClick={() => handleSortClick('consumer')}>Consumers</Menu.Item>
-        </Menu>
+    const selectAfter = (
+        <Select defaultValue=".com">
+            <Option value=".com">.com</Option>
+            <Option value=".jp">.jp</Option>
+            <Option value=".cn">.cn</Option>
+            <Option value=".org">.org</Option>
+        </Select>
     );
+
 
     // All content display
     return (
@@ -173,7 +108,13 @@ const ContractNegotiations = () => {
 
                     {/* Request contract form display */}
                     <Button onClick={showRequestModal} style={{ width: '15%' }} size='large' type="primary">Request Contract</Button>
-                    <Modal width={800} open={isRequestModalOpen} onOk={handleRequestOk} onCancel={handleRequestCancel}>
+                    <Modal width={800} open={isRequestModalOpen} onOk={handleRequestOk} onCancel={handleRequestCancel}
+                        footer={[
+                            <div style={{ display: 'flex', justifyContent: 'space-evenly', padding: 10 }}>
+                                <Button style={{ width: '20%' }} key="request" type='primary' size='large' icon={<SendOutlined />} iconPosition='end' onClick={handleRequestOk}>Request</Button>
+                                <Button style={{ width: '20%' }} key="cancel" type='primary' size='large' onClick={handleRequestCancel}>Cancel</Button>
+                            </div>
+                        ]}>
                         <h2>Contract Form</h2>
                         <Form className='formRequest' name='requestEndPoint' labelCol={{ span: 8, }} wrapperCol={{ span: 16, }} style={{ maxWidth: 600, }} initialValues={{ remember: true, }}>
                             <Form.Item label="Provider's Endpoint : "
@@ -182,19 +123,21 @@ const ContractNegotiations = () => {
                                     required: true,
                                     message: 'Insert your url endpoint'
                                 }]}>
-                                <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
-                                    <Input value={inputValue}
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                    <Input addonBefore={selectBefore}
+                                        addonAfter={selectAfter}
+                                        value={inputValue}
                                         onChange={handleInputChange} />
                                     <Button type="primary" disabled={!inputValue} style={{ marginLeft: '10px' }}>Self-Description</Button>
                                 </div>
                             </Form.Item>
                             <Divider style={{ borderColor: '#1e4792' }}></Divider>
-                            <p>
+                            <div style={{ width: '40%', margin: 'auto', alignContent: 'center', textAlign: 'center' }}>
                                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare,
                                 quae sunt a te dicta? Refert tamen, quo modo. Lorem ipsum dolor sit amet consectetur adipisicing elit.
                                 Minus, quam expedita ipsam quibusdam dignissimos aperiam accusamus architecto! Aliquid provident
                                 explicabo placeat, perspiciatis tempora possimus quod corrupti obcaecati minus commodi repudiandae?
-                            </p>
+                            </div>
                             <Divider style={{ borderColor: '#1e4792' }} ></Divider>
                             <Form.Item label="Offer ID :"
                                 name="OfferId"
@@ -202,7 +145,7 @@ const ContractNegotiations = () => {
                                     required: true,
                                     message: 'Provide an UUID'
                                 }]}>
-                                <Input></Input>
+                                <Input style={{ width: '80%' }}></Input>
                             </Form.Item>
                         </Form>
                     </Modal>
@@ -215,13 +158,11 @@ const ContractNegotiations = () => {
                         <p>Offer Form</p>
                     </Modal>
 
-                    <Dropdown getPopupContainer={(trigger) => trigger.parentNode} overlay={filterMenu} trigger={['click']}>
-                        <Button style={{ width: '15%' }} icon={<DownOutlined />} iconPosition='end' size='large' type="primary">Filter by</Button>
-                    </Dropdown>
-                    <Dropdown overlay={sortMenu} trigger={['click']}>
-                        <Button style={{ width: '15%' }} icon={<DownOutlined />} iconPosition='end' size='large' type="primary">Sort by</Button>
-                    </Dropdown>
-                    <Search size='large' color='dark' placeholder="input search text" allowClear onSearch={onSearch} style={{ width: 200, }}
+                    <FilterC setFilteredData={setFilteredData} initialData={initialData} />
+
+                    <SorterC filteredData={filteredData} setFilteredData={setFilteredData} />
+
+                    <Search className='searcher' size='large' color='dark' placeholder="input search text" allowClear onSearch={onSearch} style={{ width: 200, }}
                     />
                 </Col>
                 <Row gutter={16}>

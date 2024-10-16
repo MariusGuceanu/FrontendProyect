@@ -5,6 +5,7 @@ import Items from '../components/menuItems';
 import Profile from '../components/profile';
 import Dashboard from '../pages/dashboard';
 import ContractNegotiations from '../pages/contractNegotiations';
+import SiderItems from '../components/menuItems';
 const { Header, Content, Sider } = Layout;
 
 <Items />
@@ -65,7 +66,7 @@ const HomeLayout = () => {
               <Menu theme="dark"
                 defaultSelectedKeys={['1']}
                 mode="inline"
-                items={Items()} />
+                items={SiderItems()} />
             </Sider>
 
             <Content
