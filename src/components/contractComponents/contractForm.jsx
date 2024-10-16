@@ -11,10 +11,10 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
 
     const selectBefore = (
         <Select defaultValue="http://">
-            <Option value="http://">http://</Option>
-            <Option value="https://">https://</Option>
+            <Select.Option value="http://">http://</Select.Option>
+            <Select.Option value="https://">https://</Select.Option>
         </Select>
-    );
+    )
 
     return (
         <Modal width={1000} open={isModalOpen} onOk={handleOk} onCancel={handleCancel}
