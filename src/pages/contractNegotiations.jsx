@@ -49,7 +49,6 @@ const ContractNegotiations = () => {
     const [filteredData, setFilteredData] = useState(initialData)
 
 
-
     // Request modal functions
     const showRequestModal = () => {
         setIsRequestModalOpen(true);
@@ -90,14 +89,13 @@ const ContractNegotiations = () => {
 
                     {/* Offer form display */}
                     <Button onClick={showOfferModal} style={{ width: '15%' }} size='large' type="primary">Send Offer</Button>
-                    <OfferModal isModalOpen={isOfferModalOpen} handleOk={handleOfferOk} handleCancel={handleOfferCancel}/>
+                    <OfferModal isModalOpen={isOfferModalOpen} handleOk={handleOfferOk} handleCancel={handleOfferCancel} />
 
+                    {/* Sorter, Filter and Searcher display */}
                     <FilterC setFilteredData={setFilteredData} initialData={initialData} />
-
                     <SorterC filteredData={filteredData} setFilteredData={setFilteredData} />
-
-                    <Search className='searcher' size='large' color='dark' placeholder="input search text" allowClear onSearch={onSearch} style={{ width: 200, }}
-                    />
+                    <Search className='searcher' size='large' color='dark' placeholder="input search text" allowClear onSearch={onSearch} style={{ width: 200, }} />
+                    
                 </Col>
                 <Row gutter={16}>
                     <Col span={18}>
