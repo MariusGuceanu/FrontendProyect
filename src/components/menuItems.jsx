@@ -8,15 +8,6 @@ import {
     ContainerOutlined
 } from '@ant-design/icons';
 
-function getItem(label, key, icon, children) {
-    return {
-        key,
-        icon,
-        children,
-        label,
-    };
-}
-
 const SiderItems = () => [
     {
         key: 'sub1',

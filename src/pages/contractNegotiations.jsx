@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Table, Button, Row, Col, Modal, Select, Form, Input, Divider } from 'antd';
-const { Search } = Input;
 import { SendOutlined } from '@ant-design/icons';
 import '../styles/table-styles.css';
 import SorterC from '../components/contractComponents/sortMenu';
@@ -27,7 +26,7 @@ const columns = [
     { title: 'Current state', dataIndex: 'currentState', },
 ];
 
-const onSearch = (value, _e, info) => console.log(info?.source, value);
+const { Search } = Input;
 
 const ContractNegotiations = () => {
 
@@ -71,6 +70,19 @@ const ContractNegotiations = () => {
         setIsOfferModalOpen(false);
     };
 
+    // Search function
+
+    const onSearch = (value) => {
+        const filtered = initialData.filter(item =>
+            item.processId.toLowerCase().includes(value.toLowerCase()) ||
+            item.title.toLowerCase().includes(value.toLowerCase()) ||
+            item.provider.toLowerCase().includes(value.toLowerCase()) ||
+            item.consumer.toLowerCase().includes(value.toLowerCase()) ||
+            item.currentState.toLowerCase().includes(value.toLowerCase())
+            );
+            setFilteredData(filtered);
+    };
+
     // All content display
     return (
         <>
@@ -95,7 +107,7 @@ const ContractNegotiations = () => {
                     <FilterC setFilteredData={setFilteredData} initialData={initialData} />
                     <SorterC filteredData={filteredData} setFilteredData={setFilteredData} />
                     <Search className='searcher' size='large' color='dark' placeholder="input search text" allowClear onSearch={onSearch} style={{ width: 200, }} />
-                    
+
                 </Col>
                 <Row gutter={16}>
                     <Col span={18}>
