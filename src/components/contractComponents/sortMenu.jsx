@@ -29,7 +29,7 @@ const SorterC = ({ filteredData, setFilteredData }) => {
 
     return (
         <Dropdown overlay={sortMenu} trigger={['click']}>
-            <Button style={{ width: '15%' }} icon={<DownOutlined />} iconPosition='end' size='large' type="primary">
+            <Button icon={<DownOutlined />} iconPosition='end' size='large' type="primary">
                 Sort by
             </Button>
         </Dropdown>

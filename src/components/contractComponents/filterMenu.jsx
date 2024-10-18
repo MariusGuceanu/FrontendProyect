@@ -57,7 +57,7 @@ const FilterC = ({ setFilteredData, initialData }) => {
 
     return (
         <Dropdown getPopupContainer={(trigger) => trigger.parentNode} overlay={filterMenu} trigger={['click']}>
-            <Button style={{ width: '15%' }} icon={<DownOutlined />} iconPosition='end' size='large' type="primary">
+            <Button icon={<DownOutlined />} iconPosition='end' size='large' type="primary">
                 Filter by
             </Button>
         </Dropdown>

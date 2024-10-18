@@ -3,20 +3,80 @@
   ;
 }
 
+/* Upper buttons */
+
+.large-buttons {
+  width: 32%;
+  padding: 30px;
+  font-size: 1rem;
+}
+
+@media (max-width: 790px) {
+  .large-buttons {
+    padding: 22px;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 450px) {
+  .large-buttons {
+    width: 48%;
+    padding: 10px;
+    font-size: 0.8rem;
+  }
+}
+
+.button-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  justify-content: space-evenly;
+}
+
+.action-buttons {
+  width: 100%;
+  font-size: 1rem;
+  padding: 10px;
+}
+
+@media (max-width: 790px) {
+  .button-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .action-buttons {
+    font-size: 0.9rem;
+  }
+
+  .searcher {
+    grid-column: 1 / -1;
+    /* Ocupa toda la fila en pantallas pequeñas */
+    width: 100%;
+    margin-top: 10px;
+  }
+}
+
+@media (max-width: 450px) {
+  .action-buttons {
+    font-size: 0.8rem;
+  }
+
+  .button-grid {
+    grid-template-columns: 1fr;
+    /* Los botones se apilan verticalmente en pantallas muy pequeñas */
+  }
+}
+
 .table-contracts .ant-table {
   background: #1c2755;
-  font-size: auto;
-  scrollbar-color: rgba(255,255,255,255) rgba(5, 5, 5, 0.06);
-  box-shadow:#001844 ;
+  font-size: 0.8rem;
+  scrollbar-color: rgba(255, 255, 255, 255) rgba(5, 5, 5, 0.06);
+  box-shadow: #001844;
 }
 
 .table-contracts tr:hover td {
   background-color: #1a2b4d;
   color: black;
-}
-
-.table-contracts td {
-  transition: background-color 0.3s ease;
 }
 
 .table-contracts .ant-table td {
@@ -29,6 +89,13 @@
   color: white;
 }
 
+.table-contracts .ant-btn {
+  font-size: 0.8rem;
+  /* Botones más pequeños */
+  padding: 5px 10px;
+  /* Ajusta el padding */
+}
+
 .ant-btn-primary {
   background: #1e4792;
   border: #1a2b4d solid 1.5px;
@@ -36,4 +103,16 @@
 
 .ant-btn-primary:hover {
   background-color: #1e4792;
+}
+
+@media (max-width: 790px) {
+  .table-contracts .ant-table {
+    font-size: 0.7rem;
+    /* Reduce el tamaño en pantallas pequeñas */
+  }
+
+  .ant-btn {
+    font-size: 0.7rem;
+    /* Reduce el tamaño de los botones */
+  }
 }

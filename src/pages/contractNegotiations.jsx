@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Table, Button, Row, Col, Modal, Select, Form, Input, Divider } from 'antd';
+import { Table, Button, Row, Col, Modal, Select, Form, Input } from 'antd';
 import '../styles/table-styles.css';
 import SorterC from '../components/contractComponents/sortMenu';
 import FilterC from '../components/contractComponents/filterMenu';
@@ -28,24 +28,10 @@ const columns = [
 const { Search } = Input;
 
 const ContractNegotiations = () => {
-
-    /*  // Select Ids
-        const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-        const onSelectChange = (newSelectedRowKeys) => {
-            console.log('selectedRowKeys changed: ', newSelectedRowKeys);
-            setSelectedRowKeys(newSelectedRowKeys);
-        };
-        const rowSelection = {
-            selectedRowKeys,
-            onChange: onSelectChange,
-        };
-        */
-
     // Defining States
     const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
     const [isOfferModalOpen, setIsOfferModalOpen] = useState(false);
-    const [filteredData, setFilteredData] = useState(initialData)
-
+    const [filteredData, setFilteredData] = useState(initialData);
 
     // Request modal functions
     const showRequestModal = () => {
@@ -61,7 +47,7 @@ const ContractNegotiations = () => {
     // Offer modal functions
     const showOfferModal = () => {
         setIsOfferModalOpen(true);
-    }
+    };
     const handleOfferOk = () => {
         setIsOfferModalOpen(false);
     };
@@ -70,7 +56,6 @@ const ContractNegotiations = () => {
     };
 
     // Search function
-
     const onSearch = (value) => {
         const filtered = initialData.filter(item =>
             item.processId.toLowerCase().includes(value.toLowerCase()) ||
@@ -78,61 +63,64 @@ const ContractNegotiations = () => {
             item.provider.toLowerCase().includes(value.toLowerCase()) ||
             item.consumer.toLowerCase().includes(value.toLowerCase()) ||
             item.currentState.toLowerCase().includes(value.toLowerCase())
-            );
-            setFilteredData(filtered);
+        );
+        setFilteredData(filtered);
     };
 
     // All content display
     return (
         <>
             <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-                <Button style={{ width: '35%', padding: 30 }} size='large' type="primary">Ongoing Processes</Button>
-                <Button style={{ width: '35%', padding: 30 }} size='large' type="primary">History</Button>
+                <Button className="large-buttons" type="primary">Ongoing Processes</Button>
+                <Button className="large-buttons" type="primary">History</Button>
             </div>
 
-            <div style={{ width: '100%', margin: 'auto', border: 'solid', borderRadius: 10, }}>
-                <Row gutter={16} />
-                <Col span={24} style={{ display: 'flex', gap: '10px', justifyContent: 'space-evenly', padding: '2%' }}>
+            <div style={{ width: '100%', margin: 'auto', border: 'solid', borderRadius: 6 }}>
+    <Row gutter={16} />
+    <Col span={24} className="button-grid" style={{ padding: '2%' }}>
 
-                    {/* Request contract form display */}
-                    <Button onClick={showRequestModal} style={{ width: '15%' }} size="large" type="primary">Request Contract</Button>
-                    <RequestModal isModalOpen={isRequestModalOpen} handleOk={handleRequestOk} handleCancel={handleRequestCancel} />
+        {/* Request contract form display */}
+        <Button onClick={showRequestModal} className="action-buttons" size="large" type="primary">Request Contract</Button>
+        <RequestModal isModalOpen={isRequestModalOpen} handleOk={handleRequestOk} handleCancel={handleRequestCancel} />
 
-                    {/* Offer form display */}
-                    <Button onClick={showOfferModal} style={{ width: '15%' }} size='large' type="primary">Send Offer</Button>
-                    <OfferModal isModalOpen={isOfferModalOpen} handleOk={handleOfferOk} handleCancel={handleOfferCancel} />
+        {/* Offer form display */}
+        <Button onClick={showOfferModal} className="action-buttons" size='large' type="primary">Send Offer</Button>
+        <OfferModal isModalOpen={isOfferModalOpen} handleOk={handleOfferOk} handleCancel={handleOfferCancel} />
 
-                    {/* Sorter, Filter and Searcher display */}
-                    <FilterC setFilteredData={setFilteredData} initialData={initialData} />
-                    <SorterC filteredData={filteredData} setFilteredData={setFilteredData} />
-                    <Search className='searcher' size='large' color='dark' placeholder="input search text" allowClear onSearch={onSearch} style={{ width: 200, }} />
+        {/* Sorter and Filter */}
+        <FilterC className="action-buttons" setFilteredData={setFilteredData} initialData={initialData} />
+        <SorterC className="action-buttons" filteredData={filteredData} setFilteredData={setFilteredData} />
 
-                </Col>
-                <Row gutter={16}>
-                    <Col span={18}>
-                        <Table
-                            style={{ padding: '2%' }}
-                            className="table-contracts"
-                            columns={columns}
-                            dataSource={filteredData}
-                            // rowSelection={rowSelection}
-                            pagination={{ pageSize: 50 }}
-                            scroll={{ y: 55 * 5 }}
-                        />
-                    </Col>
-                    <Col span={6} style={{ display: 'flex', flexDirection: 'column', gap: '10px', justifyContent: 'flex-start', alignItems: 'flex-start', padding: '2%', marginTop: '3%' }}>
-                        <Col style={{ display: 'flex', gap: '10px', justifyContent: 'space-evenly' }}>
-                            <Button size='large' type="primary">Verify</Button>
-                            <Button size='large' type="primary">Terminate</Button>
-                        </Col>
-                        <Col style={{ display: 'flex', gap: '10px', justifyContent: 'space-evenly' }}>
-                            <Button size='large' type="primary">Request</Button>
-                            <Button size='large' type="primary">Accept</Button>
-                            <Button size='large' type="primary">Terminate</Button>
-                        </Col>
-                    </Col>
-                </Row>
-            </div>
+        {/* Search */}
+        <Search className='searcher' size='large' placeholder="input search text" allowClear onSearch={onSearch} />
+
+    </Col>
+
+    <Row gutter={16}>
+        <Col span={24}>
+            <Table
+                style={{ padding: '2%', overflowX: 'auto' }}
+                className="table-contracts"
+                columns={columns}
+                dataSource={filteredData}
+                pagination={{ pageSize: 50 }}
+                scroll={{ y: 55 * 10 }}
+            />
+        </Col>
+    </Row>
+
+    <Row gutter={16}>
+        <Col style={{ width: '100%', margin: 'auto', display: 'flex', justifyContent: 'space-evenly', gap: '10px', paddingBottom: '2%' }}>
+            <Button style={{ width: '15%' }} size='large' type="primary">Verify</Button>
+            <Button style={{ width: '15%' }} size='large' type="primary">Terminate</Button>
+            <Button style={{ width: '15%' }} size='large' type="primary">Request</Button>
+            <Button style={{ width: '15%' }} size='large' type="primary">Accept</Button>
+            <Button style={{ width: '15%' }} size='large' type="primary">Terminate</Button>
+        </Col>
+    </Row>
+</div>
+
+
         </>
     );
 };

@@ -2,6 +2,7 @@ import React from "react";
 import Avatar from "antd/es/avatar/avatar";
 import { UserOutlined } from "@ant-design/icons";
 import { Space } from "antd";
+import '../styles/profile.css'
 
 const Profile = () => (
     <Space style={{

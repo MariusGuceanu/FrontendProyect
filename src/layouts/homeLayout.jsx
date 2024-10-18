@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { Layout, Menu, theme } from 'antd';
 import Items from '../components/menuItems';
@@ -11,10 +11,22 @@ const { Header, Content, Sider } = Layout;
 <Items />
 
 const HomeLayout = () => {
-  const [collapsed, setCollapsed] = useState(false);
+
+
+  const [collapsed, setCollapsed] = useState(window.innerWidth < 790);
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
+
+  // Effect to collapse sider when the window is smaller
+  useEffect(() => {
+    const handleResize = () => {
+      setCollapsed(window.innerWidth < 768); 
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [])
 
   return (
 
@@ -30,17 +42,12 @@ const HomeLayout = () => {
           width: '100%',
           minHeight: 210,
           alignContent: 'start'
-        }}
-      >
+        }}>
         <div>
           <Profile />
         </div>
-
-        <div style={{
-          padding: '0 16px',
-        }}>
+        <div style={{padding: '0 16px',}}>
           <h2 style={{ color: 'white', textAlign: 'center', }}>Data space: Railway data space </h2>
-
         </div>
       </Header>
 
@@ -54,7 +61,7 @@ const HomeLayout = () => {
             }}
           >
             <Sider
-              width={290}
+              width={280}
               collapsible
               collapsed={collapsed}
               onCollapse={(value) => setCollapsed(value)}
@@ -70,9 +77,9 @@ const HomeLayout = () => {
             <Content
               style={{
                 padding: '24px',
-                minHeight: 825,
+                minHeight: 'calc(112vh - 72px)',
                 background: colorBgContainer,
-                alignContent: 'center'
+                alignContent: 'center',
               }}
             >
               <Routes>
