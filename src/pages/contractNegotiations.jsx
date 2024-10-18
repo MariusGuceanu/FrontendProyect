@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Table, Button, Row, Col, Modal, Select, Form, Input, Divider } from 'antd';
-import { SendOutlined } from '@ant-design/icons';
 import '../styles/table-styles.css';
 import SorterC from '../components/contractComponents/sortMenu';
 import FilterC from '../components/contractComponents/filterMenu';
