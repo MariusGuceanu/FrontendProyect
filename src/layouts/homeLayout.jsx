@@ -38,7 +38,6 @@ const HomeLayout = () => {
 
         <div style={{
           padding: '0 16px',
-
         }}>
           <h2 style={{ color: 'white', textAlign: 'center', }}>Data space: Railway data space </h2>
 
@@ -68,21 +67,17 @@ const HomeLayout = () => {
                 mode="inline"
                 items={SiderItems()} />
             </Sider>
-
             <Content
               style={{
                 padding: '24px',
                 minHeight: 825,
                 background: colorBgContainer,
                 alignContent: 'center'
-
               }}
             >
-
               <Routes>
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/contract-negotiations" element={<ContractNegotiations />} />
-
               </Routes>
             </Content>
           </Layout>
