@@ -11,7 +11,7 @@
   font-size: 1rem;
 }
 
-@media (max-width: 790px) {
+@media (max-width: 960px) {
   .large-buttons {
     padding: 22px;
     font-size: 1rem;
@@ -26,6 +26,8 @@
   }
 }
 
+/* Action buttons */
+
 .button-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -39,7 +41,7 @@
   padding: 10px;
 }
 
-@media (max-width: 790px) {
+@media (max-width: 960px) {
   .button-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -50,7 +52,6 @@
 
   .searcher {
     grid-column: 1 / -1;
-    /* Ocupa toda la fila en pantallas pequeñas */
     width: 100%;
     margin-top: 10px;
   }
@@ -63,9 +64,10 @@
 
   .button-grid {
     grid-template-columns: 1fr;
-    /* Los botones se apilan verticalmente en pantallas muy pequeñas */
   }
 }
+
+/* Table and reactive buttons */
 
 .table-contracts .ant-table {
   background: #1c2755;
@@ -91,9 +93,24 @@
 
 .table-contracts .ant-btn {
   font-size: 0.8rem;
-  /* Botones más pequeños */
   padding: 5px 10px;
-  /* Ajusta el padding */
+}
+
+
+@media (max-width: 960px) {
+  .table-contracts .ant-table {
+    font-size: 0.7rem;
+  }
+
+  .ant-btn {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 450px) {
+  .table-contracts .ant-table {
+    font-size: 0.7rem;
+  }
 }
 
 .ant-btn-primary {
@@ -105,14 +122,21 @@
   background-color: #1e4792;
 }
 
-@media (max-width: 790px) {
-  .table-contracts .ant-table {
-    font-size: 0.7rem;
-    /* Reduce el tamaño en pantallas pequeñas */
+.reactive-buttons {
+  width: 100%;
+  font-size: 1rem;
+  padding: 10px;
+}
+
+@media (max-width: 960px) {
+  .reactive-buttons {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 450px) {
+  .reactive-buttons {
+    font-size: 0.8rem;
   }
 
-  .ant-btn {
-    font-size: 0.7rem;
-    /* Reduce el tamaño de los botones */
-  }
 }

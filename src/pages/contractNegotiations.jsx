@@ -70,57 +70,52 @@ const ContractNegotiations = () => {
     // All content display
     return (
         <>
+            {/* Table buttons */}
             <div style={{ display: 'flex', justifyContent: 'space-around' }}>
                 <Button className="large-buttons" type="primary">Ongoing Processes</Button>
                 <Button className="large-buttons" type="primary">History</Button>
             </div>
 
+            {/* Action buttons */}
             <div style={{ width: '100%', margin: 'auto', border: 'solid', borderRadius: 6 }}>
-    <Row gutter={16} />
-    <Col span={24} className="button-grid" style={{ padding: '2%' }}>
+                <Row gutter={16} />
+                <Col span={24} className="button-grid" style={{ padding: '2%' }}>
+                    {/* Request contract form display */}
+                    <Button onClick={showRequestModal} className="action-buttons" size="large" type="primary">Request Contract</Button>
+                    <RequestModal isModalOpen={isRequestModalOpen} handleOk={handleRequestOk} handleCancel={handleRequestCancel} />
 
-        {/* Request contract form display */}
-        <Button onClick={showRequestModal} className="action-buttons" size="large" type="primary">Request Contract</Button>
-        <RequestModal isModalOpen={isRequestModalOpen} handleOk={handleRequestOk} handleCancel={handleRequestCancel} />
-
-        {/* Offer form display */}
-        <Button onClick={showOfferModal} className="action-buttons" size='large' type="primary">Send Offer</Button>
-        <OfferModal isModalOpen={isOfferModalOpen} handleOk={handleOfferOk} handleCancel={handleOfferCancel} />
-
-        {/* Sorter and Filter */}
-        <FilterC className="action-buttons" setFilteredData={setFilteredData} initialData={initialData} />
-        <SorterC className="action-buttons" filteredData={filteredData} setFilteredData={setFilteredData} />
-
-        {/* Search */}
-        <Search className='searcher' size='large' placeholder="input search text" allowClear onSearch={onSearch} />
-
-    </Col>
-
-    <Row gutter={16}>
-        <Col span={24}>
-            <Table
-                style={{ padding: '2%', overflowX: 'auto' }}
-                className="table-contracts"
-                columns={columns}
-                dataSource={filteredData}
-                pagination={{ pageSize: 50 }}
-                scroll={{ y: 55 * 10 }}
-            />
-        </Col>
-    </Row>
-
-    <Row gutter={16}>
-        <Col style={{ width: '100%', margin: 'auto', display: 'flex', justifyContent: 'space-evenly', gap: '10px', paddingBottom: '2%' }}>
-            <Button style={{ width: '15%' }} size='large' type="primary">Verify</Button>
-            <Button style={{ width: '15%' }} size='large' type="primary">Terminate</Button>
-            <Button style={{ width: '15%' }} size='large' type="primary">Request</Button>
-            <Button style={{ width: '15%' }} size='large' type="primary">Accept</Button>
-            <Button style={{ width: '15%' }} size='large' type="primary">Terminate</Button>
-        </Col>
-    </Row>
-</div>
-
-
+                    {/* Offer form display */}
+                    <Button onClick={showOfferModal} className="action-buttons" size='large' type="primary">Send Offer</Button>
+                    <OfferModal isModalOpen={isOfferModalOpen} handleOk={handleOfferOk} handleCancel={handleOfferCancel} />
+                    {/* Sorter and Filter */}
+                    <FilterC className="action-buttons" setFilteredData={setFilteredData} initialData={initialData} />
+                    <SorterC className="action-buttons" filteredData={filteredData} setFilteredData={setFilteredData} />
+                    {/* Search */}
+                    <Search className='searcher' size='large' placeholder="input search text" allowClear onSearch={onSearch} />
+                </Col>
+                {/* Table and reactive buttons */}
+                <Row gutter={16}>
+                    <Col span={24}>
+                        <Table
+                            style={{ padding: '2%', overflowX: 'auto' }}
+                            className="table-contracts"
+                            columns={columns}
+                            dataSource={filteredData}
+                            pagination={{ pageSize: 50 }}
+                            scroll={{ y: 55 * 10 }}
+                        />
+                    </Col>
+                </Row>
+                <Row gutter={16}>
+                    <Col style={{ width: '100%', margin: 'auto', display: 'flex', justifyContent: 'space-evenly', gap: '10px', paddingBottom: '2%' }}>
+                        <Button className='reactive-buttons' style={{ width: '15%' }} size='large' type="primary">Verify</Button>
+                        <Button className='reactive-buttons' style={{ width: '15%' }} size='large' type="primary">Terminate</Button>
+                        <Button className='reactive-buttons' style={{ width: '15%' }} size='large' type="primary">Request</Button>
+                        <Button className='reactive-buttons' style={{ width: '15%' }} size='large' type="primary">Accept</Button>
+                        <Button className='reactive-buttons' style={{ width: '15%' }} size='large' type="primary">Terminate</Button>
+                    </Col>
+                </Row>
+            </div>
         </>
     );
 };

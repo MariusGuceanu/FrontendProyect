@@ -13,7 +13,7 @@ const { Header, Content, Sider } = Layout;
 const HomeLayout = () => {
 
 
-  const [collapsed, setCollapsed] = useState(window.innerWidth < 790);
+  const [collapsed, setCollapsed] = useState(window.innerWidth < 960);
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -21,7 +21,7 @@ const HomeLayout = () => {
   // Effect to collapse sider when the window is smaller
   useEffect(() => {
     const handleResize = () => {
-      setCollapsed(window.innerWidth < 768); 
+      setCollapsed(window.innerWidth < 960); 
     };
 
     window.addEventListener('resize', handleResize);
