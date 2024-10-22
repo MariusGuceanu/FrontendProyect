@@ -9,6 +9,7 @@ const FilterC = ({ setFilteredData, initialData }) => {
         consumers: false,
     });
 
+    // Filter logic
     const handleFilterChange = (option) => {
         const newFilterOptions = { ...filterOptions };
 
@@ -26,7 +27,7 @@ const FilterC = ({ setFilteredData, initialData }) => {
 
         setFilterOptions(newFilterOptions);
 
-        // Aplicar la lógica de filtrado según las opciones seleccionadas
+        // Apply filter logic to the selected options
         let filtered = initialData;
         if (newFilterOptions.all) {
             filtered = initialData.filter(item => item.provider && item.consumer);

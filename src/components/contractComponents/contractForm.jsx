@@ -103,7 +103,7 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
                 </Form.Item>
                 <Divider style={{ borderColor: '#1e4792' }} />
                 <div style={{ width: '35%', margin: 'auto', textAlign: 'center' }}>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Minus, quam expedita ipsam quibusdam dignissimos aperiam accusamus architecto! Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt eligendi beatae laboriosam fugiat laborum culpa officia sequi atque, ex minima officiis. Dolorum vero ipsam atque perferendis minus Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nisi impedit adipisci a voluptatem, dolorum tempore quam natus totam! Obcaecati eius mollitia nisi ducimus sint illo impedit provident, officia adipisci maxime.
+                    This is the self-description info that will appear after clicking the description button                     This is the self-description info that will appear after clicking the self-description button                     This is the self-description info that will appear after clicking the self-description button                     This is the self-description info that will appear after clicking the self-description button                    This is the self-description info that will appear after clicking the self-description button                    This is the self-description info that will appear after clicking the self-description button
                 </div>
                 <Divider style={{ borderColor: '#1e4792' }} />
                 {constraints.map((constraint, index) => (

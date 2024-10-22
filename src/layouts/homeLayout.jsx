@@ -8,11 +8,7 @@ import ContractNegotiations from '../pages/contractNegotiations';
 import SiderItems from '../components/menuItems';
 const { Header, Content, Sider } = Layout;
 
-<Items />
-
 const HomeLayout = () => {
-
-
   const [collapsed, setCollapsed] = useState(window.innerWidth < 960);
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -21,7 +17,7 @@ const HomeLayout = () => {
   // Effect to collapse sider when the window is smaller
   useEffect(() => {
     const handleResize = () => {
-      setCollapsed(window.innerWidth < 960); 
+      setCollapsed(window.innerWidth < 960);
     };
 
     window.addEventListener('resize', handleResize);
@@ -37,16 +33,12 @@ const HomeLayout = () => {
     >
       <Header
         style={{
-          padding: 0,
-          background: '#001529',
-          width: '100%',
-          minHeight: 210,
-          alignContent: 'start'
+          padding: 0, background: '#001529', width: '100%', minHeight: 210, alignContent: 'start'
         }}>
         <div>
           <Profile />
         </div>
-        <div style={{padding: '0 16px',}}>
+        <div style={{ padding: '0 16px', }}>
           <h2 style={{ color: 'white', textAlign: 'center', }}>Data space: Railway data space </h2>
         </div>
       </Header>
@@ -60,26 +52,15 @@ const HomeLayout = () => {
               borderRadius: borderRadiusLG,
             }}
           >
-            <Sider
-              width={280}
-              collapsible
-              collapsed={collapsed}
-              onCollapse={(value) => setCollapsed(value)}
-              style={{
-                background: '#001529',
-              }}
+            <Sider width={280} collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)} style={{
+              background: '#001529',
+            }}
             >
-              <Menu theme="dark"
-                defaultSelectedKeys={['1']}
-                mode="inline"
-                items={SiderItems()} />
+              <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={SiderItems()} />
             </Sider>
             <Content
               style={{
-                padding: '24px',
-                minHeight: 'calc(112vh - 72px)',
-                background: colorBgContainer,
-                alignContent: 'center',
+                padding: '24px', minHeight: 'calc(112vh - 72px)', background: colorBgContainer, alignContent: 'center',
               }}
             >
               <Routes>
