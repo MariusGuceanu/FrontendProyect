@@ -48,6 +48,7 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
             const response = await axios.post('http://localhost:9081/gateway/request-contract', requestData);
             if (response.status === 200) {
                 console.log('Response:', response.data);
+                alert("Request successful! Contract Negotiation ID: " + response.data.contractNegotiationId);
                 handleOk();
             } else {
                 console.error('Unexpected response status:', response.status);
@@ -56,10 +57,6 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
             if (error.response) {
                 const { status, data } = error.response;
                 switch (status) {
-                    case 400:
-                        alert(`Error 400: ${data.message} (Code: ${data.code})`);
-                        console.error('Detailed error:', data);
-                        break;
                     case 500:
                         alert(`Error 500: ${data.message} (Code: ${data.code})`);
                         if (data.params && data.params.response) {
@@ -90,7 +87,7 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
                 </div>
             ]}
         >
-            <h2>Contract Form</h2>
+            <h2>Request a contract</h2>
             {/* Modal content display */}
             <Form className='formRequest' preserve={false} name='requestEndPoint' labelCol={{ span: 9 }} wrapperCol={{ span: 24 }} style={{ maxWidth: 800 }} initialValues={{ remember: true }}>
                 <Form.Item
@@ -109,7 +106,7 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
                 </div>
                 <Divider style={{ borderColor: '#1e4792' }} />
                 {constraints.map((constraint, index) => (
-                    <div key={index} style={{ marginLeft: '13%', display: 'flex', justifyContent: 'center', marginBottom: '1%' }}>
+                    <div key={index} style={{ marginLeft: '13%', display: 'flex', justifyContent: 'center', marginBottom: '1.5%' }}>
                         <Form.Item
                             label={`Constraint Name:  `}
                             rules={[{ required: true, message: 'Please input a constraint name!' }]}
@@ -134,7 +131,7 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
                         </Button>
                     </div>
                 ))}
-                <Button type="dashed" onClick={addConstraint} icon={<PlusOutlined />} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2%' }}>
+                <Button type="dashed" onClick={addConstraint} icon={<PlusOutlined />} style={{ display: 'flex', marginBottom: '5%', marginLeft: '16%', width: '80%', borderColor: 'gray' }}>
                     Add Constraint
                 </Button>
                 <Form.Item label="Offer ID :" name="OfferId" rules={[{ required: true, message: 'Provide a valid UUID' }]}>
