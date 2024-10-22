@@ -71,7 +71,7 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
     }
     // Modal display 
     return (
-        <Modal width={1000} open={isModalOpen} onOk={handleOk} onCancel={handleCancel}
+        <Modal destroyOnClose={true} width={1000} open={isModalOpen} onOk={handleOk} onCancel={handleCancel}
             footer={[
                 <div key="footer" style={{ display: 'flex', justifyContent: 'space-evenly', padding: 10 }}>
                     <Button style={{ width: '20%' }} key="request" type="primary" size="large" icon={<SendOutlined />} iconPosition='end' onClick={handleRequest}>
@@ -84,7 +84,7 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
             ]}
         >
             <h2>Contract Form</h2>
-            <Form className='formRequest' name='requestEndPoint' labelCol={{ span: 9 }} wrapperCol={{ span: 24 }} style={{ maxWidth: 800 }} initialValues={{ remember: true }}>
+            <Form className='formRequest' preserve={false} name='requestEndPoint' labelCol={{ span: 9 }} wrapperCol={{ span: 24 }} style={{ maxWidth: 800 }} initialValues={{ remember: true }}>
                 <Form.Item
                     label="Provider's Endpoint : "
                     name="ProvidersEp"
