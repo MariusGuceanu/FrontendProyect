@@ -5,6 +5,7 @@ import { DownOutlined } from '@ant-design/icons';
 const SorterC = ({ filteredData, setFilteredData }) => {
     const [sortOrder, setSortOrder] = useState({});
 
+    // Menu logic
     const handleSortClick = (sortBy) => {
         const order = sortOrder[sortBy] === 'ascend' ? 'descend' : 'ascend';
         const sorted = [...filteredData].sort((a, b) => {
@@ -17,7 +18,7 @@ const SorterC = ({ filteredData, setFilteredData }) => {
         setSortOrder({ [sortBy]: order });
         setFilteredData(sorted);
     };
-
+    //Menu creation logic
     const sortMenu = (
         <Menu onClick={(e) => e.stopPropagation()}>
             <Menu.Item onClick={() => handleSortClick('processId')}>Process Id</Menu.Item>
@@ -27,6 +28,7 @@ const SorterC = ({ filteredData, setFilteredData }) => {
         </Menu>
     );
 
+    // Menu display
     return (
         <Dropdown overlay={sortMenu} trigger={['click']}>
             <Button icon={<DownOutlined />} iconPosition='end' size='large' type="primary">

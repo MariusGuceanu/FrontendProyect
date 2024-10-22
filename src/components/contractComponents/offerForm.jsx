@@ -11,6 +11,7 @@ const OfferModal = ( {isModalOpen, handleOk, handleCancel}) => {
         </Select>
     );
 
+    // Modal display
     return (
         <Modal width={1000} open={isModalOpen} onOk={handleOk} onCancel={handleCancel}
             footer={[

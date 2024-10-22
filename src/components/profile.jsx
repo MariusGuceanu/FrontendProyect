@@ -4,6 +4,7 @@ import { UserOutlined } from "@ant-design/icons";
 import { Space } from "antd";
 import '../styles/profile.css'
 
+// Basic profile card for the page
 const Profile = () => (
     <Space style={{
         display: 'flex',

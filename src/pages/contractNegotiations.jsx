@@ -106,6 +106,7 @@ const ContractNegotiations = () => {
                         />
                     </Col>
                 </Row>
+                {/* Reactive buttons */}
                 <Row gutter={16}>
                     <Col style={{ width: '100%', margin: 'auto', display: 'flex', justifyContent: 'space-evenly', gap: '10px', paddingBottom: '2%' }}>
                         <Button className='reactive-buttons' style={{ width: '15%' }} size='large' type="primary">Verify</Button>

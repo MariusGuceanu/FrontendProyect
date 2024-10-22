@@ -8,6 +8,7 @@ import {
     ContainerOutlined
 } from '@ant-design/icons';
 
+// Items logic for the page navigation
 const SiderItems = () => [
     {
         key: 'sub1',

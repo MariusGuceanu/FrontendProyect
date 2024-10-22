@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { Layout, Menu, theme } from 'antd';
-import Items from '../components/menuItems';
 import Profile from '../components/profile';
 import Dashboard from '../pages/dashboard';
 import ContractNegotiations from '../pages/contractNegotiations';
@@ -25,7 +24,6 @@ const HomeLayout = () => {
   }, [])
 
   return (
-
     <Layout
       style={{
         minHeight: '100vh',

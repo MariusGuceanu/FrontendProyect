@@ -42,6 +42,7 @@ const FilterC = ({ setFilteredData, initialData }) => {
         setFilteredData(filtered);
     };
 
+    // Menu creation logic
     const filterMenu = (
         <Menu onClick={(e) => e.stopPropagation()}>
             <Menu.Item key="1">
@@ -56,6 +57,7 @@ const FilterC = ({ setFilteredData, initialData }) => {
         </Menu>
     );
 
+    // Menu display 
     return (
         <Dropdown getPopupContainer={(trigger) => trigger.parentNode} overlay={filterMenu} trigger={['click']}>
             <Button icon={<DownOutlined />} iconPosition='end' size='large' type="primary">
