@@ -108,12 +108,12 @@ const ContractNegotiations = () => {
                 </Row>
                 {/* Reactive buttons */}
                 <Row gutter={16}>
-                    <Col style={{ width: '100%', margin: 'auto', display: 'flex', justifyContent: 'space-evenly', gap: '10px', paddingBottom: '2%' }}>
-                        <Button className='reactive-buttons' style={{ width: '15%' }} size='large' type="primary">Verify</Button>
-                        <Button className='reactive-buttons' style={{ width: '15%' }} size='large' type="primary">Terminate</Button>
-                        <Button className='reactive-buttons' style={{ width: '15%' }} size='large' type="primary">Request</Button>
-                        <Button className='reactive-buttons' style={{ width: '15%' }} size='large' type="primary">Accept</Button>
-                        <Button className='reactive-buttons' style={{ width: '15%' }} size='large' type="primary">Terminate</Button>
+                    <Col style={{ width: '95%', margin: 'auto', display: 'flex', justifyContent: 'space-evenly', gap: '10px', paddingBottom: '2%' }}>
+                        <Button className='action-buttons' size='large' type="primary">Verify</Button>
+                        <Button className='action-buttons' size='large' type="primary">Terminate</Button>
+                        <Button className='action-buttons' size='large' type="primary">Request</Button>
+                        <Button className='action-buttons' size='large' type="primary">Accept</Button>
+                        <Button className='action-buttons' size='large' type="primary">Terminate</Button>
                     </Col>
                 </Row>
             </div>
