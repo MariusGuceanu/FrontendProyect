@@ -8,12 +8,12 @@ import OfferModal from '../components/contractComponents/offerForm';
 
 // Static data for the table
 const initialData = [
-    { key: '1', processId: 'ceitOne', title: 'Ceita', provider: 'ceita', consumer: 'clienta', currentState: 'ongoing' },
-    { key: '2', processId: 'ceitTwo', title: 'Ceitb', provider: '', consumer: 'clientb', currentState: 'terminated' },
-    { key: '3', processId: 'ceitThree', title: 'Ceitc', provider: 'ceitc', consumer: '', currentState: 'ongoing' },
-    { key: '4', processId: 'ceitFour', title: 'Ceitd', provider: 'ceitd', consumer: 'clientd', currentState: 'ongoing' },
-    { key: '5', processId: 'ceitFive', title: 'Ceite', provider: 'ceite', consumer: '', currentState: 'ongoing' },
-    { key: '6', processId: 'ceitSix', title: 'Ceitf', provider: '', consumer: 'clientf', currentState: 'terminated' },
+    { key: '1', processId: 'ceit1', title: 'Ceitaa', provider: 'ceita', consumer: 'clienta', currentState: 'ongoing' },
+    { key: '2', processId: 'ceit2', title: 'Ceitab', provider: '', consumer: 'clientb', currentState: 'terminated' },
+    { key: '3', processId: 'ceit3', title: 'Ceitbc', provider: 'ceitc', consumer: '', currentState: 'ongoing' },
+    { key: '4', processId: 'ceit4', title: 'Ceitad', provider: 'ceitd', consumer: 'clientd', currentState: 'ongoing' },
+    { key: '5', processId: 'ceit5', title: 'Ceitee', provider: 'ceite', consumer: '', currentState: 'ongoing' },
+    { key: '6', processId: 'ceit6', title: 'Ceitcf', provider: '', consumer: 'clientf', currentState: 'terminated' },
 ];
 
 // Table columns

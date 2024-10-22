@@ -8,47 +8,52 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
     const [offerId, setOfferId] = useState('');
     const [constraints, setConstraints] = useState([{ name: '', value: '' }]);
 
+    // Input data managment
     const handleInputChange = (e) => {
         setInputValue(e.target.value);
     }
-
     const handleOfferIdChange = (e) => {
         setOfferId(e.target.value);
     };
-
     const addConstraint = () => {
         setConstraints([...constraints, { name: '', value: '' }])
     }
-
     const handleConstraints = (index, field, value) => {
         const newConstraints = [...constraints];
         newConstraints[index][field] = value;
         setConstraints(newConstraints);
     }
 
+    // main function to make request and receive responses
     const handleRequest = async () => {
         const requestData = {
             offerId: offerId,
-            providerEndpoint: inputValue,
+            providerEndpoint: inputValue.trim(),
             constraints: constraints.reduce((acc, curr) => {
-                if (curr.name) {
+                if (curr.name && curr.value) {
                     acc[curr.name] = curr.value;
                 }
                 return acc;
             }, {}),
         };
-
+        console.log('Request Data:', requestData);
+        // Errors managment
         try {
-            const response = await axios.post('http://localhost:8081/gateway/request-contract', requestData);
+            const response = await axios.post('http://localhost:9081/gateway/request-contract', requestData);
             if (response.status === 200) {
                 console.log('Response:', response.data);
                 handleOk();
+            } else {
+                console.error('Unexpected response status:', response.status);
             }
-
         } catch (error) {
             if (error.response) {
                 const { status, data } = error.response;
                 switch (status) {
+                    case 400:
+                        alert(`Error 400: ${data.message} (Code: ${data.code})`);
+                        console.error('Detailed error:', data);
+                        break;
                     case 500:
                         alert(`Error 500: ${data.message} (Code: ${data.code})`);
                         if (data.params && data.params.response) {
@@ -56,22 +61,15 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
                         }
                         break;
                     default:
-                        alert(`Error: ${error.message}`);
+                        alert(`Error ${status}: ${error.message}`);
                         break;
                 }
             } else {
                 alert(`Error: ${error.message}`);
             }
         }
-    };
-
-    const selectBefore = (
-        <Select defaultValue="http://">
-            <Select.Option value="http://">http://</Select.Option>
-            <Select.Option value="https://">https://</Select.Option>
-        </Select>
-    )
-
+    }
+    // Modal display 
     return (
         <Modal width={1000} open={isModalOpen} onOk={handleOk} onCancel={handleCancel}
             footer={[
@@ -93,13 +91,13 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
                     rules={[{ required: true, message: 'Insert your URL endpoint' }]}
                 >
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <Input addonBefore={selectBefore} value={inputValue} onChange={handleInputChange} />
+                        <Input value={inputValue} onChange={handleInputChange} />
                         <Button type="primary" disabled={!inputValue} style={{ marginLeft: '10px' }}>Self-Description</Button>
                     </div>
                 </Form.Item>
                 <Divider style={{ borderColor: '#1e4792' }} />
                 <div style={{ width: '35%', margin: 'auto', textAlign: 'center' }}>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Minus, quam expedita ipsam quibusdam dignissimos aperiam accusamus architecto! Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt eligendi beatae laboriosam fugiat laborum culpa officia sequi atque, ex minima officiis. Dolorum vero ipsam atque perferendis minus voluptatem odit? Itaque! Lorem ipsum, dolor sit amet consectetur adipisicing elit. Consequatur hic aliquid culpa optio cupiditate nisi unde eaque, recusandae rem amet, ab maxime ipsam? Sit nostrum, quidem ducimus quas beatae eaque!
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Minus, quam expedita ipsam quibusdam dignissimos aperiam accusamus architecto! Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt eligendi beatae laboriosam fugiat laborum culpa officia sequi atque, ex minima officiis. Dolorum vero ipsam atque perferendis minus
                 </div>
                 <Divider style={{ borderColor: '#1e4792' }} />
                 {constraints.map((constraint, index) => (
