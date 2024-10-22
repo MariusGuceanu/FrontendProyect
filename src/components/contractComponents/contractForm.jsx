@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Modal, Form, Input, Button, Divider, Select } from 'antd';
-import { SendOutlined, PlusOutlined } from '@ant-design/icons';
+import { SendOutlined, PlusOutlined, CloseOutlined } from '@ant-design/icons';
 import axios from 'axios';
 
 const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
@@ -15,8 +15,14 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
     const handleOfferIdChange = (e) => {
         setOfferId(e.target.value);
     };
+
+    //Constraints
     const addConstraint = () => {
         setConstraints([...constraints, { name: '', value: '' }])
+    }
+    const removeConstraint = (index) => {
+        const newConstraints = constraints.filter((_, i) => i !== index);
+        setConstraints(newConstraints);
     }
     const handleConstraints = (index, field, value) => {
         const newConstraints = [...constraints];
@@ -97,7 +103,7 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
                 </Form.Item>
                 <Divider style={{ borderColor: '#1e4792' }} />
                 <div style={{ width: '35%', margin: 'auto', textAlign: 'center' }}>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Minus, quam expedita ipsam quibusdam dignissimos aperiam accusamus architecto! Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt eligendi beatae laboriosam fugiat laborum culpa officia sequi atque, ex minima officiis. Dolorum vero ipsam atque perferendis minus
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Minus, quam expedita ipsam quibusdam dignissimos aperiam accusamus architecto! Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt eligendi beatae laboriosam fugiat laborum culpa officia sequi atque, ex minima officiis. Dolorum vero ipsam atque perferendis minus Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nisi impedit adipisci a voluptatem, dolorum tempore quam natus totam! Obcaecati eius mollitia nisi ducimus sint illo impedit provident, officia adipisci maxime.
                 </div>
                 <Divider style={{ borderColor: '#1e4792' }} />
                 {constraints.map((constraint, index) => (
@@ -122,6 +128,8 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
                                 onChange={(e) => handleConstraints(index, 'value', e.target.value)}
                             />
                         </Form.Item>
+                        <Button type="danger" icon={<CloseOutlined />} onClick={() => removeConstraint(index)} style={{ marginLeft: '10px' }}>
+                        </Button>
                     </div>
                 ))}
                 <Button type="dashed" onClick={addConstraint} icon={<PlusOutlined />} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2%' }}>
