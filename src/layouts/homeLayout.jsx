@@ -58,7 +58,7 @@ const HomeLayout = () => {
             </Sider>
             <Content
               style={{
-                padding: '24px', minHeight: 'calc(112vh - 72px)', background: colorBgContainer, alignContent: 'start',
+                padding: '24px', minHeight: 'calc(100vh - 68px)', background: colorBgContainer, alignContent: 'start',
               }}
             >
               <Routes>

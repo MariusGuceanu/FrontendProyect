@@ -19,9 +19,11 @@ const columns = [
 // Static data for the table
 const initialData = [
     { key: '1', processId: 'ceit2', title: 'Ceitaa', provider: 'ceita', consumer: 'clienta', currentState: 'ongoing' },
-    { key: '2', processId: 'ceit7', title: 'Ceitab', provider: '', consumer: 'clientb', currentState: 'terminated' },
+    { key: '2', processId: 'ceit7', title: 'Ceitab', provider: '', consumer: 'clientb', currentState: 'ongoing' },
     { key: '3', processId: 'ceit3', title: 'Ceitbc', provider: 'ceitc', consumer: '', currentState: 'ongoing' },
-    
+    { key: '4', processId: 'ceit4', title: 'Ceitasa', provider: 'ceitd', consumer: 'clientd', currentState: 'ongoing' },
+    { key: '5', processId: 'ceit5', title: 'Ceitavb', provider: '', consumer: 'clientc', currentState: 'ongoing' },
+    { key: '6', processId: 'ceit9', title: 'Ceitbbc', provider: 'ceitg', consumer: '', currentState: 'ongoing' },
 ];
 
 const { Search } = Input;
