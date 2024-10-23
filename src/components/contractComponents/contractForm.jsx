@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { Modal, Form, Input, Button, Divider, Select } from 'antd';
 import { SendOutlined, PlusOutlined, CloseOutlined } from '@ant-design/icons';
+import Notification from '../notifications';
 import axios from 'axios';
 
 const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
     const [inputValue, setInputValue] = useState('');
     const [offerId, setOfferId] = useState('');
     const [constraints, setConstraints] = useState([{ name: '', value: '' }]);
+    const { openNotification, contextHolder, api } = Notification();
 
     // Input data managment
     const handleInputChange = (e) => {
@@ -30,8 +32,8 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
         setConstraints(newConstraints);
     }
 
-    // main function to make request and receive responses
-    const handleRequest = async () => {
+    // Main function to make the requests and receive responses
+    const handleRequest = async (openNotification) => {
         const requestData = {
             offerId: offerId,
             providerEndpoint: inputValue.trim(),
@@ -43,102 +45,101 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
             }, {}),
         };
         console.log('Request Data:', requestData);
-        // Errors managment
         try {
             const response = await axios.post('http://localhost:9081/gateway/request-contract', requestData);
+            // Errors managment
             if (response.status === 200) {
                 console.log('Response:', response.data);
-                alert("Request successful! Contract Negotiation ID: " + response.data.contractNegotiationId);
-                handleOk();
+                openNotification('success', 'Request Successful', `Contract Negotiation ID: ${response.data.contractNegotiationId}`), handleOk();
             } else {
                 console.error('Unexpected response status:', response.status);
             }
         } catch (error) {
             if (error.response) {
                 const { status, data } = error.response;
-                switch (status) {
-                    case 500:
-                        alert(`Error 500: ${data.message} (Code: ${data.code})`);
-                        if (data.params && data.params.response) {
-                            console.error('Server response:', data.params.response);
-                        }
-                        break;
-                    default:
-                        alert(`Error ${status}: ${error.message}`);
-                        break;
+                if (status === 400) {
+                    openNotification('error', 'Error 400', data.message);
+                } else if (status === 500) {
+                    openNotification('error', 'Error 500', data.message);
+                } else {
+                    openNotification('error', 'Error', 'Unexpected error occurred');
                 }
             } else {
-                alert(`Error: ${error.message}`);
+                openNotification('error', 'Error', error.message);
             }
         }
     }
     // Modal display 
     return (
-        //Modal logic
-        <Modal destroyOnClose={true} width={1000} open={isModalOpen} onOk={handleOk} onCancel={handleCancel}
-            footer={[
-                <div key="footer" style={{ display: 'flex', justifyContent: 'space-evenly', padding: 10 }}>
-                    <Button style={{ width: '20%' }} key="request" type="primary" size="large" icon={<SendOutlined />} iconPosition='end' onClick={handleRequest}>
-                        Request
-                    </Button>
-                    <Button style={{ width: '20%' }} key="cancel" type="primary" size="large" onClick={handleCancel}>
-                        Cancel
-                    </Button>
-                </div>
-            ]}
-        >
-            <h2>Request a contract</h2>
-            {/* Modal content display */}
-            <Form className='formRequest' preserve={false} name='requestEndPoint' labelCol={{ span: 9 }} wrapperCol={{ span: 24 }} style={{ maxWidth: 800 }} initialValues={{ remember: true }}>
-                <Form.Item
-                    label="Provider's Endpoint : "
-                    name="ProvidersEp"
-                    rules={[{ required: true, message: 'Insert your URL endpoint' }]}
-                >
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <Input value={inputValue} onChange={handleInputChange} />
-                        <Button type="primary" disabled={!inputValue} style={{ marginLeft: '10px' }}>Self-Description</Button>
-                    </div>
-                </Form.Item>
-                <Divider style={{ borderColor: '#1e4792' }} />
-                <div style={{ width: '35%', margin: 'auto', textAlign: 'center' }}>
-                    This is the self-description info that will appear after clicking the description button                     This is the self-description info that will appear after clicking the self-description button                     This is the self-description info that will appear after clicking the self-description button                     This is the self-description info that will appear after clicking the self-description button                    This is the self-description info that will appear after clicking the self-description button                    This is the self-description info that will appear after clicking the self-description button
-                </div>
-                <Divider style={{ borderColor: '#1e4792' }} />
-                {constraints.map((constraint, index) => (
-                    <div key={index} style={{ marginLeft: '13%', display: 'flex', justifyContent: 'center', marginBottom: '1.5%' }}>
-                        <Form.Item
-                            label={`Constraint Name:  `}
-                            rules={[{ required: true, message: 'Please input a constraint name!' }]}
-                        >
-                            <Input
-                                style={{ width: '100%' }}
-                                value={constraint.name}
-                                onChange={(e) => handleConstraints(index, 'name', e.target.value)}
-                            />
-                        </Form.Item>
-                        <Form.Item
-                            label={`Value:  `}
-                            rules={[{ required: true, message: 'Please input a value!' }]}
-                        >
-                            <Input
-                                style={{ width: '100%' }}
-                                value={constraint.value}
-                                onChange={(e) => handleConstraints(index, 'value', e.target.value)}
-                            />
-                        </Form.Item>
-                        <Button type="danger" icon={<CloseOutlined />} onClick={() => removeConstraint(index)} style={{ marginLeft: '10px' }}>
+        <>
+        {contextHolder}
+        {/* Modal logic */}
+            <Modal destroyOnClose={true} width={1000} open={isModalOpen} onOk={handleOk} onCancel={handleCancel}
+                footer={[
+                    <div key="footer" style={{ display: 'flex', justifyContent: 'space-evenly', padding: 10 }}>
+                        <Button style={{ width: '20%' }} key="request" type="primary" size="large" icon={<SendOutlined />} iconPosition='end' onClick={() => handleRequest(openNotification)}>
+                            Request
+                        </Button>
+                        <Button style={{ width: '20%' }} key="cancel" type="primary" size="large" onClick={handleCancel}>
+                            Cancel
                         </Button>
                     </div>
-                ))}
-                <Button type="dashed" onClick={addConstraint} icon={<PlusOutlined />} style={{ display: 'flex', marginBottom: '5%', marginLeft: '16%', width: '80%', borderColor: 'gray' }}>
-                    Add Constraint
-                </Button>
-                <Form.Item label="Offer ID :" name="OfferId" rules={[{ required: true, message: 'Provide a valid UUID' }]}>
-                    <Input style={{ width: '80%' }} value={offerId} onChange={handleOfferIdChange} />
-                </Form.Item>
-            </Form>
-        </Modal>
+                ]}
+            >
+
+                <h2>Request a contract</h2>
+                {/* Modal content display */}
+                <Form className='formRequest' preserve={false} name='requestEndPoint' labelCol={{ span: 9 }} wrapperCol={{ span: 24 }} style={{ maxWidth: 800 }} initialValues={{ remember: true }}>
+                    <Form.Item
+                        label="Provider's Endpoint : "
+                        name="ProvidersEp"
+                        rules={[{ required: true, message: 'Insert your URL endpoint' }]}
+                    >
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <Input value={inputValue} onChange={handleInputChange} />
+                            <Button type="primary" disabled={!inputValue} style={{ marginLeft: '10px' }}>Self-Description</Button>
+                        </div>
+                    </Form.Item>
+                    <Divider style={{ borderColor: '#1e4792' }} />
+                    <div style={{ width: '35%', margin: 'auto', textAlign: 'center' }}>
+                        This is the self-description info that will appear after clicking the description button This is the self-description info that will appear after clicking the self-description buttonThis is the self-description info that will appear after clicking the self-description buttonThis is the self-description info that will appear after clicking the self-description buttonThis is the self-description info that will appear after clicking the self-description buttonThis is the self-description info that will appear after clicking the self-description button
+                    </div>
+                    <Divider style={{ borderColor: '#1e4792' }} />
+                    {constraints.map((constraint, index) => (
+                        <div key={index} style={{ marginLeft: '13%', display: 'flex', justifyContent: 'center', marginBottom: '1.5%' }}>
+                            <Form.Item
+                                label={`Constraint Name:  `}
+                                rules={[{ required: true, message: 'Please input a constraint name!' }]}
+                            >
+                                <Input
+                                    style={{ width: '100%' }}
+                                    value={constraint.name}
+                                    onChange={(e) => handleConstraints(index, 'name', e.target.value)}
+                                />
+                            </Form.Item>
+                            <Form.Item
+                                label={`Value:  `}
+                                rules={[{ required: true, message: 'Please input a value!' }]}
+                            >
+                                <Input
+                                    style={{ width: '100%' }}
+                                    value={constraint.value}
+                                    onChange={(e) => handleConstraints(index, 'value', e.target.value)}
+                                />
+                            </Form.Item>
+                            <Button type="danger" icon={<CloseOutlined />} onClick={() => removeConstraint(index)} style={{ marginLeft: '10px' }}>
+                            </Button>
+                        </div>
+                    ))}
+                    <Button type="dashed" onClick={addConstraint} icon={<PlusOutlined />} style={{ display: 'flex', marginBottom: '5%', marginLeft: '16%', width: '80%', borderColor: 'gray' }}>
+                        Add Constraint
+                    </Button>
+                    <Form.Item label="Offer ID :" name="OfferId" rules={[{ required: true, message: 'Provide a valid UUID' }]}>
+                        <Input style={{ width: '80%' }} value={offerId} onChange={handleOfferIdChange} />
+                    </Form.Item>
+                </Form>
+            </Modal>
+        </>
     );
 };
 
