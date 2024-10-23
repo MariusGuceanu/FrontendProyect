@@ -6,23 +6,22 @@ import FilterC from '../components/contractComponents/filterMenu';
 import RequestModal from '../components/contractComponents/contractForm';
 import OfferModal from '../components/contractComponents/offerForm';
 
+// Table columns
+const columns = [
+    { title: 'Process ID', dataIndex: 'processId', width:'30%'},
+    { title: 'Title', dataIndex: 'title', width:'10%'},
+    { title: 'Provider', dataIndex: 'provider', width:'15%'},
+    { title: 'Consumer', dataIndex: 'consumer', width:'15%'},
+    { title: 'Current state', dataIndex: 'currentState', width:'10%'},
+    { title: 'Initiated date', dataIndex: 'initiatedDate', width:'20%'},
+];
+
 // Static data for the table
 const initialData = [
     { key: '1', processId: 'ceit2', title: 'Ceitaa', provider: 'ceita', consumer: 'clienta', currentState: 'ongoing' },
     { key: '2', processId: 'ceit7', title: 'Ceitab', provider: '', consumer: 'clientb', currentState: 'terminated' },
     { key: '3', processId: 'ceit3', title: 'Ceitbc', provider: 'ceitc', consumer: '', currentState: 'ongoing' },
-    { key: '4', processId: 'ceit1', title: 'Ceitad', provider: 'ceitd', consumer: 'clientd', currentState: 'ongoing' },
-    { key: '5', processId: 'ceit5', title: 'Ceitee', provider: 'ceite', consumer: '', currentState: 'ongoing' },
-    { key: '6', processId: 'ceit23', title: 'Ceitcf', provider: '', consumer: 'clientf', currentState: 'terminated' },
-];
-
-// Table columns
-const columns = [
-    { title: 'Process ID', dataIndex: 'processId', },
-    { title: 'Title', dataIndex: 'title', },
-    { title: 'Provider', dataIndex: 'provider', },
-    { title: 'Consumer', dataIndex: 'consumer', },
-    { title: 'Current state', dataIndex: 'currentState', },
+    
 ];
 
 const { Search } = Input;
@@ -32,6 +31,7 @@ const ContractNegotiations = () => {
     const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
     const [isOfferModalOpen, setIsOfferModalOpen] = useState(false);
     const [filteredData, setFilteredData] = useState(initialData);
+    const [data, setData] = useState(initialData);
 
     // Request modal functions
     const showRequestModal = () => {
@@ -42,6 +42,23 @@ const ContractNegotiations = () => {
     };
     const handleRequestCancel = () => {
         setIsRequestModalOpen(false);
+    };
+
+    const addRowToTable = (processId) => {
+        const newKey = (data.length + 1).toString();
+        const newData = {
+            key: newKey,
+            processId: processId,
+            title: `title${newKey}`,  
+            provider: `provider${newKey}`, 
+            consumer: `consumer${newKey}`, 
+            currentState: 'ongoing',
+            initiatedDate: new Date().toLocaleString(),
+        };
+        const updatedData = [...data, newData];
+        setData(updatedData);
+        setFilteredData(updatedData);
+        console.log(updatedData);
     };
 
     // Offer modal functions
@@ -71,7 +88,7 @@ const ContractNegotiations = () => {
     return (
         <>
             {/* Table buttons */}
-            <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-around', marginTop:'3%', }}>
                 <Button className="large-buttons" type="primary">Ongoing Processes</Button>
                 <Button className="large-buttons" type="primary">History</Button>
             </div>
@@ -82,8 +99,7 @@ const ContractNegotiations = () => {
                 <Col span={24} className="button-grid" style={{ padding: '2%' }}>
                     {/* Request contract form display */}
                     <Button onClick={showRequestModal} className="action-buttons" size="large" type="primary">Request Contract</Button>
-                    <RequestModal isModalOpen={isRequestModalOpen} handleOk={handleRequestOk} handleCancel={handleRequestCancel} />
-
+                    <RequestModal isModalOpen={isRequestModalOpen} handleOk={handleRequestOk} handleCancel={handleRequestCancel} addRowToTable={addRowToTable}/>
                     {/* Offer form display */}
                     <Button onClick={showOfferModal} className="action-buttons" size='large' type="primary">Send Offer</Button>
                     <OfferModal isModalOpen={isOfferModalOpen} handleOk={handleOfferOk} handleCancel={handleOfferCancel} />
@@ -101,8 +117,8 @@ const ContractNegotiations = () => {
                             className="table-contracts"
                             columns={columns}
                             dataSource={filteredData}
-                            pagination={{ pageSize: 50 }}
-                            scroll={{ y: 55 * 10 }}
+                            pagination={{ pageSize: 5 }}
+                            scroll={{ y: 55 * 6 }}
                         />
                     </Col>
                 </Row>

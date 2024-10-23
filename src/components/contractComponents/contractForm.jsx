@@ -4,7 +4,7 @@ import { SendOutlined, PlusOutlined, CloseOutlined } from '@ant-design/icons';
 import Notification from '../notifications';
 import axios from 'axios';
 
-const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
+const RequestModal = ({ isModalOpen, handleOk, handleCancel, addRowToTable }) => {
     const [inputValue, setInputValue] = useState('');
     const [offerId, setOfferId] = useState('');
     const [constraints, setConstraints] = useState([{ name: '', value: '' }]);
@@ -50,7 +50,9 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
             // Errors managment
             if (response.status === 200) {
                 console.log('Response:', response.data);
-                openNotification('success', 'Request Successful', `Contract Negotiation ID: ${response.data.contractNegotiationId}`), handleOk();
+                openNotification('success', 'Request Successful', `Contract Negotiation ID: ${response.data.contractNegotiationId}`);
+                handleOk();
+                addRowToTable(response.data.contractNegotiationId);
             } else {
                 console.error('Unexpected response status:', response.status);
             }
@@ -86,14 +88,13 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
                     </div>
                 ]}
             >
-
                 <h2>Request a contract</h2>
                 {/* Modal content display */}
-                <Form className='formRequest' preserve={false} name='requestEndPoint' labelCol={{ span: 9 }} wrapperCol={{ span: 24 }} style={{ maxWidth: 800 }} initialValues={{ remember: true }}>
+                <Form className='formRequest' preserve={false} autoComplete='off' name='requestEndPoint' labelCol={{ span: 9 }} wrapperCol={{ span: 24 }} style={{ maxWidth: 800, marginLeft:'5%' }} initialValues={{ remember: true }}>
                     <Form.Item
                         label="Provider's Endpoint : "
                         name="ProvidersEp"
-                        rules={[{ required: true, message: 'Insert your URL endpoint' }]}
+                        rules={[{ required: true, message: 'Insert your URL endpoint' }]}      
                     >
                         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                             <Input value={inputValue} onChange={handleInputChange} />
@@ -109,7 +110,7 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
                         <div key={index} style={{ marginLeft: '13%', display: 'flex', justifyContent: 'center', marginBottom: '1.5%' }}>
                             <Form.Item
                                 label={`Constraint Name:  `}
-                                rules={[{ required: true, message: 'Please input a constraint name!' }]}
+                                rules={[{ required: true, message: 'Please input a constraint name!' }]}                          
                             >
                                 <Input
                                     style={{ width: '100%' }}
