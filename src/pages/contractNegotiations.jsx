@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Table, Button, Row, Col, Modal, Select, Form, Input } from 'antd';
 import '../styles/table-styles.css';
 import SorterC from '../components/contractComponents/sortMenu';
 import FilterC from '../components/contractComponents/filterMenu';
 import RequestModal from '../components/contractComponents/contractForm';
 import OfferModal from '../components/contractComponents/offerForm';
+import axios from 'axios';
 
 // Table columns
 const columns = [
@@ -119,7 +120,7 @@ const ContractNegotiations = () => {
                             className="table-contracts"
                             columns={columns}
                             dataSource={filteredData}
-                            pagination={{ pageSize: 5 }}
+                            pagination={{ pageSize:8 }}
                             scroll={{ y: 55 * 6 }}
                         />
                     </Col>

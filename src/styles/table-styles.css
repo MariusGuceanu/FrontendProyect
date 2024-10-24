@@ -72,7 +72,7 @@
 .table-contracts .ant-table {
   background: #1c2755;
   font-size: 0.8rem;
-  scrollbar-color: rgba(255, 255, 255, 255) rgba(5, 5, 5, 0.06);
+  scrollbar-color: rgba(255, 255, 255, 255) rgba(255, 255, 255, 0.06);
   box-shadow: #001844;
 }
 
