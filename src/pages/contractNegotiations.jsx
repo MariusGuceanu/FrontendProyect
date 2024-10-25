@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Row, Col, Modal, Select, Form, Input } from 'antd';
+import { Table, Button, Row, Col, Input } from 'antd';
 import '../styles/table-styles.css';
 import SorterC from '../components/contractComponents/sortMenu';
 import FilterC from '../components/contractComponents/filterMenu';
@@ -9,22 +9,12 @@ import axios from 'axios';
 
 // Table columns
 const columns = [
-    { title: 'Process ID', dataIndex: 'processId', width:'30%'},
-    { title: 'Title', dataIndex: 'title', width:'10%'},
-    { title: 'Provider', dataIndex: 'provider', width:'15%'},
-    { title: 'Consumer', dataIndex: 'consumer', width:'15%'},
-    { title: 'Current state', dataIndex: 'currentState', width:'10%'},
-    { title: 'Initiated date', dataIndex: 'initiatedDate', width:'20%'},
-];
-
-// Static data for the table
-const initialData = [
-    { key: '1', processId: 'ceit2', title: 'Ceitaa', provider: 'ceita', consumer: 'clienta', currentState: 'ongoing' },
-    { key: '2', processId: 'ceit7', title: 'Ceitab', provider: '', consumer: 'clientb', currentState: 'ongoing' },
-    { key: '3', processId: 'ceit3', title: 'Ceitbc', provider: 'ceitc', consumer: '', currentState: 'ongoing' },
-    { key: '4', processId: 'ceit4', title: 'Ceitasa', provider: 'ceitd', consumer: 'clientd', currentState: 'ongoing' },
-    { key: '5', processId: 'ceit5', title: 'Ceitavb', provider: '', consumer: 'clientc', currentState: 'ongoing' },
-    { key: '6', processId: 'ceit9', title: 'Ceitbbc', provider: 'ceitg', consumer: '', currentState: 'ongoing' },
+    { title: 'Process ID', dataIndex: 'processId', width: '20%' },
+    { title: 'Title', dataIndex: 'title', width: '10%' },
+    { title: 'Provider', dataIndex: 'provider', width: '20%' },
+    { title: 'Consumer', dataIndex: 'consumer', width: '20%' },
+    { title: 'Current state', dataIndex: 'currentState', width: '15%' },
+    { title: 'Initiated date', dataIndex: 'initiatedDate', width: '15%' },
 ];
 
 const { Search } = Input;
@@ -33,8 +23,30 @@ const ContractNegotiations = () => {
     // Defining States
     const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
     const [isOfferModalOpen, setIsOfferModalOpen] = useState(false);
-    const [filteredData, setFilteredData] = useState(initialData);
-    const [data, setData] = useState(initialData);
+    const [filteredData, setFilteredData] = useState([]);
+    const [data, setData] = useState([]);
+
+    useEffect(() => {
+        axios.get('http://localhost:8081/api/gateway/negotiations')
+            .then(response => {
+                console.log('API Response:', response);
+                const negotiations = response.data.map((item, index) => ({
+                    key: (index + 1).toString(),
+                    processId: `process${index + 1}`,
+                    title: `title${index + 1}`,
+                    provider: item['dspace:providerPid'],
+                    consumer: item['dspace:consumerPid'],
+                    currentState: item['dspace:state'],
+                    initiatedDate: new Date().toISOString(),
+                }));
+                setData(negotiations);
+                setFilteredData(negotiations);
+                console.log('Negotiations:', negotiations);
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+    }, []);
 
     // Request modal functions
     const showRequestModal = () => {
@@ -47,22 +59,38 @@ const ContractNegotiations = () => {
         setIsRequestModalOpen(false);
     };
 
-    const addRowToTable = (processId) => {
-        const newKey = (data.length + 1).toString();
-        const newData = {
-            key: newKey,
-            processId: processId,
-            title: `title${newKey}`,  
-            provider: `provider${newKey}`, 
-            consumer: `consumer${newKey}`, 
-            currentState: 'ongoing',
-            initiatedDate: new Date().toLocaleString(),
-        };
-        const updatedData = [...data, newData];
-        setData(updatedData);
-        setFilteredData(updatedData);
-        console.log(updatedData);
+    const addRowToTable = async (contractNegotiationId) => {
+        try {
+            const response = await axios.get('http://localhost:8081/api/gateway/negotiations');
+            
+            if (response.status === 200) {
+                // Gets the last row of the DB to match with the contractNegotiationId of the POST
+                const negotiations = response.data;
+                const newNegotiation = negotiations[negotiations.length - 1]; 
+    
+                const newKey = (data.length + 1).toString();
+                const newData = {
+                    key: newKey,
+                    processId: contractNegotiationId,
+                    title: `title${newKey}`,
+                    provider: newNegotiation['dspace:providerPid'],
+                    consumer: newNegotiation['dspace:consumerPid'],
+                    currentState: newNegotiation['dspace:state'],
+                    initiatedDate: new Date().toLocaleString(),
+                };
+    
+                const updatedData = [...data, newData];
+                setData(updatedData);
+                setFilteredData(updatedData);
+                console.log('Updated Data:', updatedData);
+            } else {
+                console.error('Error fetching negotiations:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error in addRowToTable:', error);
+        }
     };
+    
 
     // Offer modal functions
     const showOfferModal = () => {
@@ -77,7 +105,7 @@ const ContractNegotiations = () => {
 
     // Search function
     const onSearch = (value) => {
-        const filtered = initialData.filter(item =>
+        const filtered = data.filter(item =>
             item.processId.toLowerCase().includes(value.toLowerCase()) ||
             item.title.toLowerCase().includes(value.toLowerCase()) ||
             item.provider.toLowerCase().includes(value.toLowerCase()) ||
@@ -91,7 +119,7 @@ const ContractNegotiations = () => {
     return (
         <>
             {/* Table buttons */}
-            <div style={{ display: 'flex', justifyContent: 'space-around', marginTop:'3%', }}>
+            <div style={{ display: 'flex', justifyContent: 'space-around', marginTop: '3%', }}>
                 <Button className="large-buttons" type="primary">Ongoing Processes</Button>
                 <Button className="large-buttons" type="primary">History</Button>
             </div>
@@ -102,12 +130,12 @@ const ContractNegotiations = () => {
                 <Col span={24} className="button-grid" style={{ padding: '2%' }}>
                     {/* Request contract form display */}
                     <Button onClick={showRequestModal} className="action-buttons" size="large" type="primary">Request Contract</Button>
-                    <RequestModal isModalOpen={isRequestModalOpen} handleOk={handleRequestOk} handleCancel={handleRequestCancel} addRowToTable={addRowToTable}/>
+                    <RequestModal isModalOpen={isRequestModalOpen} handleOk={handleRequestOk} handleCancel={handleRequestCancel} addRowToTable={addRowToTable} />
                     {/* Offer form display */}
                     <Button onClick={showOfferModal} className="action-buttons" size='large' type="primary">Send Offer</Button>
                     <OfferModal isModalOpen={isOfferModalOpen} handleOk={handleOfferOk} handleCancel={handleOfferCancel} />
                     {/* Sorter and Filter */}
-                    <FilterC className="action-buttons" setFilteredData={setFilteredData} initialData={initialData} />
+                    <FilterC className="action-buttons" setFilteredData={setFilteredData} initialData={data} />
                     <SorterC className="action-buttons" filteredData={filteredData} setFilteredData={setFilteredData} />
                     {/* Search */}
                     <Search className='searcher' size='large' placeholder="input search text" allowClear onSearch={onSearch} />
@@ -115,12 +143,13 @@ const ContractNegotiations = () => {
                 {/* Table and reactive buttons */}
                 <Row gutter={16}>
                     <Col span={24}>
+                        {console.log('Table Data:', filteredData)}
                         <Table
                             style={{ padding: '2%', overflowX: 'auto' }}
                             className="table-contracts"
                             columns={columns}
                             dataSource={filteredData}
-                            pagination={{ pageSize:8 }}
+                            pagination={{ pageSize: 10 }}
                             scroll={{ y: 55 * 6 }}
                         />
                     </Col>
@@ -128,11 +157,11 @@ const ContractNegotiations = () => {
                 {/* Reactive buttons */}
                 <Row gutter={16}>
                     <Col style={{ width: '95%', margin: 'auto', display: 'flex', justifyContent: 'space-evenly', gap: '10px', paddingBottom: '2%' }}>
-                        <Button className='action-buttons' size='large' type="primary">Verify</Button>
-                        <Button className='action-buttons' size='large' type="primary">Terminate</Button>
-                        <Button className='action-buttons' size='large' type="primary">Request</Button>
-                        <Button className='action-buttons' size='large' type="primary">Accept</Button>
-                        <Button className='action-buttons' size='large' type="primary">Terminate</Button>
+                        <Button className='action-buttons' disabled size='large' type="primary">Accept</Button>
+                        <Button className='action-buttons' disabled size='large' type="primary">Agree</Button>
+                        <Button className='action-buttons' disabled size='large' type="primary">Verify</Button>
+                        <Button className='action-buttons' disabled size='large' type="primary">Finalize</Button>
+                        <Button className='action-buttons' disabled size='large' type="primary">Terminate</Button>
                     </Col>
                 </Row>
             </div>
