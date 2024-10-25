@@ -8,7 +8,7 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel, addRowToTable }) =>
     const [inputValue, setInputValue] = useState('');
     const [offerId, setOfferId] = useState('');
     const [constraints, setConstraints] = useState([{ name: '', value: '' }]);
-    const { openNotification, contextHolder, api } = Notification();
+    const { openNotification, contextHolder } = Notification();
 
     // Input data managment
     const handleInputChange = (e) => {
@@ -44,7 +44,6 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel, addRowToTable }) =>
                 return acc;
             }, {}),
         };
-        console.log('Request Data:', requestData);
         try {
             const response = await axios.post('http://localhost:9081/api/gateway/request-contract', requestData);
             // Error management
@@ -111,23 +110,13 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel, addRowToTable }) =>
                         <div key={index} style={{ marginLeft: '13%', display: 'flex', justifyContent: 'center', marginBottom: '1.5%' }}>
                             <Form.Item
                                 label={`Constraint Name:  `}
-                                rules={[{ required: true, message: 'Please input a constraint name!' }]}
-                            >
-                                <Input
-                                    style={{ width: '100%' }}
-                                    value={constraint.name}
-                                    onChange={(e) => handleConstraints(index, 'name', e.target.value)}
-                                />
+                                rules={[{ required: true, message: 'Please input a constraint name!' }]}>
+                                <Input style={{ width: '100%' }} value={constraint.name} onChange={(e) => handleConstraints(index, 'name', e.target.value)} />
                             </Form.Item>
                             <Form.Item
                                 label={`Value:  `}
-                                rules={[{ required: true, message: 'Please input a value!' }]}
-                            >
-                                <Input
-                                    style={{ width: '100%' }}
-                                    value={constraint.value}
-                                    onChange={(e) => handleConstraints(index, 'value', e.target.value)}
-                                />
+                                rules={[{ required: true, message: 'Please input a value!' }]}>
+                                <Input style={{ width: '100%' }} value={constraint.value} onChange={(e) => handleConstraints(index, 'value', e.target.value)} />
                             </Form.Item>
                             <Button type="danger" icon={<CloseOutlined />} onClick={() => removeConstraint(index)} style={{ marginLeft: '10px' }}>
                             </Button>

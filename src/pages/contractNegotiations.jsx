@@ -5,6 +5,7 @@ import SorterC from '../components/contractComponents/sortMenu';
 import FilterC from '../components/contractComponents/filterMenu';
 import RequestModal from '../components/contractComponents/contractForm';
 import OfferModal from '../components/contractComponents/offerForm';
+import Searcher from '../components/contractComponents/searcher';
 import axios from 'axios';
 
 // Table columns
@@ -17,20 +18,20 @@ const columns = [
     { title: 'Initiated date', dataIndex: 'initiatedDate', width: '15%' },
 ];
 
-const { Search } = Input;
-
 const ContractNegotiations = () => {
     // Defining States
     const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
     const [isOfferModalOpen, setIsOfferModalOpen] = useState(false);
+    const selectionType = useState('checkbox');
     const [filteredData, setFilteredData] = useState([]);
     const [data, setData] = useState([]);
 
+    // Request to collect data from API
     useEffect(() => {
         axios.get('http://localhost:8081/api/gateway/negotiations')
             .then(response => {
-                console.log('API Response:', response);
                 const negotiations = response.data.map((item, index) => ({
+                    // gets provider, consumer and state from API
                     key: (index + 1).toString(),
                     processId: `process${index + 1}`,
                     title: `title${index + 1}`,
@@ -41,12 +42,51 @@ const ContractNegotiations = () => {
                 }));
                 setData(negotiations);
                 setFilteredData(negotiations);
-                console.log('Negotiations:', negotiations);
             })
             .catch(error => {
                 console.error('Error fetching data:', error);
             });
     }, []);
+
+    const addRowToTable = async (contractNegotiationId) => {
+        try {
+            const response = await axios.get('http://localhost:8081/api/gateway/negotiations');
+
+            if (response.status === 200) {
+                // Gets the last row of the DB to match with the contractNegotiationId of the POST
+                const negotiations = response.data;
+                const newNegotiation = negotiations[negotiations.length - 1];
+                // Inserts the collected data to the table
+                const newKey = (data.length + 1).toString();
+                const newData = {
+                    key: newKey,
+                    processId: contractNegotiationId,
+                    title: `title${newKey}`,
+                    provider: newNegotiation['dspace:providerPid'],
+                    consumer: newNegotiation['dspace:consumerPid'],
+                    currentState: newNegotiation['dspace:state'],
+                    initiatedDate: new Date().toLocaleString(),
+                };
+                const updatedData = [...data, newData];
+                setData(updatedData);
+                setFilteredData(updatedData);
+            } else {
+                console.error('Error fetching negotiations:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error in addRowToTable:', error);
+        }
+    };
+
+    const rowSelection = {
+        onChange: (selectedRowKeys, selectedRows) => {
+            console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+        },
+        getCheckboxProps: (record) => ({
+            disabled: record.name === 'Disabled User',
+            name: record.name,
+        }),
+    };
 
     // Request modal functions
     const showRequestModal = () => {
@@ -58,39 +98,6 @@ const ContractNegotiations = () => {
     const handleRequestCancel = () => {
         setIsRequestModalOpen(false);
     };
-
-    const addRowToTable = async (contractNegotiationId) => {
-        try {
-            const response = await axios.get('http://localhost:8081/api/gateway/negotiations');
-            
-            if (response.status === 200) {
-                // Gets the last row of the DB to match with the contractNegotiationId of the POST
-                const negotiations = response.data;
-                const newNegotiation = negotiations[negotiations.length - 1]; 
-    
-                const newKey = (data.length + 1).toString();
-                const newData = {
-                    key: newKey,
-                    processId: contractNegotiationId,
-                    title: `title${newKey}`,
-                    provider: newNegotiation['dspace:providerPid'],
-                    consumer: newNegotiation['dspace:consumerPid'],
-                    currentState: newNegotiation['dspace:state'],
-                    initiatedDate: new Date().toLocaleString(),
-                };
-    
-                const updatedData = [...data, newData];
-                setData(updatedData);
-                setFilteredData(updatedData);
-                console.log('Updated Data:', updatedData);
-            } else {
-                console.error('Error fetching negotiations:', response.statusText);
-            }
-        } catch (error) {
-            console.error('Error in addRowToTable:', error);
-        }
-    };
-    
 
     // Offer modal functions
     const showOfferModal = () => {
@@ -138,15 +145,18 @@ const ContractNegotiations = () => {
                     <FilterC className="action-buttons" setFilteredData={setFilteredData} initialData={data} />
                     <SorterC className="action-buttons" filteredData={filteredData} setFilteredData={setFilteredData} />
                     {/* Search */}
-                    <Search className='searcher' size='large' placeholder="input search text" allowClear onSearch={onSearch} />
+                    <Searcher onSearch={onSearch} />
                 </Col>
                 {/* Table and reactive buttons */}
                 <Row gutter={16}>
                     <Col span={24}>
-                        {console.log('Table Data:', filteredData)}
                         <Table
                             style={{ padding: '2%', overflowX: 'auto' }}
                             className="table-contracts"
+                            rowSelection={{
+                                type: selectionType,
+                                ...rowSelection,
+                            }}
                             columns={columns}
                             dataSource={filteredData}
                             pagination={{ pageSize: 10 }}
