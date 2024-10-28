@@ -9,7 +9,7 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel, addRowToTable }) =>
     const [inputValue, setInputValue] = useState('');
     const [selfDescription, setSelfDescription] = useState(null);
     const [offerId, setOfferId] = useState('');
-    const [loading, setLoading]= useState(false);
+    const [loading, setLoading] = useState(false);
 
     // General states
     const [constraints, setConstraints] = useState([{ name: '', value: '' }]);
@@ -97,7 +97,7 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel, addRowToTable }) =>
             <Modal destroyOnClose={true} width={1000} open={isModalOpen} onOk={handleOk} onCancel={handleCancel}
                 footer={[
                     <div key="footer" style={{ display: 'flex', justifyContent: 'space-evenly', padding: 10 }}>
-                        <Button style={{ width: '20%' }} key="request" type="primary" size="large" icon={<SendOutlined />} iconPosition='end' onClick={() => handleRequest(openNotification)}>
+                        <Button style={{ width: '20%' }} disabled={!inputValue || !offerId} key="request" type="primary" size="large" icon={<SendOutlined />} iconPosition='end' onClick={() => handleRequest(openNotification)}>
                             Request
                         </Button>
                         <Button style={{ width: '20%' }} key="cancel" type="primary" size="large" onClick={handleCancel}>
@@ -120,9 +120,13 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel, addRowToTable }) =>
                         </div>
                     </Form.Item>
                     <Divider style={{ borderColor: '#1e4792' }} />
-                    <div style={{ width: '60%', margin: 'auto', textAlign: 'center', overflow: 'auto',maxHeight:'300px' }}>
+                    <div style={{ width: '60%', margin: 'auto', textAlign: 'center', overflow: 'auto', maxHeight: '300px' }}>
                         {selfDescription ? (
-                            <pre>{JSON.stringify(selfDescription, null, 2)}</pre> // Endpoint's self-description
+                            <pre>
+                                <div style={{ width: '100%', textAlign: 'start' }}>
+                                    {JSON.stringify(selfDescription, null, 2)} {/* Endpoint's self-description */}
+                                </div>
+                            </pre>
                         ) : (
                             'Click "Self-Description" to view provider information.'
                         )}                    </div>

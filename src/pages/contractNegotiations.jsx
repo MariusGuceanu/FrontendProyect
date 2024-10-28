@@ -125,21 +125,39 @@ const ContractNegotiations = () => {
         setFilteredData(filtered);
     };
 
+    // State machine for action-buttons of the selected row
     const stateMachine = () => {
-        if (!selectedRow) return { accept: false, agree: false, verify: false, finalize: false, terminate: false };
-
+        if (!selectedRow) return [];
         const state = selectedRow.currentState;
         const stateTransitions = cnStateMachine[state]?.transitions || {};
 
-        return {
-            accept: stateTransitions.hasOwnProperty('ACCEPTED'),
-            agree: stateTransitions.hasOwnProperty('AGREED'),
-            verify: stateTransitions.hasOwnProperty('VERIFIED'),
-            finalize: stateTransitions.hasOwnProperty('FINALIZED'),
-            terminate: stateTransitions.hasOwnProperty('TERMINATED'),
-        };
+        return Object.keys(stateTransitions);
     };
 
+    // Renders buttons depending selected current state
+    const changeActionButtons = () => {
+        const transitions = stateMachine();
+
+        return (
+            <>
+                {transitions.includes('ACCEPTED') && (
+                    <Button className='action-buttons' style={{width:'30%'}} size='large' type="primary">Accept</Button>
+                )}
+                {transitions.includes('AGREED') && (
+                    <Button className='action-buttons' style={{width:'30%'}} size='large' type="primary">Agree</Button>
+                )}
+                {transitions.includes('VERIFIED') && (
+                    <Button className='action-buttons' style={{width:'30%'}} size='large' type="primary">Verify</Button>
+                )}
+                {transitions.includes('FINALIZED') && (
+                    <Button className='action-buttons' style={{width:'30%'}} size='large' type="primary">Finalize</Button>
+                )}
+                {transitions.includes('TERMINATED') && (
+                    <Button className='action-buttons' style={{width:'30%'}} size='large' type="primary">Terminate</Button>
+                )}
+            </>
+        )
+    }
 
     // All content display
     return (
@@ -185,12 +203,8 @@ const ContractNegotiations = () => {
                 </Row>
                 {/* Reactive buttons */}
                 <Row gutter={16}>
-                    <Col style={{ width: '95%', margin: 'auto', display: 'flex', justifyContent: 'space-evenly', gap: '10px', paddingBottom: '2%' }}>
-                        <Button className='action-buttons' disabled={!stateMachine().accept} size='large' type="primary">Accept</Button>
-                        <Button className='action-buttons' disabled={!stateMachine().agree} size='large' type="primary">Agree</Button>
-                        <Button className='action-buttons' disabled={!stateMachine().verify} size='large' type="primary">Verify</Button>
-                        <Button className='action-buttons' disabled={!stateMachine().finalize} size='large' type="primary">Finalize</Button>
-                        <Button className='action-buttons' disabled={!stateMachine().terminate} size='large' type="primary">Terminate</Button>
+                    <Col style={{ width: '95%', margin: 'auto', display: 'flex', justifyContent:'space-evenly', gap: '10px', paddingBottom: '2%' }}>
+                        {changeActionButtons()}
                     </Col>
                 </Row>
             </div>
