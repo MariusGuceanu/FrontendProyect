@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Row, Col, Input } from 'antd';
+import { Table, Button, Row, Col } from 'antd';
 import '../styles/table-styles.css';
 import SorterC from '../components/contractComponents/sortMenu';
 import FilterC from '../components/contractComponents/filterMenu';
 import RequestModal from '../components/contractComponents/contractForm';
 import OfferModal from '../components/contractComponents/offerForm';
 import Searcher from '../components/contractComponents/searcher';
+import cnStateMachine from '../components/stateMachines/cnStateMachine';
 import axios from 'axios';
 
 // Table columns
@@ -23,6 +24,7 @@ const ContractNegotiations = () => {
     const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
     const [isOfferModalOpen, setIsOfferModalOpen] = useState(false);
     const selectionType = useState('checkbox');
+    const [selectedRow, setSelectedRow] = useState(null);
     const [filteredData, setFilteredData] = useState([]);
     const [data, setData] = useState([]);
 
@@ -37,7 +39,7 @@ const ContractNegotiations = () => {
                     title: `title${index + 1}`,
                     provider: item['dspace:providerPid'],
                     consumer: item['dspace:consumerPid'],
-                    currentState: item['dspace:state'],
+                    currentState: item['dspace:state'].replace('dspace:', ''),
                     initiatedDate: new Date().toISOString(),
                 }));
                 setData(negotiations);
@@ -78,9 +80,10 @@ const ContractNegotiations = () => {
         }
     };
 
+    // Row selection logic
     const rowSelection = {
         onChange: (selectedRowKeys, selectedRows) => {
-            console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+            setSelectedRow(selectedRows[0]);
         },
         getCheckboxProps: (record) => ({
             disabled: record.name === 'Disabled User',
@@ -121,6 +124,22 @@ const ContractNegotiations = () => {
         );
         setFilteredData(filtered);
     };
+
+    const areButtonsEnabled = () => {
+        if (!selectedRow) return { accept: false, agree: false, verify: false, finalize: false, terminate: false };
+
+        const state = selectedRow.currentState;
+        const stateTransitions = cnStateMachine[state]?.transitions || {};
+
+        return {
+            accept: stateTransitions.hasOwnProperty('ACCEPTED'),
+            agree: stateTransitions.hasOwnProperty('AGREED'),
+            verify: stateTransitions.hasOwnProperty('VERIFIED'),
+            finalize: stateTransitions.hasOwnProperty('FINALIZED'),
+            terminate: stateTransitions.hasOwnProperty('TERMINATED'),
+        };
+    };
+
 
     // All content display
     return (
@@ -167,11 +186,11 @@ const ContractNegotiations = () => {
                 {/* Reactive buttons */}
                 <Row gutter={16}>
                     <Col style={{ width: '95%', margin: 'auto', display: 'flex', justifyContent: 'space-evenly', gap: '10px', paddingBottom: '2%' }}>
-                        <Button className='action-buttons' disabled size='large' type="primary">Accept</Button>
-                        <Button className='action-buttons' disabled size='large' type="primary">Agree</Button>
-                        <Button className='action-buttons' disabled size='large' type="primary">Verify</Button>
-                        <Button className='action-buttons' disabled size='large' type="primary">Finalize</Button>
-                        <Button className='action-buttons' disabled size='large' type="primary">Terminate</Button>
+                        <Button className='action-buttons' disabled={!areButtonsEnabled().accept} size='large' type="primary">Accept</Button>
+                        <Button className='action-buttons' disabled={!areButtonsEnabled().agree} size='large' type="primary">Agree</Button>
+                        <Button className='action-buttons' disabled={!areButtonsEnabled().verify} size='large' type="primary">Verify</Button>
+                        <Button className='action-buttons' disabled={!areButtonsEnabled().finalize} size='large' type="primary">Finalize</Button>
+                        <Button className='action-buttons' disabled={!areButtonsEnabled().terminate} size='large' type="primary">Terminate</Button>
                     </Col>
                 </Row>
             </div>
