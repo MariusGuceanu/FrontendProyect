@@ -33,7 +33,7 @@ const ContractNegotiations = () => {
         axios.get('http://localhost:8081/api/gateway/negotiations')
             .then(response => {
                 const negotiations = response.data.map((item, index) => ({
-                    // gets provider, consumer and state from API
+                    // Gets provider, consumer and state from API
                     key: (index + 1).toString(),
                     processId: `process${index + 1}`,
                     title: `title${index + 1}`,
@@ -125,7 +125,7 @@ const ContractNegotiations = () => {
         setFilteredData(filtered);
     };
 
-    const areButtonsEnabled = () => {
+    const stateMachine = () => {
         if (!selectedRow) return { accept: false, agree: false, verify: false, finalize: false, terminate: false };
 
         const state = selectedRow.currentState;
@@ -186,11 +186,11 @@ const ContractNegotiations = () => {
                 {/* Reactive buttons */}
                 <Row gutter={16}>
                     <Col style={{ width: '95%', margin: 'auto', display: 'flex', justifyContent: 'space-evenly', gap: '10px', paddingBottom: '2%' }}>
-                        <Button className='action-buttons' disabled={!areButtonsEnabled().accept} size='large' type="primary">Accept</Button>
-                        <Button className='action-buttons' disabled={!areButtonsEnabled().agree} size='large' type="primary">Agree</Button>
-                        <Button className='action-buttons' disabled={!areButtonsEnabled().verify} size='large' type="primary">Verify</Button>
-                        <Button className='action-buttons' disabled={!areButtonsEnabled().finalize} size='large' type="primary">Finalize</Button>
-                        <Button className='action-buttons' disabled={!areButtonsEnabled().terminate} size='large' type="primary">Terminate</Button>
+                        <Button className='action-buttons' disabled={!stateMachine().accept} size='large' type="primary">Accept</Button>
+                        <Button className='action-buttons' disabled={!stateMachine().agree} size='large' type="primary">Agree</Button>
+                        <Button className='action-buttons' disabled={!stateMachine().verify} size='large' type="primary">Verify</Button>
+                        <Button className='action-buttons' disabled={!stateMachine().finalize} size='large' type="primary">Finalize</Button>
+                        <Button className='action-buttons' disabled={!stateMachine().terminate} size='large' type="primary">Terminate</Button>
                     </Col>
                 </Row>
             </div>

@@ -5,8 +5,13 @@ import Notification from '../notifications';
 import axios from 'axios';
 
 const RequestModal = ({ isModalOpen, handleOk, handleCancel, addRowToTable }) => {
+    // Self-description states
     const [inputValue, setInputValue] = useState('');
+    const [selfDescription, setSelfDescription] = useState(null);
     const [offerId, setOfferId] = useState('');
+    const [loading, setLoading]= useState(false);
+
+    // General states
     const [constraints, setConstraints] = useState([{ name: '', value: '' }]);
     const { openNotification, contextHolder } = Notification();
 
@@ -18,7 +23,7 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel, addRowToTable }) =>
         setOfferId(e.target.value);
     };
 
-    //Constraints
+    // Add, remove and handle constraints
     const addConstraint = () => {
         setConstraints([...constraints, { name: '', value: '' }])
     }
@@ -31,6 +36,20 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel, addRowToTable }) =>
         newConstraints[index][field] = value;
         setConstraints(newConstraints);
     }
+
+    // Self description 
+    const getSelfDescription = async () => {
+        setLoading(true)
+        try {
+            const response = await axios.get(inputValue.trim());
+            setSelfDescription(response.data);
+        } catch (error) {
+            console.error('Error fetching self-description:', error);
+            openNotification('error', 'Error getting Self-description', 'Could not retrieve self-description from provider.');
+        } finally {
+            setLoading(false)
+        }
+    };
 
     // Main function to make the requests and receive responses
     const handleRequest = async (openNotification) => {
@@ -70,7 +89,6 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel, addRowToTable }) =>
             }
         }
     };
-
     // Modal display 
     return (
         <>
@@ -90,7 +108,7 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel, addRowToTable }) =>
             >
                 <h2>Request a contract</h2>
                 {/* Modal content display */}
-                <Form className='formRequest' preserve={false} name='requestEndPoint' labelCol={{ span: 9 }} wrapperCol={{ span: 24 }} style={{ maxWidth: 800, marginLeft: '5%' }} initialValues={{ remember: true }}>
+                <Form className='formRequest' preserve={false} autoComplete='off' name='requestEndPoint' labelCol={{ span: 9 }} wrapperCol={{ span: 24 }} style={{ maxWidth: 800, marginLeft: '5%' }} initialValues={{ remember: true }}>
                     <Form.Item
                         label="Provider's Endpoint : "
                         name="ProvidersEp"
@@ -98,13 +116,16 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel, addRowToTable }) =>
                     >
                         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                             <Input value={inputValue} onChange={handleInputChange} />
-                            <Button type="primary" disabled={!inputValue} style={{ marginLeft: '10px' }}>Self-Description</Button>
+                            <Button type="primary" disabled={!inputValue} style={{ marginLeft: '10px' }} onClick={getSelfDescription} loading={loading}>Self-Description</Button>
                         </div>
                     </Form.Item>
                     <Divider style={{ borderColor: '#1e4792' }} />
-                    <div style={{ width: '35%', margin: 'auto', textAlign: 'center' }}>
-                        This is the self-description info that will appear after clicking the description button This is the self-description info that will appear after clicking the self-description buttonThis is the self-description info that will appear after clicking the self-description buttonThis is the self-description info that will appear after clicking the self-description buttonThis is the self-description info that will appear after clicking the self-description buttonThis is the self-description info that will appear after clicking the self-description button
-                    </div>
+                    <div style={{ width: '60%', margin: 'auto', textAlign: 'center', overflow: 'auto',maxHeight:'300px' }}>
+                        {selfDescription ? (
+                            <pre>{JSON.stringify(selfDescription, null, 2)}</pre> // Endpoint's self-description
+                        ) : (
+                            'Click "Self-Description" to view provider information.'
+                        )}                    </div>
                     <Divider style={{ borderColor: '#1e4792' }} />
                     {constraints.map((constraint, index) => (
                         <div key={index} style={{ marginLeft: '13%', display: 'flex', justifyContent: 'center', marginBottom: '1.5%' }}>
