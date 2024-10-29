@@ -187,7 +187,7 @@ const ContractNegotiations = () => {
                             columns={columns}
                             dataSource={filteredData}
                             pagination={{ pageSize: 10 }}
-                            scroll={{ y: 49 * 6 }}
+                            scroll={{ y: 55 * 6 }}
                         />
                     </Col>
                 </Row>
