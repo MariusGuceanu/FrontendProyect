@@ -30,24 +30,12 @@ const ContractNegotiations = () => {
 
     // Request to collect data from API
     useEffect(() => {
-        axios.get('http://localhost:8081/api/gateway/negotiations')
-            .then(response => {
-                const negotiations = response.data.map((item, index) => ({
-                    // Gets provider, consumer and state from API
-                    key: (index + 1).toString(),
-                    processId: `process${index + 1}`,
-                    title: `title${index + 1}`,
-                    provider: item['dspace:providerPid'],
-                    consumer: item['dspace:consumerPid'],
-                    currentState: item['dspace:state'].replace('dspace:', ''),
-                    initiatedDate: new Date().toISOString(),
-                }));
-                setData(negotiations);
-                setFilteredData(negotiations);
-            })
-            .catch(error => {
-                console.error('Error fetching data:', error);
-            });
+        const storedData = localStorage.getItem('contractData')
+        if(storedData){
+            const parsedData = JSON.parse(storedData);
+            setData(parsedData)
+            setFilteredData(parsedData);
+        }
     }, []);
 
     const addRowToTable = async (contractNegotiationId) => {
@@ -66,12 +54,14 @@ const ContractNegotiations = () => {
                     title: `title${newKey}`,
                     provider: newNegotiation['dspace:providerPid'],
                     consumer: newNegotiation['dspace:consumerPid'],
-                    currentState: newNegotiation['dspace:state'],
+                    currentState: newNegotiation['dspace:state'].replace('dspace:', ''),
                     initiatedDate: new Date().toLocaleString(),
                 };
+                // Save the data locally
                 const updatedData = [...data, newData];
                 setData(updatedData);
                 setFilteredData(updatedData);
+                localStorage.setItem('contractData', JSON.stringify(updatedData));
             } else {
                 console.error('Error fetching negotiations:', response.statusText);
             }
