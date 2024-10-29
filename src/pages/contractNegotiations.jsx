@@ -28,7 +28,7 @@ const ContractNegotiations = () => {
     const [filteredData, setFilteredData] = useState([]);
     const [data, setData] = useState([]);
 
-    // Request to collect data from API
+    // Storage data locally
     useEffect(() => {
         const storedData = localStorage.getItem('contractData')
         if(storedData){
@@ -187,7 +187,7 @@ const ContractNegotiations = () => {
                             columns={columns}
                             dataSource={filteredData}
                             pagination={{ pageSize: 10 }}
-                            scroll={{ y: 55 * 6 }}
+                            scroll={{ y: 49 * 6 }}
                         />
                     </Col>
                 </Row>

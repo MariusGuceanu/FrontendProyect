@@ -11,7 +11,7 @@
   font-size: 1.3rem;
 }
 
-@media (max-width: 960px) {
+@media (max-width: 980px) {
   .large-buttons {
     padding: 22px;
     font-size: 1rem;
@@ -41,7 +41,7 @@
   padding: 10px;
 }
 
-@media (max-width: 960px) {
+@media (max-width: 980px) {
   .button-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -103,7 +103,7 @@
 }
 
 
-@media (max-width: 960px) {
+@media (max-width: 980px) {
   .table-contracts .ant-table {
     font-size: 0.7rem;
   }
@@ -134,7 +134,7 @@
   padding: 10px;
 }
 
-@media (max-width: 960px) {
+@media (max-width: 980px) {
   .reactive-buttons {
     font-size: 0.9rem;
   }

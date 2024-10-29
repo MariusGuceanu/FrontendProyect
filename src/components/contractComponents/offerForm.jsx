@@ -4,13 +4,6 @@ import { SendOutlined } from '@ant-design/icons';
 
 const OfferModal = ( {isModalOpen, handleOk, handleCancel}) => {
 
-    const selectBefore = (
-        <Select defaultValue="http://">
-            <Select.Option value="http://">http://</Select.Option>
-            <Select.Option value="https://">https://</Select.Option>
-        </Select>
-    );
-
     // Modal display
     return (
         <Modal width={1000} open={isModalOpen} onOk={handleOk} onCancel={handleCancel}
@@ -28,7 +21,7 @@ const OfferModal = ( {isModalOpen, handleOk, handleCancel}) => {
             <Form labelCol={{ span: 9 }} wrapperCol={{ span: 24 }} style={{ maxWidth: 800 }}>
                 <h2>Offer Form</h2>
                 <Form.Item label="Consumer's Endpoint :" name="ConsumersEp" rules={[{ required: true, message: 'Provide a valid UUID' }]}>
-                    <Input addonBefore={selectBefore} style={{ width: '80%' }} />
+                    <Input style={{ width: '80%' }} />
                 </Form.Item>
                 <Form.Item label="Offer ID :" name="OfferId" rules={[{ required: true, message: 'Provide a valid UUID' }]}>
                     <Input style={{ width: '80%' }} />

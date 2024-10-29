@@ -1,15 +1,12 @@
 import React from "react";
 import Avatar from "antd/es/avatar/avatar";
 import { UserOutlined } from "@ant-design/icons";
-import { Space } from "antd";
+import { Flex, Space } from "antd";
 import '../styles/profile.css'
 
 // Basic profile card for the page
 const Profile = () => (
     <Space style={{
-        display: 'flex',
-        justifyContent: 'end',
-        paddingRight: 80,
         padding: 30,
         fontSize: 24,
         color: "white",
