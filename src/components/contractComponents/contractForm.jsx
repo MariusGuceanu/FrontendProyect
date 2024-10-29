@@ -68,7 +68,7 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel, addRowToTable }) =>
         };
         try {
             // Request to the API and succesful response
-            const response = await axios.post('http://localhost:9081/api/gateway/request-contract', requestData);
+            const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/gateway/request-contract`, requestData);
             if (response.status === 200) {
                 console.log('Response:', response.data);
                 openNotification('success', 'Request Successful', `Contract Negotiation ID: ${response.data.contractNegotiationId}`);

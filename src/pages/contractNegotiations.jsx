@@ -41,7 +41,7 @@ const ContractNegotiations = () => {
     // Function to add the last row to the table
     const addRowToTable = async (contractNegotiationId) => {
         try {
-            const response = await axios.get('http://localhost:8081/api/gateway/negotiations');
+            const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/gateway/negotiations`);
             if (response.status === 200) {
                 // Gets the last row of the DB to match with the contractNegotiationId of the POST (to change)
                 const negotiations = response.data;
