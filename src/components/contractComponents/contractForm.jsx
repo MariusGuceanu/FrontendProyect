@@ -53,6 +53,8 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel, addRowToTable }) =>
 
     // Main function to make the requests and receive responses
     const handleRequest = async (openNotification) => {
+
+        // Data collected from the form
         const requestData = {
             offerId: offerId,
             providerEndpoint: inputValue.trim(),
@@ -61,11 +63,12 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel, addRowToTable }) =>
                     acc[curr.name] = curr.value;
                 }
                 return acc;
-            }, {}),
+            }, 
+            {}),
         };
         try {
+            // Request to the API and succesful response
             const response = await axios.post('http://localhost:9081/api/gateway/request-contract', requestData);
-            // Error management
             if (response.status === 200) {
                 console.log('Response:', response.data);
                 openNotification('success', 'Request Successful', `Contract Negotiation ID: ${response.data.contractNegotiationId}`);
@@ -74,6 +77,7 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel, addRowToTable }) =>
             } else {
                 console.error('Unexpected response status:', response.status);
             }
+            // Error management
         } catch (error) {
             if (error.response) {
                 const { status, data } = error.response;
@@ -120,9 +124,9 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel, addRowToTable }) =>
                             <Button type="primary" disabled={!inputValue} style={{ marginLeft: '10px' }} onClick={getSelfDescription} loading={loading}>Self-Description</Button>
                         </div>
                     </Form.Item>
-
+                    {/* Self-description space */}
                     <div style={{ width: '70%', margin: 'auto', textAlign: 'center', overflow: 'auto', maxHeight: '300px' }}>
-                        <Divider style={{ borderColor: '#1e4792', marginTop:'2%' }} />
+                        <Divider style={{ borderColor: '#1e4792', marginTop: '2%' }} />
                         {selfDescription ? (
                             <pre>
                                 <div style={{ width: '100%', textAlign: 'start' }}>
@@ -132,28 +136,29 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel, addRowToTable }) =>
                         ) : (
                             'Click "Self-Description" to view provider information.'
                         )}
-                        <Divider style={{ borderColor: '#1e4792', marginBottom:'6%' }} />
+                        <Divider style={{ borderColor: '#1e4792', marginBottom: '6%' }} />
                     </div>
-
+                    {/* Constraints map */}
                     {constraints.map((constraint, index) => (
                         <div key={index} style={{ marginLeft: '14%', display: 'flex', justifyContent: 'center', marginBottom: '1.5%' }}>
                             <Form.Item
                                 label={`Constraint Name:  `}
                                 rules={[{ required: true, message: 'Please input a constraint name!' }]}>
-                                <Input style={{ width: '100%', marginLeft:'2%' }} value={constraint.name} onChange={(e) => handleConstraints(index, 'name', e.target.value)} />
+                                <Input style={{ width: '100%', marginLeft: '2%' }} value={constraint.name} onChange={(e) => handleConstraints(index, 'name', e.target.value)} />
                             </Form.Item>
                             <Form.Item
                                 label={`Value:  `}
                                 rules={[{ required: true, message: 'Please input a value!' }]}>
-                                <Input style={{ width: '100%', marginLeft:'2%' }} value={constraint.value} onChange={(e) => handleConstraints(index, 'value', e.target.value)} />
+                                <Input style={{ width: '100%', marginLeft: '2%' }} value={constraint.value} onChange={(e) => handleConstraints(index, 'value', e.target.value)} />
                             </Form.Item>
                             <Button type="danger" icon={<CloseOutlined />} onClick={() => removeConstraint(index)} style={{ marginLeft: '10px' }}>
                             </Button>
                         </div>
                     ))}
-                    <Button type="dashed" onClick={addConstraint} icon={<PlusOutlined />} style={{ display: 'flex', marginBottom: '5%', marginLeft: '15%', width: '75%', borderColor: 'gray' }}>
+                    <Button type="dashed" onClick={addConstraint} icon={<PlusOutlined />} style={{ display: 'flex', marginBottom: '5%', marginLeft: '15%', width: '73%', borderColor: 'gray' }}>
                         Add Constraint
                     </Button>
+                    {/* Offer id */}
                     <Form.Item label="Offer ID :" name="OfferId" style={{ marginLeft: '-2%' }} rules={[{ required: true, message: 'Provide a valid UUID' }]}>
                         <Input style={{ width: '80%' }} value={offerId} onChange={handleOfferIdChange} />
                     </Form.Item>

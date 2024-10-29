@@ -38,12 +38,12 @@ const ContractNegotiations = () => {
         }
     }, []);
 
+    // Function to add the last row to the table
     const addRowToTable = async (contractNegotiationId) => {
         try {
             const response = await axios.get('http://localhost:8081/api/gateway/negotiations');
-
             if (response.status === 200) {
-                // Gets the last row of the DB to match with the contractNegotiationId of the POST
+                // Gets the last row of the DB to match with the contractNegotiationId of the POST (to change)
                 const negotiations = response.data;
                 const newNegotiation = negotiations[negotiations.length - 1];
                 // Inserts the collected data to the table
@@ -81,7 +81,7 @@ const ContractNegotiations = () => {
         }),
     };
 
-    // Request modal functions
+    // Request-contract modal functions
     const showRequestModal = () => {
         setIsRequestModalOpen(true);
     };
@@ -92,7 +92,7 @@ const ContractNegotiations = () => {
         setIsRequestModalOpen(false);
     };
 
-    // Offer modal functions
+    // Offer-contract modal functions
     const showOfferModal = () => {
         setIsOfferModalOpen(true);
     };
