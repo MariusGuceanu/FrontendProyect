@@ -5,6 +5,7 @@ import Notification from '../notifications';
 import config from '../../config';
 import axios from 'axios';
 
+
 const RequestModal = ({ isModalOpen, handleOk, handleCancel, addRowToTable }) => {
     // Self-description states
     const [inputValue, setInputValue] = useState('');
@@ -124,7 +125,7 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel, addRowToTable }) =>
                     </Form.Item>
 
                     <div style={{ width: '70%', margin: 'auto', textAlign: 'center', overflow: 'auto', maxHeight: '300px' }}>
-                        <Divider style={{ borderColor: '#1e4792', marginTop:'2%' }} />
+                        <Divider style={{ borderColor: '#1e4792', marginTop: '2%' }} />
                         {selfDescription ? (
                             <pre>
                                 <div style={{ width: '100%', textAlign: 'start' }}>
@@ -134,7 +135,7 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel, addRowToTable }) =>
                         ) : (
                             'Click "Self-Description" to view provider information.'
                         )}
-                        <Divider style={{ borderColor: '#1e4792', marginBottom:'6%' }} />
+                        <Divider style={{ borderColor: '#1e4792', marginBottom: '6%' }} />
                     </div>
 
                     {constraints.map((constraint, index) => (
@@ -142,12 +143,12 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel, addRowToTable }) =>
                             <Form.Item
                                 label={`Constraint Name:  `}
                                 rules={[{ required: true, message: 'Please input a constraint name!' }]}>
-                                <Input style={{ width: '100%', marginLeft:'2%' }} value={constraint.name} onChange={(e) => handleConstraints(index, 'name', e.target.value)} />
+                                <Input style={{ width: '100%', marginLeft: '2%' }} value={constraint.name} onChange={(e) => handleConstraints(index, 'name', e.target.value)} />
                             </Form.Item>
                             <Form.Item
                                 label={`Value:  `}
                                 rules={[{ required: true, message: 'Please input a value!' }]}>
-                                <Input style={{ width: '100%', marginLeft:'2%' }} value={constraint.value} onChange={(e) => handleConstraints(index, 'value', e.target.value)} />
+                                <Input style={{ width: '100%', marginLeft: '2%' }} value={constraint.value} onChange={(e) => handleConstraints(index, 'value', e.target.value)} />
                             </Form.Item>
                             <Button type="danger" icon={<CloseOutlined />} onClick={() => removeConstraint(index)} style={{ marginLeft: '10px' }}>
                             </Button>

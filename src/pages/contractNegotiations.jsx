@@ -7,8 +7,11 @@ import RequestModal from '../components/contractComponents/contractForm';
 import OfferModal from '../components/contractComponents/offerForm';
 import Searcher from '../components/contractComponents/searcher';
 import cnStateMachine from '../components/stateMachines/cnStateMachine';
-import config from '../config'
 import axios from 'axios';
+import { io } from 'socket.io-client';
+import config from '../config';
+
+const socket = io('http://localhost:3001');
 
 // Table columns
 const columns = [
@@ -21,23 +24,34 @@ const columns = [
 ];
 
 const ContractNegotiations = () => {
-    // Defining States
+    // Modal states
     const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
     const [isOfferModalOpen, setIsOfferModalOpen] = useState(false);
+    // selection states
     const selectionType = useState('checkbox');
     const [selectedRow, setSelectedRow] = useState(null);
+    // Data states
     const [filteredData, setFilteredData] = useState([]);
     const [data, setData] = useState([]);
 
-    // Storage data locally
+    // Updates the data for the first time
     useEffect(() => {
-        const storedData = localStorage.getItem('contractData')
-        if(storedData){
-            const parsedData = JSON.parse(storedData);
-            setData(parsedData)
-            setFilteredData(parsedData);
-        }
+        const storedData = JSON.parse(localStorage.getItem('contractData') || '[]');
+        setData(storedData);
+        setFilteredData(storedData);
     }, []);
+
+    // Storage data locally after every request
+    useEffect(() => {
+        socket.on('newNegotiation', (newNegotiation) => {
+            const updatedData = [...data, newNegotiation];
+            setData(updatedData);
+            setFilteredData(updatedData);
+            localStorage.setItem('contractData', JSON.stringify(updatedData));
+        });
+        return () => socket.off('newNegotiation');
+    }, [data]);
+
 
     // Function to add the last row to the table
     const addRowToTable = async (contractNegotiationId) => {
@@ -63,6 +77,8 @@ const ContractNegotiations = () => {
                 setData(updatedData);
                 setFilteredData(updatedData);
                 localStorage.setItem('contractData', JSON.stringify(updatedData));
+                // Emits the data to the websocket
+                socket.emit('newNegotiation', newData);
             } else {
                 console.error('Error fetching negotiations:', response.statusText);
             }
@@ -132,19 +148,19 @@ const ContractNegotiations = () => {
         return (
             <>
                 {transitions.includes('ACCEPTED') && (
-                    <Button className='action-buttons' style={{width:'30%'}} size='large' type="primary">Accept</Button>
+                    <Button className='action-buttons' style={{ width: '30%' }} size='large' type="primary">Accept</Button>
                 )}
                 {transitions.includes('AGREED') && (
-                    <Button className='action-buttons' style={{width:'30%'}} size='large' type="primary">Agree</Button>
+                    <Button className='action-buttons' style={{ width: '30%' }} size='large' type="primary">Agree</Button>
                 )}
                 {transitions.includes('VERIFIED') && (
-                    <Button className='action-buttons' style={{width:'30%'}} size='large' type="primary">Verify</Button>
+                    <Button className='action-buttons' style={{ width: '30%' }} size='large' type="primary">Verify</Button>
                 )}
                 {transitions.includes('FINALIZED') && (
-                    <Button className='action-buttons' style={{width:'30%'}} size='large' type="primary">Finalize</Button>
+                    <Button className='action-buttons' style={{ width: '30%' }} size='large' type="primary">Finalize</Button>
                 )}
                 {transitions.includes('TERMINATED') && (
-                    <Button className='action-buttons' style={{width:'30%'}} size='large' type="primary">Terminate</Button>
+                    <Button className='action-buttons' style={{ width: '30%' }} size='large' type="primary">Terminate</Button>
                 )}
             </>
         )
@@ -194,7 +210,7 @@ const ContractNegotiations = () => {
                 </Row>
                 {/* Reactive buttons */}
                 <Row gutter={16}>
-                    <Col style={{ width: '95%', margin: 'auto', display: 'flex', justifyContent:'space-evenly', gap: '10px', paddingBottom: '2%' }}>
+                    <Col style={{ width: '95%', margin: 'auto', display: 'flex', justifyContent: 'space-evenly', gap: '10px', paddingBottom: '2%' }}>
                         {changeActionButtons()}
                     </Col>
                 </Row>
