@@ -7,6 +7,7 @@ import RequestModal from '../components/contractComponents/contractForm';
 import OfferModal from '../components/contractComponents/offerForm';
 import Searcher from '../components/contractComponents/searcher';
 import cnStateMachine from '../components/stateMachines/cnStateMachine';
+import config from '../config'
 import axios from 'axios';
 
 // Table columns
@@ -41,7 +42,7 @@ const ContractNegotiations = () => {
     // Function to add the last row to the table
     const addRowToTable = async (contractNegotiationId) => {
         try {
-            const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/gateway/negotiations`);
+            const response = await axios.get(`${config.providerEndpoint}/api/gateway/negotiations`);
             if (response.status === 200) {
                 // Gets the last row of the DB to match with the contractNegotiationId of the POST (to change)
                 const negotiations = response.data;
