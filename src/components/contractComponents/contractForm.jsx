@@ -67,7 +67,7 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel, addRowToTable }) =>
             }, {}),
         };
         try {
-            const response = await axios.post(`${config.requestEndpoint}/api/gateway/request-contract`, requestData);
+            const response = await axios.post(`${config.consumerEndpoint}/api/gateway/request-contract`, requestData);
             // Error management
             if (response.status === 200) {
                 console.log('Response:', response.data);
