@@ -11,7 +11,7 @@ import axios from 'axios';
 import { io } from 'socket.io-client';
 import config from '../config';
 
-const socket = io('http://localhost:3001');
+const socket = io.connect('http://localhost:9082', { reconnection: true });
 
 // Table columns
 const columns = [
@@ -191,7 +191,7 @@ const ContractNegotiations = () => {
                     {/* Search */}
                     <Searcher onSearch={onSearch} />
                 </Col>
-                {/* Table and reactive buttons */}
+                {/* Table and reactive state buttons */}
                 <Row gutter={16}>
                     <Col span={24}>
                         <Table
@@ -208,7 +208,7 @@ const ContractNegotiations = () => {
                         />
                     </Col>
                 </Row>
-                {/* Reactive buttons */}
+                {/* Reactive state buttons */}
                 <Row gutter={16}>
                     <Col style={{ width: '95%', margin: 'auto', display: 'flex', justifyContent: 'space-evenly', gap: '10px', paddingBottom: '2%' }}>
                         {changeActionButtons()}

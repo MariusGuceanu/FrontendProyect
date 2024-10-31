@@ -39,7 +39,7 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel, addRowToTable }) =>
         setConstraints(newConstraints);
     }
 
-    // Self description 
+    // Get Self description function
     const getSelfDescription = async () => {
         setLoading(true)
         try {
@@ -67,8 +67,8 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel, addRowToTable }) =>
             }, {}),
         };
         try {
-            const response = await axios.post(`${config.consumerEndpoint}/api/gateway/request-contract`, requestData);
-            // Error management
+            // Request and successful response
+            const response = await axios.post(`${config.consumerEndpoint}/api/gateway/request-contract`, requestData); 
             if (response.status === 200) {
                 console.log('Response:', response.data);
                 openNotification('success', 'Request Successful', `Contract Negotiation ID: ${response.data.contractNegotiationId}`);
@@ -77,6 +77,7 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel, addRowToTable }) =>
             } else {
                 console.error('Unexpected response status:', response.status);
             }
+            // Error management
         } catch (error) {
             if (error.response) {
                 const { status, data } = error.response;
