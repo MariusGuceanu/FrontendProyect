@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Row, Col } from 'antd';
+import axios from 'axios';
+import config from '../config';
 import '../styles/table-styles.css';
 import SorterC from '../components/contractComponents/sortMenu';
 import FilterC from '../components/contractComponents/filterMenu';
@@ -7,11 +9,11 @@ import RequestModal from '../components/contractComponents/contractForm';
 import OfferModal from '../components/contractComponents/offerForm';
 import Searcher from '../components/contractComponents/searcher';
 import cnStateMachine from '../components/stateMachines/cnStateMachine';
-import axios from 'axios';
-import { io } from 'socket.io-client';
-import config from '../config';
 
-const socket = io.connect('http://localhost:9082', { reconnection: true });
+// Connection to websocket
+const ws = new WebSocket('ws://localhost:9082/api/gateway/ws/notifications');
+// User distinct
+const appMode = import.meta.env.VITE_APP_MODE;
 
 // Table columns
 const columns = [
@@ -43,15 +45,26 @@ const ContractNegotiations = () => {
 
     // Storage data locally after every request
     useEffect(() => {
-        socket.on('newNegotiation', (newNegotiation) => {
+        ws.onopen = () => {
+            console.log('connected')
+        };
+        ws.onmessage = (event) => {
+            const newNegotiation = JSON.parse(event.data);
             const updatedData = [...data, newNegotiation];
             setData(updatedData);
             setFilteredData(updatedData);
             localStorage.setItem('contractData', JSON.stringify(updatedData));
-        });
-        return () => socket.off('newNegotiation');
+        };
+        ws.onclose = () => {
+            console.log('WebSocket connection closed');
+        };
+        ws.onerror = (error) => {
+            console.error('WebSocket error:', error);
+        };
+        return () => {
+            ws.close();
+        };
     }, [data]);
-
 
     // Function to add the last row to the table
     const addRowToTable = async (contractNegotiationId) => {
@@ -77,8 +90,8 @@ const ContractNegotiations = () => {
                 setData(updatedData);
                 setFilteredData(updatedData);
                 localStorage.setItem('contractData', JSON.stringify(updatedData));
-                // Emits the data to the websocket
-                socket.emit('newNegotiation', newData);
+                // Sends the data to the websocket
+                ws.send(JSON.stringify(newData));
             } else {
                 console.error('Error fetching negotiations:', response.statusText);
             }
@@ -108,7 +121,6 @@ const ContractNegotiations = () => {
     const handleRequestCancel = () => {
         setIsRequestModalOpen(false);
     };
-
     // Offer-contract modal functions
     const showOfferModal = () => {
         setIsOfferModalOpen(true);
@@ -144,19 +156,18 @@ const ContractNegotiations = () => {
     // Renders buttons depending selected current state
     const changeActionButtons = () => {
         const transitions = stateMachine();
-
         return (
             <>
-                {transitions.includes('ACCEPTED') && (
+                {appMode === 'consumer' && transitions.includes('ACCEPTED') && (
                     <Button className='action-buttons' style={{ width: '30%' }} size='large' type="primary">Accept</Button>
                 )}
-                {transitions.includes('AGREED') && (
+                {appMode === 'provider' && transitions.includes('AGREED') && (
                     <Button className='action-buttons' style={{ width: '30%' }} size='large' type="primary">Agree</Button>
                 )}
-                {transitions.includes('VERIFIED') && (
+                {appMode === 'consumer' && transitions.includes('VERIFIED') && (
                     <Button className='action-buttons' style={{ width: '30%' }} size='large' type="primary">Verify</Button>
                 )}
-                {transitions.includes('FINALIZED') && (
+                {appMode === 'provider' && transitions.includes('FINALIZED') && (
                     <Button className='action-buttons' style={{ width: '30%' }} size='large' type="primary">Finalize</Button>
                 )}
                 {transitions.includes('TERMINATED') && (
