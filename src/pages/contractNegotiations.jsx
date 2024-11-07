@@ -9,7 +9,7 @@ import Searcher from '../components/contractComponents/searcher';
 import cnStateMachine from '../components/stateMachines/cnStateMachine';
 
 //  Websocket
-const ws = new WebSocket('ws://localhost:9082/api/gateway/ws/notifications');
+const ws = new WebSocket(import.meta.env.VITE_WS_URL);
 
 // Table columns
 const columns = [

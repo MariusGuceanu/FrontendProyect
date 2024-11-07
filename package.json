@@ -8,8 +8,8 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start:provider": "vite --mode provider",
-    "start:consumer": "vite --mode consumer"
+    "start:ws9082": "cross-env VITE_WS_URL=ws://localhost:9082/api/gateway/ws/notifications vite",
+    "start:ws8082": "cross-env VITE_WS_URL=ws://localhost:8082/api/gateway/ws/notifications vite"
   },
   "dependencies": {
     "@ant-design/icons": "^5.5.1",
@@ -19,6 +19,7 @@
     "classnames": "^2.5.1",
     "express": "^4.21.1",
     "http-proxy-middleware": "^3.0.3",
+    "js-yaml": "^4.1.0",
     "prop-types": "^15.8.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -32,6 +33,7 @@
     "@types/react": "^18.3.10",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react-swc": "^3.5.0",
+    "cross-env": "^7.0.3",
     "eslint": "^9.11.1",
     "eslint-plugin-react": "^7.37.0",
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
