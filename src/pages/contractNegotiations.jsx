@@ -8,9 +8,8 @@ import OfferModal from '../components/contractComponents/offerForm';
 import Searcher from '../components/contractComponents/searcher';
 import cnStateMachine from '../components/stateMachines/cnStateMachine';
 
-// Connection to websocket
-const url = 'ws://localhost:9082/api/gateway/ws/notifications';
-const ws = new WebSocket(url);
+//  Websocket
+const ws = new WebSocket('ws://localhost:9082/api/gateway/ws/notifications');
 
 // Table columns
 const columns = [
@@ -26,57 +25,47 @@ const ContractNegotiations = () => {
     // Modal states
     const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
     const [isOfferModalOpen, setIsOfferModalOpen] = useState(false);
-    // selection states
+    // Selection states
     const selectionType = useState('checkbox');
     const [selectedRow, setSelectedRow] = useState(null);
     // Data states
     const [filteredData, setFilteredData] = useState([]);
     const [data, setData] = useState([]);
 
-    // Updates the data for the first time
-    useEffect(() => {
-        const storedData = JSON.parse(localStorage.getItem('contractData') || '[]');
-        setData(storedData);
-        setFilteredData(storedData);
-    }, []);
-
-    // Storage data locally after every request
+    // Updates the data from the table every request through websocket connection
     useEffect(() => {
         ws.onopen = () => {
             console.log('Connected to WebSocket');
         };
 
+        // gets the data to add to the table
         ws.onmessage = (event) => {
             const newNegotiation = JSON.parse(event.data);
-            const newKey = (data.length + 1).toString();
+            console.log('WebSocket message: ', newNegotiation);
+
             const formattedData = {
-                key: newKey,
-                processId: newNegotiation.id,
-                title: newNegotiation.title || `Title ${newKey}`,
-                provider: newNegotiation.provider,
-                consumer: newNegotiation.consumer,
-                currentState: newNegotiation.state.replace('dspace:', ''),
+                key: newNegotiation.contractNegotiationId,
+                processId: newNegotiation.contractNegotiationId,
+                title: newNegotiation.title || `Título ${newNegotiation.contractNegotiationId}`,
+                provider: newNegotiation.dspace.providerPid,
+                consumer: newNegotiation.dspace.consumerPid,
+                currentState: newNegotiation.dspace.state.replace('dspace:', ''),
                 initiatedDate: new Date().toLocaleString(),
             };
+            // Updates the data to be seen on the table
             const updatedData = [...data, formattedData];
             setData(updatedData);
             setFilteredData(updatedData);
-            localStorage.setItem('contractData', JSON.stringify(updatedData));
         };
 
         ws.onclose = () => {
+            ws.close();
             console.log('WebSocket connection closed');
         };
-
         ws.onerror = (error) => {
             console.error('WebSocket error:', error);
         };
-
-        // Cleanup on unmount
-        return () => {
-            ws.close();
-        };
-    }, [data]);    
+    }, []);
 
     // Row selection logic
     const rowSelection = {
@@ -170,7 +159,7 @@ const ContractNegotiations = () => {
                 <Col span={24} className="button-grid" style={{ padding: '2%' }}>
                     {/* Request contract form display */}
                     <Button onClick={showRequestModal} className="action-buttons" size="large" type="primary">Request Contract</Button>
-                    <RequestModal isModalOpen={isRequestModalOpen} handleOk={handleRequestOk} handleCancel={handleRequestCancel} addRowToTable={() => {}} />
+                    <RequestModal isModalOpen={isRequestModalOpen} handleOk={handleRequestOk} handleCancel={handleRequestCancel} addRowToTable={() => { }} />
                     {/* Offer form display */}
                     <Button onClick={showOfferModal} className="action-buttons" size='large' type="primary">Send Offer</Button>
                     <OfferModal isModalOpen={isOfferModalOpen} handleOk={handleOfferOk} handleCancel={handleOfferCancel} />

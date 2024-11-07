@@ -6,7 +6,8 @@ import config from '../../config';
 import axios from 'axios';
 
 
-const RequestModal = ({ isModalOpen, handleOk, handleCancel, addRowToTable }) => {
+
+const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
     // Self-description states
     const [inputValue, setInputValue] = useState('');
     const [selfDescription, setSelfDescription] = useState(null);
@@ -67,13 +68,11 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel, addRowToTable }) =>
             }, {}),
         };
         try {
-            // Request and successful response
-            const response = await axios.post(`${config.consumerEndpoint}/api/gateway/request-contract`, requestData); 
+            const response = await axios.post(`${config.consumerEndpoint}/api/gateway/request-contract`, requestData);
             if (response.status === 200) {
                 console.log('Response:', response.data);
                 openNotification('success', 'Request Successful', `Contract Negotiation ID: ${response.data.contractNegotiationId}`);
                 handleOk();
-                addRowToTable(response.data.contractNegotiationId);
             } else {
                 console.error('Unexpected response status:', response.status);
             }
