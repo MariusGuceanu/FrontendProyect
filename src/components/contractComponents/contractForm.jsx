@@ -5,8 +5,6 @@ import Notification from '../notifications';
 import config from '../../config';
 import axios from 'axios';
 
-
-
 const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
     // Self-description states
     const [inputValue, setInputValue] = useState('');
@@ -54,7 +52,7 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
         }
     };
 
-    // Main function to make the requests and receive responses
+    // Main function to make the contract negotiation requests and receive responses
     const handleRequest = async (openNotification) => {
         // Data from the form
         const requestData = {

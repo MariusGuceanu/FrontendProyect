@@ -13,12 +13,11 @@ const ws = new WebSocket(import.meta.env.VITE_WS_URL);
 
 // Table columns
 const columns = [
-    { title: 'Process ID', dataIndex: 'processId', width: '20%' },
+    { title: 'Process ID', dataIndex: 'processId', width: '30%' },
     { title: 'Title', dataIndex: 'title', width: '10%' },
-    { title: 'Provider', dataIndex: 'provider', width: '20%' },
-    { title: 'Consumer', dataIndex: 'consumer', width: '20%' },
-    { title: 'Current state', dataIndex: 'currentState', width: '15%' },
-    { title: 'Initiated date', dataIndex: 'initiatedDate', width: '15%' },
+    { title: 'Provider', dataIndex: 'provider', width: '15%' },
+    { title: 'Current state', dataIndex: 'currentState', width: '22.5%' },
+    { title: 'Initiated date', dataIndex: 'initiatedDate', width: '22.5%' },
 ];
 
 const ContractNegotiations = () => {
@@ -32,32 +31,42 @@ const ContractNegotiations = () => {
     const [filteredData, setFilteredData] = useState([]);
     const [data, setData] = useState([]);
 
+    // Gets the data of the table to keep it stored (reloading purposes)
+    useEffect(() => {
+        const storedData = JSON.parse(localStorage.getItem('Data') || '[]');
+        setData(storedData);
+        setFilteredData(storedData);
+    }, []);
+
     // Updates the data from the table every request through websocket connection
     useEffect(() => {
         ws.onopen = () => {
             console.log('Connected to WebSocket');
         };
 
-        // gets the data to add to the table
+        // Recieves a message with the data
         ws.onmessage = (event) => {
             const newNegotiation = JSON.parse(event.data);
             console.log('WebSocket message: ', newNegotiation);
-
             const formattedData = {
-                key: newNegotiation.contractNegotiationId,
-                processId: newNegotiation.contractNegotiationId,
-                title: newNegotiation.title || `Título ${newNegotiation.contractNegotiationId}`,
-                provider: newNegotiation.dspace.providerPid,
-                consumer: newNegotiation.dspace.consumerPid,
-                currentState: newNegotiation.dspace.state.replace('dspace:', ''),
+                key: newNegotiation.id,
+                processId: newNegotiation.id,
+                title: newNegotiation.title || 'Title',
+                provider: newNegotiation.provider ? 'true' : 'false',
+                currentState: newNegotiation.state.replace('dspace:', ''),
                 initiatedDate: new Date().toLocaleString(),
             };
-            // Updates the data to be seen on the table
-            const updatedData = [...data, formattedData];
+            // To add a new row instead of replace existing
+            const existingData = JSON.parse(localStorage.getItem('Data')) || [];
+            const updatedData = [...existingData, formattedData];
+
+            // Updates the data of the table and saves it locally
             setData(updatedData);
             setFilteredData(updatedData);
-        };
+            localStorage.setItem('Data', JSON.stringify(updatedData));
 
+        };
+        // close and error ws functions
         ws.onclose = () => {
             ws.close();
             console.log('WebSocket connection closed');
@@ -122,23 +131,30 @@ const ContractNegotiations = () => {
 
     // Renders buttons depending selected current state
     const changeActionButtons = () => {
+        if (!selectedRow) return null;
         const transitions = stateMachine();
+        const provider = selectedRow.provider;
+        console.log("Provider:", provider, "Transitions:", transitions);
+
         return (
             <>
-                {transitions.includes('ACCEPTED') && (
-                    <Button className='action-buttons' style={{ width: '30%' }} size='large' type="primary">Accept</Button>
+                {provider == 'true' && transitions.includes('OFFERED') && (
+                    <Button className='action-buttons' style={{ width: '25%' }} size='large' type="primary">Offer</Button>
                 )}
-                {transitions.includes('AGREED') && (
-                    <Button className='action-buttons' style={{ width: '30%' }} size='large' type="primary">Agree</Button>
+                {provider == 'true' && transitions.includes('ACCEPTED') && (
+                    <Button className='action-buttons' style={{ width: '25%' }} size='large' type="primary">Accept</Button>
                 )}
-                {transitions.includes('VERIFIED') && (
-                    <Button className='action-buttons' style={{ width: '30%' }} size='large' type="primary">Verify</Button>
+                {provider == 'true' && transitions.includes('AGREED') && (
+                    <Button className='action-buttons' style={{ width: '25%' }} size='large' type="primary">Agree</Button>
                 )}
-                {transitions.includes('FINALIZED') && (
-                    <Button className='action-buttons' style={{ width: '30%' }} size='large' type="primary">Finalize</Button>
+                {provider == 'false' && transitions.includes('VERIFIED') && (
+                    <Button className='action-buttons' style={{ width: '25%' }} size='large' type="primary">Verify</Button>
+                )}
+                {provider == 'true' && transitions.includes('FINALIZED') && (
+                    <Button className='action-buttons' style={{ width: '25%' }} size='large' type="primary">Finalize</Button>
                 )}
                 {transitions.includes('TERMINATED') && (
-                    <Button className='action-buttons' style={{ width: '30%' }} size='large' type="primary">Terminate</Button>
+                    <Button className='action-buttons' style={{ width: '25%' }} size='large' type="primary">Terminate</Button>
                 )}
             </>
         )
