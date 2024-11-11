@@ -5,6 +5,7 @@ import SorterC from '../components/contractComponents/sortMenu';
 import FilterC from '../components/contractComponents/filterMenu';
 import RequestModal from '../components/contractComponents/contractForm';
 import OfferModal from '../components/contractComponents/offerForm';
+import AgreeModal from '../components/contractComponents/agreeForm';
 import Searcher from '../components/contractComponents/searcher';
 import cnStateMachine from '../components/stateMachines/cnStateMachine';
 
@@ -13,17 +14,18 @@ const ws = new WebSocket(import.meta.env.VITE_WS_URL);
 
 // Table columns
 const columns = [
-    { title: 'Process ID', dataIndex: 'processId', width: '30%' },
+    { title: 'Process ID', dataIndex: 'processId', width: '25%' },
     { title: 'Title', dataIndex: 'title', width: '10%' },
     { title: 'Provider', dataIndex: 'provider', width: '15%' },
-    { title: 'Current state', dataIndex: 'currentState', width: '22.5%' },
-    { title: 'Initiated date', dataIndex: 'initiatedDate', width: '22.5%' },
+    { title: 'Current state', dataIndex: 'currentState', width: '25%' },
+    { title: 'Initiated date', dataIndex: 'initiatedDate', width: '25%' },
 ];
 
 const ContractNegotiations = () => {
     // Modal states
     const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
     const [isOfferModalOpen, setIsOfferModalOpen] = useState(false);
+    const [isAgreeModalOpen, setIsAgreeModalOpen] = useState(false);
     // Selection states
     const selectionType = useState('checkbox');
     const [selectedRow, setSelectedRow] = useState(null);
@@ -56,9 +58,22 @@ const ContractNegotiations = () => {
                 currentState: newNegotiation.state.replace('dspace:', ''),
                 initiatedDate: new Date().toLocaleString(),
             };
-            // To add a new row instead of replace existing
+
+            // Retrieve the existing data
             const existingData = JSON.parse(localStorage.getItem('Data')) || [];
-            const updatedData = [...existingData, formattedData];
+
+            // Check if the processId already exists
+            const existingIndex = existingData.findIndex(item => item.processId === formattedData.processId);
+
+            let updatedData;
+            if (existingIndex !== -1) {
+                // If processId exists, update the state of the existing row
+                existingData[existingIndex].currentState = formattedData.currentState;
+                updatedData = [...existingData];
+            } else {
+                // If processId doesn't exist, add the new row
+                updatedData = [...existingData, formattedData];
+            }
 
             // Updates the data of the table and saves it locally
             setData(updatedData);
@@ -68,8 +83,9 @@ const ContractNegotiations = () => {
         };
         // close and error ws functions
         ws.onclose = () => {
-            ws.close();
             console.log('WebSocket connection closed');
+            ws.close();
+
         };
         ws.onerror = (error) => {
             console.error('WebSocket error:', error);
@@ -88,25 +104,19 @@ const ContractNegotiations = () => {
     };
 
     // Request-contract modal functions
-    const showRequestModal = () => {
-        setIsRequestModalOpen(true);
-    };
-    const handleRequestOk = () => {
-        setIsRequestModalOpen(false);
-    };
-    const handleRequestCancel = () => {
-        setIsRequestModalOpen(false);
-    };
+    const showRequestModal = () => setIsRequestModalOpen(true);
+    const handleRequestOk = () => setIsRequestModalOpen(false);
+    const handleRequestCancel = () => setIsRequestModalOpen(false);
+
     // Offer-contract modal functions
-    const showOfferModal = () => {
-        setIsOfferModalOpen(true);
-    };
-    const handleOfferOk = () => {
-        setIsOfferModalOpen(false);
-    };
-    const handleOfferCancel = () => {
-        setIsOfferModalOpen(false);
-    };
+    const showOfferModal = () => setIsOfferModalOpen(true);
+    const handleOfferOk = () => setIsOfferModalOpen(false);
+    const handleOfferCancel = () => setIsOfferModalOpen(false);
+
+    // Agree-negotiations modal functions
+    const showAgreeModal = () => setIsAgreeModalOpen(true);
+    const handleAgreeOk = () => setIsAgreeModalOpen(false);
+    const handleAgreeCancel = () => setIsAgreeModalOpen(false);
 
     // Search function
     const onSearch = (value) => {
@@ -139,22 +149,22 @@ const ContractNegotiations = () => {
         return (
             <>
                 {provider == 'true' && transitions.includes('OFFERED') && (
-                    <Button className='action-buttons' style={{ width: '25%' }} size='large' type="primary">Offer</Button>
+                    <Button className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Offer</Button>
                 )}
                 {provider == 'true' && transitions.includes('ACCEPTED') && (
-                    <Button className='action-buttons' style={{ width: '25%' }} size='large' type="primary">Accept</Button>
+                    <Button className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Accept</Button>
                 )}
                 {provider == 'true' && transitions.includes('AGREED') && (
-                    <Button className='action-buttons' style={{ width: '25%' }} size='large' type="primary">Agree</Button>
+                    <Button onClick={showAgreeModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Agree</Button>
                 )}
                 {provider == 'false' && transitions.includes('VERIFIED') && (
-                    <Button className='action-buttons' style={{ width: '25%' }} size='large' type="primary">Verify</Button>
+                    <Button className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Verify</Button>
                 )}
                 {provider == 'true' && transitions.includes('FINALIZED') && (
-                    <Button className='action-buttons' style={{ width: '25%' }} size='large' type="primary">Finalize</Button>
+                    <Button className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Finalize</Button>
                 )}
                 {transitions.includes('TERMINATED') && (
-                    <Button className='action-buttons' style={{ width: '25%' }} size='large' type="primary">Terminate</Button>
+                    <Button className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Terminate</Button>
                 )}
             </>
         )
@@ -191,6 +201,7 @@ const ContractNegotiations = () => {
                         <Table
                             style={{ padding: '2%', overflowX: 'auto' }}
                             className="table-contracts"
+                            rowClassName={(record) => (record.provider === 'false' ? 'provider-false' : '')}
                             rowSelection={{
                                 type: selectionType,
                                 ...rowSelection,
@@ -209,6 +220,14 @@ const ContractNegotiations = () => {
                     </Col>
                 </Row>
             </div>
+            {selectedRow && (
+                <AgreeModal
+                    isAgreeModalOpen={isAgreeModalOpen}
+                    handleAgreeOk={handleAgreeOk}
+                    handleAgreeCancel={handleAgreeCancel}
+                    negotiationId={selectedRow.processId}
+                />
+            )}
         </>
     );
 };

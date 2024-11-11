@@ -6,9 +6,9 @@
 /* Upper buttons */
 
 .large-buttons {
-  width: 32%;
-  padding: 30px;
-  font-size: 1.3rem;
+  width: 18%;
+  padding: 22px;
+  font-size: 1.1rem;
 }
 
 @media (max-width: 980px) {
@@ -68,22 +68,32 @@
 }
 
 /* Table and reactive buttons */
+.provider-false .ant-table-cell {
+  background-color: #1A4B4D !important;
+  color: white;
+}
 
 .table-contracts .ant-table {
-  background: #1c2755;
+  background: #03081b;
   font-size: 0.8rem;
   scrollbar-color: rgba(255, 255, 255, 255) rgba(255, 255, 255, 0.06);
   box-shadow: #001844;
 }
 
+:where(.css-dev-only-do-not-override-5pbk6d).ant-table-wrapper .ant-table-tbody .ant-table-row>.ant-table-cell-row-hover {
+  background: #3b62af;
+
+}
+
 .table-contracts tr:hover td {
-  background-color: #1a2b4d;
+  background: #1a2b4d;
   color: black;
 }
 
 .table-contracts .ant-table td {
   background: #1c2755;
   color: white;
+  height: 66px;
 }
 
 .table-contracts .ant-table th {
@@ -98,10 +108,9 @@
 
 /* Selected row of the table */
 .ant-table-wrapper .ant-table-tbody .ant-table-row.ant-table-row-selected>.ant-table-cell {
-  background: #2c82c4;
+  background: #00c58a !important;
   color: black;
 }
-
 
 @media (max-width: 980px) {
   .table-contracts .ant-table {
