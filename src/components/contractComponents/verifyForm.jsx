@@ -6,30 +6,21 @@ import axios from 'axios';
 import ContractNegotiations from '../../pages/contractNegotiations';
 import config from '../../config';
 
-const AgreeModal = ({ isAgreeModalOpen, handleAgreeOk, handleAgreeCancel, negotiationId }) => {
-    const [offerId, setOfferId] = useState('');
+const VerifyModal = ({ isVerifyModalOpen, handleVerifyOk, handleVerifyCancel, consumerPid }) => {
     const [loading, setLoading] = useState(false);
     const { openNotification, contextHolder } = Notification();
 
-    const handleOfferIdChange = (e) => {
-        setOfferId(e.target.value);
-    };
-
-    const handleAgree = async () => {
+    const handleVerify = async () => {
         setLoading(true);
-        console.log('Process ID:', negotiationId);
-        console.log('Offer ID:', offerId);
-
         try {
-            const response = await axios.post(`${config.providerEndpoint}/api/gateway/agree-contract`, {
-                offerId: offerId,
-                ContractNegotiationId: negotiationId,
+            const response = await axios.post(`${config.consumerEndpoint}/api/gateway/verify-agreement/${encodeURIComponent(consumerPid)}`, {
+                consumerPid: consumerPid,
             });
 
             if (response.status === 200) {
-                console.log('Agreement successful:', response.data);
-                openNotification('success', 'Agreement Successful', 'Contract agreement completed successfully');
-                handleAgreeOk();
+                console.log('Contract agreement is verified', response.data);
+                openNotification('success', 'Verified', 'Contract agreement is verified');
+                handleVerifyOk();
             } else {
                 console.error('Unexpected response:', response);
                 openNotification('error', 'Unexpected Response', 'An unexpected response was received.');
@@ -45,21 +36,20 @@ const AgreeModal = ({ isAgreeModalOpen, handleAgreeOk, handleAgreeCancel, negoti
     return (
         <>
             {contextHolder}
-            <Modal title="Agree on Contract" open={isAgreeModalOpen} onCancel={handleAgreeCancel}
+            <Modal title="Verify agreement" open={isVerifyModalOpen} onCancel={handleVerifyCancel}
                 footer={[
                     <div key="footer" style={{ display: 'flex', justifyContent: 'space-evenly', padding: 10 }}>
-                        <Button style={{ width: '30%' }} key="agree" type="primary" icon={<SendOutlined />} loading={loading} disabled={!offerId} onClick={handleAgree}>
-                            Agree
+                        <Button style={{ width: '30%' }} key="verify" type="primary" icon={<SendOutlined />} loading={loading} onClick={handleVerify}>
+                            Verify
                         </Button>
-                        <Button style={{ width: '30%' }} key="cancel" onClick={handleAgreeCancel}>
+                        <Button style={{ width: '30%' }} key="cancel" onClick={handleVerifyCancel}>
                             Cancel
                         </Button>
                     </div>
                 ]}
             >
                 <Form layout="vertical">
-                    <Form.Item label="Offer ID:" required>
-                        <Input placeholder="Enter Offer ID" value={offerId} onChange={handleOfferIdChange} />
+                    <Form.Item label="Are you sure do you want to verify this agreement?">
                     </Form.Item>
                 </Form>
             </Modal>
@@ -67,4 +57,4 @@ const AgreeModal = ({ isAgreeModalOpen, handleAgreeOk, handleAgreeCancel, negoti
     );
 };
 
-export default AgreeModal;
+export default VerifyModal;

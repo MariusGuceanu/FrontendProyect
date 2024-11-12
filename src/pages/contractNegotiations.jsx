@@ -8,17 +8,19 @@ import OfferModal from '../components/contractComponents/offerForm';
 import AgreeModal from '../components/contractComponents/agreeForm';
 import Searcher from '../components/contractComponents/searcher';
 import cnStateMachine from '../components/stateMachines/cnStateMachine';
+import VerifyModal from '../components/contractComponents/verifyForm';
 
 //  Websocket
 const ws = new WebSocket(import.meta.env.VITE_WS_URL);
 
 // Table columns
 const columns = [
-    { title: 'Process ID', dataIndex: 'processId', width: '25%' },
+    { title: 'Process ID', dataIndex: 'processId', width: '22.5%' },
+    { title: 'Offer ID', dataIndex: 'offerId', width: '22.5%' },
     { title: 'Title', dataIndex: 'title', width: '10%' },
-    { title: 'Provider', dataIndex: 'provider', width: '15%' },
-    { title: 'Current state', dataIndex: 'currentState', width: '25%' },
-    { title: 'Initiated date', dataIndex: 'initiatedDate', width: '25%' },
+    { title: 'Provider', dataIndex: 'provider', width: '10%' },
+    { title: 'Current state', dataIndex: 'currentState', width: '15%' },
+    { title: 'Initiated date', dataIndex: 'initiatedDate', width: '20%' },
 ];
 
 const ContractNegotiations = () => {
@@ -26,6 +28,8 @@ const ContractNegotiations = () => {
     const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
     const [isOfferModalOpen, setIsOfferModalOpen] = useState(false);
     const [isAgreeModalOpen, setIsAgreeModalOpen] = useState(false);
+    const [isVerifyModalOpen, setIsVerifyModalOpen] = useState(false)
+
     // Selection states
     const selectionType = useState('checkbox');
     const [selectedRow, setSelectedRow] = useState(null);
@@ -53,6 +57,7 @@ const ContractNegotiations = () => {
             const formattedData = {
                 key: newNegotiation.id,
                 processId: newNegotiation.id,
+                offerId: newNegotiation.params?.offer_id || 'N/A',
                 title: newNegotiation.title || 'Title',
                 provider: newNegotiation.provider ? 'true' : 'false',
                 currentState: newNegotiation.state.replace('dspace:', ''),
@@ -118,6 +123,11 @@ const ContractNegotiations = () => {
     const handleAgreeOk = () => setIsAgreeModalOpen(false);
     const handleAgreeCancel = () => setIsAgreeModalOpen(false);
 
+    // Verify-agreement modal functions
+    const showVerifyModal = () => setIsVerifyModalOpen(true);
+    const handleVerifyOk = () => setIsVerifyModalOpen(false);
+    const handleVerifyCancel = () => setIsVerifyModalOpen(false);
+
     // Search function
     const onSearch = (value) => {
         const filtered = data.filter(item =>
@@ -158,7 +168,7 @@ const ContractNegotiations = () => {
                     <Button onClick={showAgreeModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Agree</Button>
                 )}
                 {provider == 'false' && transitions.includes('VERIFIED') && (
-                    <Button className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Verify</Button>
+                    <Button onClick={showVerifyModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Verify</Button>
                 )}
                 {provider == 'true' && transitions.includes('FINALIZED') && (
                     <Button className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Finalize</Button>
@@ -226,6 +236,14 @@ const ContractNegotiations = () => {
                     handleAgreeOk={handleAgreeOk}
                     handleAgreeCancel={handleAgreeCancel}
                     negotiationId={selectedRow.processId}
+                />
+            )}
+            {selectedRow && (
+                <VerifyModal
+                    isVerifyModalOpen={isVerifyModalOpen}
+                    handleVerifyOk={handleVerifyOk}
+                    handleVerifyCancel={handleVerifyCancel}
+                    consumerPid={selectedRow.processId}
                 />
             )}
         </>
