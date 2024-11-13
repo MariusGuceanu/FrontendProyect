@@ -13,8 +13,7 @@ import Searcher from '../components/contractComponents/searcher';
 import cnStateMachine from '../components/stateMachines/cnStateMachine';
 
 //  Websocket
-const ws = new WebSocket(import.meta.env.VITE_WS_URL);
-
+let ws;
 // Table columns
 const columns = [
     { title: 'Process ID', dataIndex: 'processId', width: '25%' },
@@ -26,6 +25,7 @@ const columns = [
 ];
 
 const ContractNegotiations = () => {
+    const [isConnected, setIsConnected] = useState(false);
     // Modal states
     const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
     const [isOfferModalOpen, setIsOfferModalOpen] = useState(false);
@@ -49,55 +49,67 @@ const ContractNegotiations = () => {
     }, []);
 
     // Updates the data from the table every request through websocket connection
-    useEffect(() => {
-        ws.onopen = () => {
-            console.log('Connected to WebSocket');
-        };
-
-        // Recieves a message with the data
-        ws.onmessage = (event) => {
-            const newNegotiation = JSON.parse(event.data);
-            console.log('WebSocket message: ', newNegotiation);
-            const formattedData = {
-                key: newNegotiation.id,
-                processId: newNegotiation.id,
-                offerId: newNegotiation.params?.offer_id || 'N/A',
-                title: newNegotiation.title || 'Title',
-                provider: newNegotiation.provider ? 'true' : 'false',
-                currentState: newNegotiation.state.replace('dspace:', ''),
-                initiatedDate: new Date().toLocaleString(),
+    const toggleWebSocket = () => {
+        if (isConnected) {
+            ws.close();  // Cerrar la conexión
+            setIsConnected(false);
+            console.log('WebSocket connection closed');
+        } else {
+            ws = new WebSocket(import.meta.env.VITE_WS_URL);
+            ws.onopen = () => {
+                console.log('Connected to WebSocket');
+                setIsConnected(true);
             };
 
-            // Retrieve the existing data
-            const existingData = JSON.parse(localStorage.getItem('Data')) || [];
+            ws.onmessage = (event) => {
+                const newNegotiation = JSON.parse(event.data);
+                console.log('WebSocket message: ', newNegotiation);
+                const formattedData = {
+                    key: newNegotiation.id,
+                    processId: newNegotiation.id,
+                    offerId: newNegotiation.params?.offer_id || 'N/A',
+                    title: newNegotiation.title || 'Title',
+                    provider: newNegotiation.provider ? 'true' : 'false',
+                    currentState: newNegotiation.state.replace('dspace:', ''),
+                    initiatedDate: new Date().toLocaleString(),
+                };
 
-            // Check if the processId already exists
-            const existingIndex = existingData.findIndex(item => item.processId === formattedData.processId);
+                const existingData = JSON.parse(localStorage.getItem('Data')) || [];
+                const existingIndex = existingData.findIndex(item => item.processId === formattedData.processId);
 
-            let updatedData;
-            if (existingIndex !== -1) {
-                // If processId exists, update the state of the existing row
-                existingData[existingIndex].currentState = formattedData.currentState;
-                updatedData = [...existingData];
-            } else {
-                // If processId doesn't exist, add the new row
-                updatedData = [...existingData, formattedData];
+                let updatedData;
+                if (existingIndex !== -1) {
+                    existingData[existingIndex].currentState = formattedData.currentState;
+                    updatedData = [...existingData];
+                } else {
+                    updatedData = [...existingData, formattedData];
+                }
+
+                setData(updatedData);
+                setFilteredData(updatedData);
+                localStorage.setItem('Data', JSON.stringify(updatedData));
+            };
+
+            ws.onerror = (error) => {
+                console.error('WebSocket error:', error);
+            };
+
+            ws.onclose = () => {
+                console.log('WebSocket connection closed');
+                setIsConnected(false);
+            };
+        }
+    };
+
+    // Al desmontarse el componente, aseguramos que la conexión se cierre
+    useEffect(() => {
+        return () => {
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.close();
             }
-
-            // Updates the data of the table and saves it locally
-            setData(updatedData);
-            setFilteredData(updatedData);
-            localStorage.setItem('Data', JSON.stringify(updatedData));
-
-        };
-        // close and error ws functions
-        ws.onclose = () => {
-            console.log('WebSocket connection closed');
-        };
-        ws.onerror = (error) => {
-            console.error('WebSocket error:', error);
         };
     }, []);
+
 
     // Row selection logic
     const rowSelection = {
@@ -198,6 +210,9 @@ const ContractNegotiations = () => {
             {/* Table buttons */}
             <div style={{ display: 'flex', justifyContent: 'space-around', marginTop: '3%', }}>
                 <Button className="large-buttons" type="primary">Ongoing Processes</Button>
+                <button onClick={toggleWebSocket}>
+                    {isConnected ? 'Disconnect WebSocket' : 'Connect WebSocket'}
+                </button>
                 <Button className="large-buttons" type="primary">History</Button>
             </div>
 
