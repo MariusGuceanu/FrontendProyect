@@ -8,7 +8,6 @@ const cnStateMachine = {
     },
     OFFERED: {
         transitions: {
-            REQUESTED: 'REQUESTED',
             ACCEPTED: 'ACCEPTED',
             TERMINATED: 'TERMINATED',
         },

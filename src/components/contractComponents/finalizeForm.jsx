@@ -6,28 +6,28 @@ import axios from 'axios';
 import ContractNegotiations from '../../pages/contractNegotiations';
 import config from '../../config';
 
-const VerifyModal = ({ isVerifyModalOpen, handleVerifyOk, handleVerifyCancel, consumerPid }) => {
+const FinalizeModal = ({ isFinalizeModalOpen, handleFinalizeOk, handleFinalizeCancel, providerPid }) => {
     const [loading, setLoading] = useState(false);
     const { openNotification, contextHolder } = Notification();
 
-    const handleVerify = async () => {
+    const handleFinalize = async () => {
         setLoading(true);
         try {
-            const response = await axios.post(`${config.consumerEndpoint}/api/gateway/verify-agreement/${encodeURIComponent(consumerPid)}`, {
-                consumerPid: consumerPid,
+            const response = await axios.post(`${config.providerEndpoint}/api/gateway/finalize-contract/${encodeURIComponent(providerPid)}`, {
+                providerPid: providerPid,
             });
 
             if (response.status === 200) {
-                console.log('Contract agreement is verified', response.data);
-                openNotification('success', 'Verified', 'Contract agreement is verified');
-                handleVerifyOk();
+                console.log('Contract finalized', response.data);
+                openNotification('success', 'Contract finalized', 'Contract is finalized');
+                handleFinalizeOk();
             } else {
                 console.error('Unexpected response:', response);
                 openNotification('error', 'Unexpected Response', 'An unexpected response was received.');
             }
         } catch (error) {
-            console.error('Error in agreement request:', error);
-            openNotification('error', 'Error in Agreement', 'An error occurred while attempting the agreement.');
+            console.error('Error in finalizing request:', error);
+            openNotification('error', 'Error while finalizing', 'An error occurred while attempting to finalize.');
         } finally {
             setLoading(false);
         }
@@ -36,25 +36,25 @@ const VerifyModal = ({ isVerifyModalOpen, handleVerifyOk, handleVerifyCancel, co
     return (
         <>
             {contextHolder}
-            <Modal title="Verify agreement" open={isVerifyModalOpen} onCancel={handleVerifyCancel}
+            <Modal title="Finalize contract" open={isFinalizeModalOpen} onCancel={handleFinalizeCancel}
                 footer={[
                     <div key="footer" style={{ display: 'flex', justifyContent: 'space-evenly', padding: 10 }}>
-                        <Button style={{ width: '30%' }} key="verify" type="primary" icon={<SendOutlined />} loading={loading} onClick={handleVerify}>
-                            Verify
+                        <Button style={{ width: '30%' }} key="finalize" type="primary" icon={<SendOutlined />} loading={loading} onClick={handleFinalize}>
+                            Finalize
                         </Button>
-                        <Button style={{ width: '30%' }} key="cancel" onClick={handleVerifyCancel}>
+                        <Button style={{ width: '30%' }} key="cancel" onClick={handleFinalizeCancel}>
                             Cancel
                         </Button>
                     </div>
                 ]}
             >
                 <Form layout="vertical">
-                    <Form.Item label="Are you sure do you want to verify this agreement?">
+                    <Form.Item label="Are you sure do you want to Finalize this contract?">
                     </Form.Item>
                 </Form>
             </Modal>
         </>
-    )
+    );
 };
 
-export default VerifyModal;
+export default FinalizeModal;

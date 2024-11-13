@@ -6,9 +6,10 @@ import FilterC from '../components/contractComponents/filterMenu';
 import RequestModal from '../components/contractComponents/contractForm';
 import OfferModal from '../components/contractComponents/offerForm';
 import AgreeModal from '../components/contractComponents/agreeForm';
+import VerifyModal from '../components/contractComponents/verifyForm';
+import FinalizeModal from '../components/contractComponents/finalizeForm';
 import Searcher from '../components/contractComponents/searcher';
 import cnStateMachine from '../components/stateMachines/cnStateMachine';
-import VerifyModal from '../components/contractComponents/verifyForm';
 
 //  Websocket
 const ws = new WebSocket(import.meta.env.VITE_WS_URL);
@@ -28,7 +29,8 @@ const ContractNegotiations = () => {
     const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
     const [isOfferModalOpen, setIsOfferModalOpen] = useState(false);
     const [isAgreeModalOpen, setIsAgreeModalOpen] = useState(false);
-    const [isVerifyModalOpen, setIsVerifyModalOpen] = useState(false)
+    const [isVerifyModalOpen, setIsVerifyModalOpen] = useState(false);
+    const [isFinalizeModalOpen, setIsFinalizeModalOpen] = useState(false)
 
     // Selection states
     const selectionType = useState('checkbox');
@@ -128,6 +130,11 @@ const ContractNegotiations = () => {
     const handleVerifyOk = () => setIsVerifyModalOpen(false);
     const handleVerifyCancel = () => setIsVerifyModalOpen(false);
 
+    // Finalize-contract modal functions
+    const showFinalizeModal = () => setIsFinalizeModalOpen(true);
+    const handleFinalizeOk = () => setIsFinalizeModalOpen(false);
+    const handleFinalizeCancel = () => setIsFinalizeModalOpen(false);
+
     // Search function
     const onSearch = (value) => {
         const filtered = data.filter(item =>
@@ -161,7 +168,7 @@ const ContractNegotiations = () => {
                 {provider == 'true' && transitions.includes('OFFERED') && (
                     <Button className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Offer</Button>
                 )}
-                {provider == 'true' && transitions.includes('ACCEPTED') && (
+                {provider == 'false' && transitions.includes('ACCEPTED') && (
                     <Button className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Accept</Button>
                 )}
                 {provider == 'true' && transitions.includes('AGREED') && (
@@ -171,7 +178,7 @@ const ContractNegotiations = () => {
                     <Button onClick={showVerifyModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Verify</Button>
                 )}
                 {provider == 'true' && transitions.includes('FINALIZED') && (
-                    <Button className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Finalize</Button>
+                    <Button onClick={showFinalizeModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Finalize</Button>
                 )}
                 {transitions.includes('TERMINATED') && (
                     <Button className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Terminate</Button>
@@ -244,6 +251,14 @@ const ContractNegotiations = () => {
                     handleVerifyOk={handleVerifyOk}
                     handleVerifyCancel={handleVerifyCancel}
                     consumerPid={selectedRow.processId}
+                />
+            )}
+            {selectedRow && (
+                <FinalizeModal
+                    isFinalizeModalOpen={isFinalizeModalOpen}
+                    handleFinalizeOk={handleFinalizeOk}
+                    handleFinalizeCancel={handleFinalizeCancel}
+                    providerPid={selectedRow.processId}
                 />
             )}
         </>
