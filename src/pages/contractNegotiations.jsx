@@ -5,6 +5,7 @@ import SorterC from '../components/contractComponents/sortMenu';
 import FilterC from '../components/contractComponents/filterMenu';
 import RequestModal from '../components/contractComponents/contractForm';
 import OfferModal from '../components/contractComponents/offerForm';
+import AcceptModal from '../components/contractComponents/acceptForm';
 import AgreeModal from '../components/contractComponents/agreeForm';
 import VerifyModal from '../components/contractComponents/verifyForm';
 import FinalizeModal from '../components/contractComponents/finalizeForm';
@@ -16,11 +17,11 @@ const ws = new WebSocket(import.meta.env.VITE_WS_URL);
 
 // Table columns
 const columns = [
-    { title: 'Process ID', dataIndex: 'processId', width: '22.5%' },
-    { title: 'Offer ID', dataIndex: 'offerId', width: '22.5%' },
+    { title: 'Process ID', dataIndex: 'processId', width: '25%' },
+    { title: 'Offer ID', dataIndex: 'offerId', width: '25%' },
     { title: 'Title', dataIndex: 'title', width: '10%' },
     { title: 'Provider', dataIndex: 'provider', width: '10%' },
-    { title: 'Current state', dataIndex: 'currentState', width: '15%' },
+    { title: 'Current state', dataIndex: 'currentState', width: '10%' },
     { title: 'Initiated date', dataIndex: 'initiatedDate', width: '20%' },
 ];
 
@@ -28,6 +29,7 @@ const ContractNegotiations = () => {
     // Modal states
     const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
     const [isOfferModalOpen, setIsOfferModalOpen] = useState(false);
+    const [isAcceptModalOpen, setIsAcceptModalOpen] = useState(false)
     const [isAgreeModalOpen, setIsAgreeModalOpen] = useState(false);
     const [isVerifyModalOpen, setIsVerifyModalOpen] = useState(false);
     const [isFinalizeModalOpen, setIsFinalizeModalOpen] = useState(false)
@@ -91,8 +93,6 @@ const ContractNegotiations = () => {
         // close and error ws functions
         ws.onclose = () => {
             console.log('WebSocket connection closed');
-            ws.close();
-
         };
         ws.onerror = (error) => {
             console.error('WebSocket error:', error);
@@ -119,6 +119,11 @@ const ContractNegotiations = () => {
     const showOfferModal = () => setIsOfferModalOpen(true);
     const handleOfferOk = () => setIsOfferModalOpen(false);
     const handleOfferCancel = () => setIsOfferModalOpen(false);
+
+    // Verify-agreement modal functions
+    const showAcceptModal = () => setIsAcceptModalOpen(true);
+    const handleAcceptOk = () => setIsAcceptModalOpen(false);
+    const handleAcceptCancel = () => setIsAcceptModalOpen(false);
 
     // Agree-negotiations modal functions
     const showAgreeModal = () => setIsAgreeModalOpen(true);
@@ -169,7 +174,7 @@ const ContractNegotiations = () => {
                     <Button className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Offer</Button>
                 )}
                 {provider == 'false' && transitions.includes('ACCEPTED') && (
-                    <Button className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Accept</Button>
+                    <Button onClick={showAcceptModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Accept</Button>
                 )}
                 {provider == 'true' && transitions.includes('AGREED') && (
                     <Button onClick={showAgreeModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Agree</Button>
@@ -237,6 +242,14 @@ const ContractNegotiations = () => {
                     </Col>
                 </Row>
             </div>
+            {selectedRow && (
+                <AcceptModal
+                    isAcceptModalOpen={isAcceptModalOpen}
+                    handleAcceptOk={handleAcceptOk}
+                    handleAcceptCancel={handleAcceptCancel}
+                    consumerPid={selectedRow.processId}
+                />
+            )}
             {selectedRow && (
                 <AgreeModal
                     isAgreeModalOpen={isAgreeModalOpen}
