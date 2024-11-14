@@ -80,14 +80,8 @@ const SiderItems = () => [
     },
     {
         key: 'sub5',
-        label: 'Data Transfers',
+        label: <Link to="/data-transfers">Data transfers</Link>,
         icon: <SolutionOutlined />,
-        children: [
-            {
-                key: '10',
-                label: <Link to="/data-transfers/new">+New</Link>,
-            },
-        ],
     },
 ];
 

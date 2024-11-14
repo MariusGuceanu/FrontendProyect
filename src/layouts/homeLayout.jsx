@@ -4,6 +4,7 @@ import { Button, Layout, Menu, theme } from 'antd';
 import Profile from '../components/profile';
 import Dashboard from '../pages/dashboard';
 import ContractNegotiations from '../pages/contractNegotiations';
+import DataTransfers from '../pages/dataTransfers';
 import SiderItems from '../components/menuItems';
 const { Header, Content, Sider } = Layout;
 
@@ -58,6 +59,7 @@ const HomeLayout = () => {
               <Routes>
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/contract-negotiations" element={<ContractNegotiations />} />
+                <Route path="/data-transfers" element={<DataTransfers />}></Route>
               </Routes>
             </Content>
           </Layout>
