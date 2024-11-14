@@ -11,9 +11,7 @@ import VerifyModal from '../components/contractComponents/verifyForm';
 import FinalizeModal from '../components/contractComponents/finalizeForm';
 import Searcher from '../components/contractComponents/searcher';
 import cnStateMachine from '../components/stateMachines/cnStateMachine';
-
-//  Websocket
-const ws = new WebSocket(import.meta.env.VITE_WS_URL);
+import { useWebSocket } from '../WebSocketProvider';
 
 // Table columns
 const columns = [
@@ -26,6 +24,7 @@ const columns = [
 ];
 
 const ContractNegotiations = () => {
+    const ws = useWebSocket();
     // Modal states
     const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
     const [isOfferModalOpen, setIsOfferModalOpen] = useState(false);
@@ -43,16 +42,14 @@ const ContractNegotiations = () => {
 
     // Gets the data of the table to keep it stored (reloading purposes)
     useEffect(() => {
-        const storedData = JSON.parse(localStorage.getItem('Data') || '[]');
+        const storedData = JSON.parse(localStorage.getItem('NegotiationData') || '[]');
         setData(storedData);
         setFilteredData(storedData);
     }, []);
 
     // Updates the data from the table every request through websocket connection
     useEffect(() => {
-        ws.onopen = () => {
-            console.log('Connected to WebSocket');
-        };
+        if (!ws) return;
 
         // Recieves a message with the data
         ws.onmessage = (event) => {
@@ -69,7 +66,7 @@ const ContractNegotiations = () => {
             };
 
             // Retrieve the existing data
-            const existingData = JSON.parse(localStorage.getItem('Data')) || [];
+            const existingData = JSON.parse(localStorage.getItem('NegotiationData')) || [];
 
             // Check if the processId already exists
             const existingIndex = existingData.findIndex(item => item.processId === formattedData.processId);
@@ -97,7 +94,7 @@ const ContractNegotiations = () => {
         ws.onerror = (error) => {
             console.error('WebSocket error:', error);
         };
-    }, []);
+    }, [ws]);
 
     // Row selection logic
     const rowSelection = {
