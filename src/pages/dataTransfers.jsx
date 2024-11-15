@@ -3,22 +3,27 @@ import { Table, Button, Row, Col } from 'antd';
 import '../styles/table-styles.css';
 import SorterC from '../components/contractComponents/sortMenu';
 import FilterC from '../components/contractComponents/filterMenu';
-import Searcher from '../components/contractComponents/searcher';
-import { useWebSocket } from '../WebSocketProvider';
 import RequestTransferModal from '../components/transferComponents/requestTransferForm';
+
+import Searcher from '../components/contractComponents/searcher';
+import dtStateMachine from '../components/stateMachines/dtStateMachine';
+import { useWebSocket } from '../WebSocketProvider';
+
 
 // Table columns
 const columns = [
-    { title: 'Transfer ID', dataIndex: 'transferId', width: '30%' },
-    { title: 'Title', dataIndex: 'title', width: '15%' },
-    { title: 'Provider', dataIndex: 'provider', width: '15%' },
+    { title: 'Transfer ID', dataIndex: 'transferId', width: '22.5%' },
+    { title: 'Agreement ID', dataIndex: 'agreementId', width: '22.5%' },
+    { title: 'Title', dataIndex: 'title', width: '10%' },
+    { title: 'Provider', dataIndex: 'provider', width: '10%' },
     { title: 'Current state', dataIndex: 'currentState', width: '15%' },
-    { title: 'Initiated date', dataIndex: 'initiatedDate', width: '25%' },
+    { title: 'Initiated date', dataIndex: 'initiatedDate', width: '20%' },
 ];
 
 const DataTransfers = () => {
     const ws = useWebSocket();
     const [isRequestTransferModalOpen, setIsRequestTransferModalOpen] = useState(false);
+    const selectionType = useState('checkbox');
     const [selectedRow, setSelectedRow] = useState(null);
     const [filteredData, setFilteredData] = useState([]);
     const [data, setData] = useState([]);
@@ -38,6 +43,7 @@ const DataTransfers = () => {
             const formattedData = {
                 key: newTransfer.id,
                 transferId: newTransfer.id,
+                agreementId: newTransfer.params?.agreement_id || 'N/A',
                 title: newTransfer.title || 'Title',
                 provider: newTransfer.provider ? 'true' : 'false',
                 currentState: newTransfer.state.replace('dspace:', ''),
@@ -86,6 +92,41 @@ const DataTransfers = () => {
         setFilteredData(filtered);
     };
 
+    const stateMachine = () => {
+        if (!selectedRow) return [];
+        const state = selectedRow.currentState;
+        const stateTransitions = dtStateMachine[state]?.transitions || {};
+
+        return Object.keys(stateTransitions);
+    };
+
+    const changeActionButtons = () => {
+        if (!selectedRow) return null;
+        const transitions = stateMachine();
+        const provider = selectedRow.provider;
+        console.log("Provider:", provider, "Transitions:", transitions);
+
+        return (
+            <>
+                {provider == 'true' && transitions.includes('STARTED') && (
+                    <Button className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Start</Button>
+                )}
+                {transitions.includes('SUSPENDED') && (
+                    <Button className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Suspend</Button>
+                )}
+                {transitions.includes('STARTED2') && (
+                    <Button className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Start</Button>
+                )}
+                {transitions.includes('COMPLETED') && (
+                    <Button className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Complete</Button>
+                )}
+                {transitions.includes('TERMINATED') && (
+                    <Button className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Terminate</Button>
+                )}
+            </>
+        )
+    }
+
     return (
         <>
             <div style={{ display: 'flex', justifyContent: 'space-around', marginTop: '3%' }}>
@@ -97,7 +138,7 @@ const DataTransfers = () => {
                 <Row gutter={16} />
                 <Col span={24} className="button-grid" style={{ padding: '2%' }}>
                     <Button onClick={showRequestTransferModal} className='large-button' size='large' type='primary'>Request transfer</Button>
-                    <RequestTransferModal isModalOpen={isRequestTransferModalOpen} handleOk={handleRequestTransferOk} handleCancel={handleRequestTransferCancel} addRowToTable={() => { }} />
+                    <RequestTransferModal isRequestTransferModalOpen={isRequestTransferModalOpen} handleRequestTransferOk={handleRequestTransferOk} handleRequestTransferCancel={handleRequestTransferCancel} />
                     <FilterC className="action-buttons" setFilteredData={setFilteredData} initialData={data} />
                     <SorterC className="action-buttons" filteredData={filteredData} setFilteredData={setFilteredData} />
                     <Searcher onSearch={onSearch} />
@@ -105,18 +146,19 @@ const DataTransfers = () => {
 
                 <Row gutter={16}>
                     <Col span={24}>
-                        <Table
-                            style={{ padding: '2%', overflowX: 'auto' }}
-                            className="table-contracts"
+                        <Table style={{ padding: '2%', overflowX: 'auto' }} className="table-contracts"
+                            rowClassName={(record) => (record.provider === 'false' ? 'provider-false' : '')}
                             rowSelection={{
-                                type: 'checkbox',
+                                type: selectionType,
                                 ...rowSelection,
-                            }}
-                            columns={columns}
-                            dataSource={filteredData}
-                            pagination={{ pageSize: 10 }}
+                            }} columns={columns} dataSource={filteredData} pagination={{ pageSize: 10 }}
                             scroll={{ y: 55 * 6 }}
                         />
+                    </Col>
+                </Row>
+                <Row gutter={16}>
+                    <Col style={{ width: '95%', margin: 'auto', display: 'flex', justifyContent: 'space-evenly', gap: '10px', paddingBottom: '2%' }}>
+                        {changeActionButtons()}
                     </Col>
                 </Row>
             </div>

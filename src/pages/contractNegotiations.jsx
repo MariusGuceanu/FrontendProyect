@@ -42,7 +42,7 @@ const ContractNegotiations = () => {
 
     // Gets the data of the table to keep it stored (reloading purposes)
     useEffect(() => {
-        const storedData = JSON.parse(localStorage.getItem('NegotiationData') || '[]');
+        const storedData = JSON.parse(localStorage.getItem('Data') || '[]');
         setData(storedData);
         setFilteredData(storedData);
     }, []);
@@ -66,7 +66,7 @@ const ContractNegotiations = () => {
             };
 
             // Retrieve the existing data
-            const existingData = JSON.parse(localStorage.getItem('NegotiationData')) || [];
+            const existingData = JSON.parse(localStorage.getItem('Data')) || [];
 
             // Check if the processId already exists
             const existingIndex = existingData.findIndex(item => item.processId === formattedData.processId);
@@ -204,7 +204,7 @@ const ContractNegotiations = () => {
                 <Col span={24} className="button-grid" style={{ padding: '2%' }}>
                     {/* Request contract form display */}
                     <Button onClick={showRequestModal} className="action-buttons" size="large" type="primary">Request Contract</Button>
-                    <RequestModal isModalOpen={isRequestModalOpen} handleOk={handleRequestOk} handleCancel={handleRequestCancel} addRowToTable={() => { }} />
+                    <RequestModal isModalOpen={isRequestModalOpen} handleOk={handleRequestOk} handleCancel={handleRequestCancel} />
                     {/* Offer form display */}
                     <Button onClick={showOfferModal} className="action-buttons" size='large' type="primary">Send Offer</Button>
                     <OfferModal isModalOpen={isOfferModalOpen} handleOk={handleOfferOk} handleCancel={handleOfferCancel} />
@@ -217,17 +217,12 @@ const ContractNegotiations = () => {
                 {/* Table and reactive state buttons */}
                 <Row gutter={16}>
                     <Col span={24}>
-                        <Table
-                            style={{ padding: '2%', overflowX: 'auto' }}
-                            className="table-contracts"
+                        <Table style={{ padding: '2%', overflowX: 'auto' }} className="table-contracts"
                             rowClassName={(record) => (record.provider === 'false' ? 'provider-false' : '')}
                             rowSelection={{
                                 type: selectionType,
                                 ...rowSelection,
-                            }}
-                            columns={columns}
-                            dataSource={filteredData}
-                            pagination={{ pageSize: 10 }}
+                            }} columns={columns} dataSource={filteredData} pagination={{ pageSize: 10 }}
                             scroll={{ y: 55 * 6 }}
                         />
                     </Col>
@@ -240,34 +235,22 @@ const ContractNegotiations = () => {
                 </Row>
             </div>
             {selectedRow && (
-                <AcceptModal
-                    isAcceptModalOpen={isAcceptModalOpen}
-                    handleAcceptOk={handleAcceptOk}
-                    handleAcceptCancel={handleAcceptCancel}
+                <AcceptModal isAcceptModalOpen={isAcceptModalOpen} handleAcceptOk={handleAcceptOk} handleAcceptCancel={handleAcceptCancel}
                     consumerPid={selectedRow.processId}
                 />
             )}
             {selectedRow && (
-                <AgreeModal
-                    isAgreeModalOpen={isAgreeModalOpen}
-                    handleAgreeOk={handleAgreeOk}
-                    handleAgreeCancel={handleAgreeCancel}
+                <AgreeModal isAgreeModalOpen={isAgreeModalOpen} handleAgreeOk={handleAgreeOk} handleAgreeCancel={handleAgreeCancel}
                     negotiationId={selectedRow.processId}
                 />
             )}
             {selectedRow && (
-                <VerifyModal
-                    isVerifyModalOpen={isVerifyModalOpen}
-                    handleVerifyOk={handleVerifyOk}
-                    handleVerifyCancel={handleVerifyCancel}
+                <VerifyModal isVerifyModalOpen={isVerifyModalOpen} handleVerifyOk={handleVerifyOk} handleVerifyCancel={handleVerifyCancel}
                     consumerPid={selectedRow.processId}
                 />
             )}
             {selectedRow && (
-                <FinalizeModal
-                    isFinalizeModalOpen={isFinalizeModalOpen}
-                    handleFinalizeOk={handleFinalizeOk}
-                    handleFinalizeCancel={handleFinalizeCancel}
+                <FinalizeModal isFinalizeModalOpen={isFinalizeModalOpen} handleFinalizeOk={handleFinalizeOk} handleFinalizeCancel={handleFinalizeCancel}
                     providerPid={selectedRow.processId}
                 />
             )}

@@ -8,6 +8,7 @@ import axios from 'axios';
 const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
     // Self-description states
     const [inputValue, setInputValue] = useState('');
+    const [form] = Form.useForm();
     const [selfDescription, setSelfDescription] = useState(null);
     const [offerId, setOfferId] = useState('');
     const [loading, setLoading] = useState(false);
@@ -70,6 +71,7 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
             if (response.status === 200) {
                 console.log('Response:', response.data);
                 openNotification('success', 'Request Successful', `Contract Negotiation ID: ${response.data.contractNegotiationId}`);
+                form.resetFields();
                 handleOk();
             } else {
                 console.error('Unexpected response status:', response.status);
@@ -109,20 +111,13 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
             >
                 <h2>Request a contract</h2>
                 {/* Modal content display */}
-                <Form className='formRequest' preserve={false} autoComplete='off' name='requestEndPoint' labelCol={{ span: 9 }}
-                    wrapperCol={{ span: 24 }}
-                    style={{ maxWidth: 800, marginLeft: '5%' }}
-                    initialValues={{ remember: false }}>
-                    <Form.Item
-                        style={{ marginLeft: '-2%', marginTop: '4%' }}
-                        label="Provider's Endpoint : "
-                        name="ProvidersEp"
-                        rules={[{ required: true, message: 'Insert your URL endpoint' }]}
+                <Form className='formRequest' preserve={false} autoComplete='off' name='requestEndPoint' labelCol={{ span: 9 }} wrapperCol={{ span: 24 }} style={{ maxWidth: 800, marginLeft: '5%' }} initialValues={{ remember: false }}>
+                    <Form.Item style={{ marginLeft: '-2%', marginTop: '4%' }} label="Provider's Endpoint : " name="ProvidersEp" rules={[{ required: true, message: 'Insert your URL endpoint' }]}
                     >
                         <div style={{ display: 'flex', }}>
                             <Input value={inputValue} onChange={handleInputChange} />
-                            <Button type="primary" disabled={!inputValue} style={{ marginLeft: '3%' }} 
-                            onClick={getSelfDescription} loading={loading}>Self-Description</Button>
+                            <Button type="primary" disabled={!inputValue} style={{ marginLeft: '3%' }}
+                                onClick={getSelfDescription} loading={loading}>Self-Description</Button>
                         </div>
                     </Form.Item>
 
@@ -155,8 +150,8 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
                     <Button type="dashed" onClick={addConstraint} icon={<PlusOutlined />} style={{ display: 'flex', marginBottom: '5%', marginLeft: '15%', width: '73%', borderColor: 'gray' }}>
                         Add Constraint
                     </Button>
-                    <Form.Item label="Offer ID :" name="OfferId" style={{ marginLeft: '3%' }} rules={[{ required: true, message: 'Provide a valid UUID' }]}>
-                        <Input style={{ width: '80%' }} value={offerId} onChange={handleOfferIdChange} />
+                    <Form.Item label="Offer ID :" name="OfferId" style={{ marginLeft: '-3%' }} rules={[{ required: true, message: 'Provide a valid UUID' }]}>
+                        <Input style={{ width: '82%' }} value={offerId} onChange={handleOfferIdChange} />
                     </Form.Item>
                 </Form>
             </Modal>

@@ -31,10 +31,10 @@ const cnStateMachine = {
         },
     },
     FINALIZED: {
-        transitions: {
-        },
+        // FINISHED
     },
     TERMINATED: {
+        // FINISHED
     },
 };
 

@@ -8,6 +8,7 @@ import Notification from '../notifications';
 const OfferModal = ({ isModalOpen, handleOk, handleCancel }) => {
     const [consumerAddr, setconsumerAddr] = useState('');
     const [offerId, setOfferId] = useState('');
+    const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
     const { openNotification, contextHolder } = Notification();
 
@@ -27,6 +28,7 @@ const OfferModal = ({ isModalOpen, handleOk, handleCancel }) => {
         try {
             await axios.post(`${config.providerEndpoint}/api/gateway/offer-contract`, requestData);
             openNotification('success', 'Offer sent', 'Offer sent succesfully');
+            form.resetFields();
             handleOk();
         } catch (error) {
             console.error('Error sending the offer:', error);
@@ -50,13 +52,13 @@ const OfferModal = ({ isModalOpen, handleOk, handleCancel }) => {
                         </Button>
                     </div>,
                 ]}>
-                <Form labelCol={{ span: 9 }} wrapperCol={{ span: 24 }} layout="vertical">
-                    <h2>Offer a contract</h2>
+                <h2>Offer a contract</h2>
+                <Form labelCol={{ span: 9 }} wrapperCol={{ span: 24 }} style={{ maxWidth: 800, marginLeft: '20%' }} layout='vertical'>
                     <Form.Item label="Consumer's Address:" required>
-                        <Input value={consumerAddr} onChange={handleconsumerAddrChange} />
+                        <Input value={consumerAddr} onChange={handleconsumerAddrChange} style={{width:'75%'}}/>
                     </Form.Item>
                     <Form.Item label="Offer Id:" required>
-                        <Input value={offerId} onChange={handleOfferIdChange} />
+                        <Input value={offerId} onChange={handleOfferIdChange} style={{width:'75%'}}/>
                     </Form.Item>
                 </Form>
             </Modal>
