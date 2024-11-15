@@ -4,7 +4,8 @@ import '../styles/table-styles.css';
 import SorterC from '../components/contractComponents/sortMenu';
 import FilterC from '../components/contractComponents/filterMenu';
 import Searcher from '../components/contractComponents/searcher';
-import { useWebSocket, WebSocketProvider } from '../WebSocketProvider';
+import { useWebSocket } from '../WebSocketProvider';
+import RequestTransferModal from '../components/transferComponents/requestTransferForm';
 
 // Table columns
 const columns = [
@@ -17,6 +18,7 @@ const columns = [
 
 const DataTransfers = () => {
     const ws = useWebSocket();
+    const [isRequestTransferModalOpen, setIsRequestTransferModalOpen] = useState(false);
     const [selectedRow, setSelectedRow] = useState(null);
     const [filteredData, setFilteredData] = useState([]);
     const [data, setData] = useState([]);
@@ -70,6 +72,10 @@ const DataTransfers = () => {
         }),
     };
 
+    const showRequestTransferModal = () => setIsRequestTransferModalOpen(true);
+    const handleRequestTransferOk = () => setIsRequestTransferModalOpen(false);
+    const handleRequestTransferCancel = () => setIsRequestTransferModalOpen(false);
+
     const onSearch = (value) => {
         const filtered = data.filter(item =>
             item.transferId.toLowerCase().includes(value.toLowerCase()) ||
@@ -90,6 +96,8 @@ const DataTransfers = () => {
             <div style={{ width: '100%', margin: 'auto', border: 'solid', borderRadius: 6 }}>
                 <Row gutter={16} />
                 <Col span={24} className="button-grid" style={{ padding: '2%' }}>
+                    <Button onClick={showRequestTransferModal} className='large-button' size='large' type='primary'>Request transfer</Button>
+                    <RequestTransferModal isModalOpen={isRequestTransferModalOpen} handleOk={handleRequestTransferOk} handleCancel={handleRequestTransferCancel} addRowToTable={() => { }} />
                     <FilterC className="action-buttons" setFilteredData={setFilteredData} initialData={data} />
                     <SorterC className="action-buttons" filteredData={filteredData} setFilteredData={setFilteredData} />
                     <Searcher onSearch={onSearch} />
