@@ -189,7 +189,7 @@ const ContractNegotiations = () => {
         )
     }
 
-    // All content display
+    // Content display
     return (
         <>
             {/* Table buttons */}

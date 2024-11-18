@@ -7,7 +7,7 @@ import Notification from '../notifications';
 
 const { Option } = Select;
 
-const RequestTransferModal = ({ isRequestTransferModalOpen, handleRequestTransferOk, handleRequestTransferCancel }) => {
+const StartModal = ({ isRequestTransferModalOpen, handleRequestTransferOk, handleRequestTransferCancel }) => {
     const { openNotification, contextHolder } = Notification();
     const [loading, setLoading] = useState(false);
     const [providerEndpoint, setProviderEndpoint] = useState();
@@ -36,7 +36,7 @@ const RequestTransferModal = ({ isRequestTransferModalOpen, handleRequestTransfe
             // Send the request
             await axios.post(`${config.consumerEndpoint}/api/gateway/transfer/request`, payload);
 
-            openNotification('success', 'Transfer requested', 'Transfer request sent successfully');
+            openNotification('success', 'Transfer request sent successfully', `Transfer process ID: ${response.data.transferProcessId}`);
             form.resetFields();
             handleRequestTransferOk();
         } catch (error) {
@@ -86,4 +86,4 @@ const RequestTransferModal = ({ isRequestTransferModalOpen, handleRequestTransfe
     );
 };
 
-export default RequestTransferModal;
+export default StartModal;

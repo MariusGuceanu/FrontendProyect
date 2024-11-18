@@ -4,7 +4,7 @@ import '../styles/table-styles.css';
 import SorterC from '../components/contractComponents/sortMenu';
 import FilterC from '../components/contractComponents/filterMenu';
 import RequestTransferModal from '../components/transferComponents/requestTransferForm';
-
+import StartModal from '../components/transferComponents/startForm';
 import Searcher from '../components/contractComponents/searcher';
 import dtStateMachine from '../components/stateMachines/dtStateMachine';
 import { useWebSocket } from '../WebSocketProvider';
@@ -22,21 +22,28 @@ const columns = [
 
 const DataTransfers = () => {
     const ws = useWebSocket();
+    // Modal states
     const [isRequestTransferModalOpen, setIsRequestTransferModalOpen] = useState(false);
+    const [isStartModalOpen, setIsStartModalOpen] = useState(false)
+    // Selection states
     const selectionType = useState('checkbox');
     const [selectedRow, setSelectedRow] = useState(null);
+    // Data states  
     const [filteredData, setFilteredData] = useState([]);
     const [data, setData] = useState([]);
 
+    // Gets the data of the table to keep it stored (reloading purposes)
     useEffect(() => {
         const storedData = JSON.parse(localStorage.getItem('TransfersData') || '[]');
         setData(storedData);
         setFilteredData(storedData);
     }, []);
 
+    // Updates the data from the table every request through websocket connection
     useEffect(() => {
         if (!ws) return;
 
+        // Recieves a message with the data
         ws.onmessage = (event) => {
             const newTransfer = JSON.parse(event.data);
             console.log('WebSocket message: ', newTransfer);
@@ -49,27 +56,32 @@ const DataTransfers = () => {
                 currentState: newTransfer.state.replace('dspace:', ''),
                 initiatedDate: new Date().toLocaleString(),
             };
-
+            // Retrieve the existing data
             const existingData = JSON.parse(localStorage.getItem('TransfersData')) || [];
+            // Check if the processId already exists
             const existingIndex = existingData.findIndex(item => item.transferId === formattedData.transferId);
-
             let updatedData;
             if (existingIndex !== -1) {
+                // If processId exists, update the state of the existing row
                 existingData[existingIndex].currentState = formattedData.currentState;
                 updatedData = [...existingData];
             } else {
+                // If processId doesn't exist, add the new row               
                 updatedData = [...existingData, formattedData];
             }
 
+            // Updates the data of the table and saves it locally
             setData(updatedData);
             setFilteredData(updatedData);
             localStorage.setItem('TransfersData', JSON.stringify(updatedData));
         };
 
+        // close and error ws functions
         ws.onclose = () => console.log('WebSocket connection closed');
         ws.onerror = (error) => console.error('WebSocket error:', error);
     }, [ws]);
 
+    // Row selection logic
     const rowSelection = {
         onChange: (_, selectedRows) => setSelectedRow(selectedRows[0]),
         getCheckboxProps: (record) => ({
@@ -78,10 +90,17 @@ const DataTransfers = () => {
         }),
     };
 
+    // Request-transfer modal functions
     const showRequestTransferModal = () => setIsRequestTransferModalOpen(true);
     const handleRequestTransferOk = () => setIsRequestTransferModalOpen(false);
     const handleRequestTransferCancel = () => setIsRequestTransferModalOpen(false);
 
+    // Start transfer modal fucntions
+    const showStartModal = () => setIsStartModalOpen(true);
+    const handleStartOk = () => setIsStartModalOpen(false);
+    const handleStartCancel = () => setIsStartModalOpen(false);
+
+    // Searcher function logic
     const onSearch = (value) => {
         const filtered = data.filter(item =>
             item.transferId.toLowerCase().includes(value.toLowerCase()) ||
@@ -92,6 +111,7 @@ const DataTransfers = () => {
         setFilteredData(filtered);
     };
 
+    // State machine for action-buttons of the selected rowf
     const stateMachine = () => {
         if (!selectedRow) return [];
         const state = selectedRow.currentState;
@@ -100,6 +120,7 @@ const DataTransfers = () => {
         return Object.keys(stateTransitions);
     };
 
+    // Renders buttons depending selected current state
     const changeActionButtons = () => {
         if (!selectedRow) return null;
         const transitions = stateMachine();
@@ -127,6 +148,7 @@ const DataTransfers = () => {
         )
     }
 
+    // Content display
     return (
         <>
             <div style={{ display: 'flex', justifyContent: 'space-around', marginTop: '3%' }}>
@@ -162,6 +184,9 @@ const DataTransfers = () => {
                     </Col>
                 </Row>
             </div>
+            {selectedRow && (
+                <StartModal/>
+            )}
         </>
     );
 };
