@@ -5,6 +5,8 @@ import SorterC from '../components/contractComponents/sortMenu';
 import FilterC from '../components/contractComponents/filterMenu';
 import RequestTransferModal from '../components/transferComponents/requestTransferForm';
 import StartModal from '../components/transferComponents/startForm';
+import ProviderCompleteModal from '../components/transferComponents/completeComponents/ProviderCompleteForm';
+import ConsumerCompleteModal from '../components/transferComponents/completeComponents/ConsumerCompleteForm';
 import Searcher from '../components/contractComponents/searcher';
 import dtStateMachine from '../components/stateMachines/dtStateMachine';
 import { useWebSocket } from '../WebSocketProvider';
@@ -12,11 +14,12 @@ import { useWebSocket } from '../WebSocketProvider';
 
 // Table columns
 const columns = [
-    { title: 'Transfer ID', dataIndex: 'transferId', width: '22.5%' },
-    { title: 'Agreement ID', dataIndex: 'agreementId', width: '22.5%' },
-    { title: 'Title', dataIndex: 'title', width: '10%' },
-    { title: 'Provider', dataIndex: 'provider', width: '10%' },
-    { title: 'Current state', dataIndex: 'currentState', width: '15%' },
+    { title: 'Transfer ID', dataIndex: 'transferId', width: '20%' },
+    { title: 'Agreement ID', dataIndex: 'agreementId', width: '20%' },
+    { title: 'Transfer Format', dataIndex: 'transferFormat', width: '12.5%' },
+    { title: 'Title', dataIndex: 'title', width: '8.75%' },
+    { title: 'Provider', dataIndex: 'provider', width: '8.75%' },
+    { title: 'Current state', dataIndex: 'currentState', width: '10%' },
     { title: 'Initiated date', dataIndex: 'initiatedDate', width: '20%' },
 ];
 
@@ -25,6 +28,7 @@ const DataTransfers = () => {
     // Modal states
     const [isRequestTransferModalOpen, setIsRequestTransferModalOpen] = useState(false);
     const [isStartModalOpen, setIsStartModalOpen] = useState(false)
+    const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false)
     // Selection states
     const selectionType = useState('checkbox');
     const [selectedRow, setSelectedRow] = useState(null);
@@ -50,7 +54,8 @@ const DataTransfers = () => {
             const formattedData = {
                 key: newTransfer.id,
                 transferId: newTransfer.id,
-                agreementId: newTransfer.params?.agreement_id || 'N/A',
+                agreementId: newTransfer.params?.agreementId || 'N/A',
+                transferFormat: newTransfer.params?.transferFormat,
                 title: newTransfer.title || 'Title',
                 provider: newTransfer.provider ? 'true' : 'false',
                 currentState: newTransfer.state.replace('dspace:', ''),
@@ -100,6 +105,31 @@ const DataTransfers = () => {
     const handleStartOk = () => setIsStartModalOpen(false);
     const handleStartCancel = () => setIsStartModalOpen(false);
 
+    // Complete transfer modal functions
+    const showCompleteModal = () => setIsCompleteModalOpen(true);
+    const handleCompleteOk = () => setIsCompleteModalOpen(false);
+    const handleCompleteCancel = () => setIsCompleteModalOpen(false);
+
+    const renderCompleteModal = () => {
+        if (!selectedRow) return null;
+
+        if (selectedRow.provider === 'true') {
+            return (
+                <ProviderCompleteModal isCompleteModalOpen={isCompleteModalOpen} handleCompleteOk={handleCompleteOk} handleCompleteCancel={handleCompleteCancel}
+                    transferProcessId={selectedRow.transferId}
+                />
+            );
+        } else {
+            return (
+                <ConsumerCompleteModal isCompleteModalOpen={isCompleteModalOpen} handleCompleteOk={handleCompleteOk} handleCompleteCancel={handleCompleteCancel}
+                    transferProcessId={selectedRow.transferId}
+                />
+            );
+        }
+    };
+
+    //
+
     // Searcher function logic
     const onSearch = (value) => {
         const filtered = data.filter(item =>
@@ -130,7 +160,7 @@ const DataTransfers = () => {
         return (
             <>
                 {provider == 'true' && transitions.includes('STARTED') && (
-                    <Button className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Start</Button>
+                    <Button onClick={showStartModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Start</Button>
                 )}
                 {transitions.includes('SUSPENDED') && (
                     <Button className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Suspend</Button>
@@ -139,7 +169,7 @@ const DataTransfers = () => {
                     <Button className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Start</Button>
                 )}
                 {transitions.includes('COMPLETED') && (
-                    <Button className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Complete</Button>
+                    <Button onClick={showCompleteModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Complete</Button>
                 )}
                 {transitions.includes('TERMINATED') && (
                     <Button className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Terminate</Button>
@@ -185,8 +215,12 @@ const DataTransfers = () => {
                 </Row>
             </div>
             {selectedRow && (
-                <StartModal/>
+                <StartModal isStartModalOpen={isStartModalOpen} handleStartOk={handleStartOk} handleStartCancel={handleStartCancel}
+                    provider={selectedRow.provider}
+                    transferProcessId={selectedRow.transferId}
+                />
             )}
+            {renderCompleteModal()}
         </>
     );
 };

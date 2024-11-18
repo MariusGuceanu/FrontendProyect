@@ -58,7 +58,7 @@ const ContractNegotiations = () => {
             const formattedData = {
                 key: newNegotiation.id,
                 processId: newNegotiation.id,
-                offerId: newNegotiation.params?.offer_id || 'N/A',
+                offerId: newNegotiation.params?.offerId || 'N/A',
                 title: newNegotiation.title || 'Title',
                 provider: newNegotiation.provider ? 'true' : 'false',
                 currentState: newNegotiation.state.replace('dspace:', ''),
