@@ -2,19 +2,21 @@ import React, { useState } from 'react';
 import { Modal, Form, Button } from 'antd';
 import { SendOutlined } from '@ant-design/icons';
 import axios from 'axios';
-import Notification from '../../notifications';
-import config from '../../../config';
+import Notification from '../notifications';
+import config from '../../config';
 
-const ProviderCompleteModal = ({ isCompleteModalOpen, handleCompleteOk, handleCompleteCancel, transferProcessId }) => {
+const CompleteModal = ({ isCompleteModalOpen, handleCompleteOk, handleCompleteCancel, transferProcessId, provider, endpoint }) => {
     const [loading, setLoading] = useState(false);
     const { openNotification, contextHolder } = Notification();
 
     const handleComplete = async () => {
-        setLoading(true);
 
+        setLoading(true);
         try {
-            const response = await axios.post(`${config.providerEndpoint}/api/gateway/transfer/complete`, {
-                provider: true,
+            const providerValue = provider === 'true';
+
+            const response = await axios.post(`${endpoint}/api/gateway/transfer/complete`, {
+                provider: providerValue,
                 transferProcessId: transferProcessId,
             });
 
@@ -58,4 +60,4 @@ const ProviderCompleteModal = ({ isCompleteModalOpen, handleCompleteOk, handleCo
     );
 };
 
-export default ProviderCompleteModal;
+export default CompleteModal;

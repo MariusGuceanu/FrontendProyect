@@ -5,18 +5,18 @@ import config from '../../config';
 import axios from 'axios';
 import Notification from '../notifications';
 
-const StartModal = ({ isStartModalOpen, handleStartOk, handleStartCancel, transferProcessId, provider }) => {
+const StartModal = ({ isStartModalOpen, handleStartOk, handleStartCancel, transferProcessId, provider, endpoint }) => {
     const [sourceEndpoint, setSourceEndpoint] = useState('');
     const [loading, setLoading] = useState(false);
     const { openNotification, contextHolder } = Notification();
 
     const handleStart = async () => {
+        
         setLoading(true);
-
         try {
-            const providerValue = Boolean(provider);
+            const providerValue = provider === 'true';
 
-            const response = await axios.post(`${config.providerEndpoint}/api/gateway/transfer/start`, {
+            const response = await axios.post(`${endpoint}/api/gateway/transfer/start`, {
                 provider: providerValue,
                 transferProcessId: transferProcessId,
                 sourceEndpoint: sourceEndpoint,

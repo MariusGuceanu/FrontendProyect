@@ -4,7 +4,7 @@ import { SendOutlined, PlusOutlined, MinusCircleOutlined } from '@ant-design/ico
 import axios from 'axios';
 import Notification from '../notifications';
 import config from '../../config';
-const SuspendModal = ({ isSuspendModalOpen, handleSuspendOk, handleSuspendCancel, transferProcessId, provider }) => {
+const SuspendModal = ({ isSuspendModalOpen, handleSuspendOk, handleSuspendCancel, transferProcessId, provider, endpoint }) => {
     const [loading, setLoading] = useState(false);
     const [code, setCode] = useState('');
     const [constraints, setConstraints] = useState([{ name: '', value: '' }]);
@@ -27,18 +27,17 @@ const SuspendModal = ({ isSuspendModalOpen, handleSuspendOk, handleSuspendCancel
         setLoading(true);
 
         try {
-            const providerEndpoint = provider ? config.providerEndpoint : config.consumerEndpoint;
             const reasons = constraints
                 .filter((constraint) => constraint.name && constraint.value)
                 .map((constraint) => constraint.value);
-
-            const response = await axios.post(`${providerEndpoint}/api/gateway/transfer/suspend`, {
-                provider: Boolean(provider),
+            const validProvider = provider === 'true';
+            const response = await axios.post(`${endpoint}/api/gateway/transfer/suspend`, {
+                provider: validProvider,
                 transferProcessId: transferProcessId,
                 code: code || undefined,
                 reasons: reasons.length > 0 ? reasons : undefined,
             });
-
+            console.log(response)
             if (response.status === 200) {
                 console.log('Suspend successful:', response.data);
                 openNotification('success', 'Suspended', 'Transfer suspended successfully');
@@ -61,7 +60,7 @@ const SuspendModal = ({ isSuspendModalOpen, handleSuspendOk, handleSuspendCancel
             <Modal width={800} open={isSuspendModalOpen} onCancel={handleSuspendCancel}
                 footer={[
                     <div key="footer" style={{ display: 'flex', justifyContent: 'space-evenly', padding: 10 }}>
-                        <Button style={{ width: '30%' }} key="suspend" size='large' type="primary" icon={<SendOutlined />} iconPosition='end'  loading={loading} onClick={handleSuspend}> Suspend Transfer
+                        <Button style={{ width: '30%' }} key="suspend" size='large' type="primary" icon={<SendOutlined />} iconPosition='end' loading={loading} onClick={handleSuspend}> Suspend Transfer
                         </Button>,
                         <Button style={{ width: '30%' }} key="cancel" size='large' onClick={handleSuspendCancel}>
                             Cancel

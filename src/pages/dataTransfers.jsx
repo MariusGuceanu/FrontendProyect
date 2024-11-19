@@ -5,11 +5,11 @@ import SorterC from '../components/contractComponents/sortMenu';
 import FilterC from '../components/contractComponents/filterMenu';
 import RequestTransferModal from '../components/transferComponents/requestTransferForm';
 import StartModal from '../components/transferComponents/startForm';
-import ProviderCompleteModal from '../components/transferComponents/completeComponents/ProviderCompleteForm';
-import ConsumerCompleteModal from '../components/transferComponents/completeComponents/ConsumerCompleteForm';
+import CompleteModal from '../components/transferComponents/completeForm';
 import SuspendModal from '../components/transferComponents/suspendForm';
 import Searcher from '../components/contractComponents/searcher';
 import dtStateMachine from '../components/stateMachines/dtStateMachine';
+import config from '../config';
 import { useWebSocket } from '../WebSocketProvider';
 
 
@@ -65,14 +65,17 @@ const DataTransfers = () => {
             };
             // Retrieve the existing data
             const existingData = JSON.parse(localStorage.getItem('TransfersData')) || [];
+
             // Check if the processId already exists
             const existingIndex = existingData.findIndex(item => item.transferId === formattedData.transferId);
             let updatedData;
             if (existingIndex !== -1) {
+
                 // If processId exists, update the state of the existing row
                 existingData[existingIndex].currentState = formattedData.currentState;
                 updatedData = [...existingData];
             } else {
+
                 // If processId doesn't exist, add the new row               
                 updatedData = [...existingData, formattedData];
             }
@@ -117,24 +120,6 @@ const DataTransfers = () => {
     const handleSuspendOk = () => setIsSuspendModalOpen(false);
     const handleSuspendCancel = () => setIsSuspendModalOpen(false);
 
-    const renderCompleteModal = () => {
-        if (!selectedRow) return null;
-
-        if (selectedRow.provider === 'true') {
-            return (
-                <ProviderCompleteModal isCompleteModalOpen={isCompleteModalOpen} handleCompleteOk={handleCompleteOk} handleCompleteCancel={handleCompleteCancel}
-                    transferProcessId={selectedRow.transferId}
-                />
-            );
-        } else {
-            return (
-                <ConsumerCompleteModal isCompleteModalOpen={isCompleteModalOpen} handleCompleteOk={handleCompleteOk} handleCompleteCancel={handleCompleteCancel}
-                    transferProcessId={selectedRow.transferId}
-                />
-            );
-        }
-    };
-
     // Searcher function logic
     const onSearch = (value) => {
         const filtered = data.filter(item =>
@@ -155,12 +140,16 @@ const DataTransfers = () => {
         return Object.keys(stateTransitions);
     };
 
+    const getEndpoint = () => {
+        if (!selectedRow) return null;
+        return selectedRow.provider === 'true' ? config.providerEndpoint : config.consumerEndpoint;
+    };
     // Renders buttons depending selected current state
     const changeActionButtons = () => {
         if (!selectedRow) return null;
         const transitions = stateMachine();
         const provider = selectedRow.provider === 'true';
-        const state = selectedRow.currentState; 
+        const state = selectedRow.currentState;
         console.log("Provider:", provider, "Transitions:", transitions, "CurrentState:", state);
 
         return (
@@ -224,15 +213,23 @@ const DataTransfers = () => {
                 <StartModal isStartModalOpen={isStartModalOpen} handleStartOk={handleStartOk} handleStartCancel={handleStartCancel}
                     provider={selectedRow.provider}
                     transferProcessId={selectedRow.transferId}
+                    endpoint={getEndpoint()}
                 />
             )}
             {selectedRow && (
                 <SuspendModal isSuspendModalOpen={isSuspendModalOpen} handleSuspendOk={handleSuspendOk} handleSuspendCancel={handleSuspendCancel}
                     provider={selectedRow.provider}
                     transferProcessId={selectedRow.transferId}
+                    endpoint={getEndpoint()}
                 />
             )}
-            {renderCompleteModal()}
+            {selectedRow && (
+                <CompleteModal isCompleteModalOpen={isCompleteModalOpen} handleCompleteOk={handleCompleteOk} handleCompleteCancel={handleCompleteCancel}
+                    provider={selectedRow.provider}
+                    transferProcessId={selectedRow.transferId}
+                    endpoint={getEndpoint()}
+                />
+            )}
         </>
     );
 };
