@@ -39,7 +39,7 @@ const AcceptModal = ({ isAcceptModalOpen, handleAcceptOk, handleAcceptCancel, co
             <Modal title="Accept offer" open={isAcceptModalOpen} onCancel={handleAcceptCancel}
                 footer={[
                     <div key="footer" style={{ display: 'flex', justifyContent: 'space-evenly', padding: 10 }}>
-                        <Button style={{ width: '30%' }} key="accept" type="primary" icon={<SendOutlined />} loading={loading} onClick={handleAccept}>
+                        <Button style={{ width: '30%' }} key="accept" type="primary" icon={<SendOutlined />} iconPosition='end'  loading={loading} onClick={handleAccept}>
                             Accept offer
                         </Button>
                         <Button style={{ width: '30%' }} key="cancel" onClick={handleAcceptCancel}>

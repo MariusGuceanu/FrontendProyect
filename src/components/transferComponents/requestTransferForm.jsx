@@ -53,21 +53,23 @@ const RequestTransferModal = ({ isRequestTransferModalOpen, handleRequestTransfe
             <Modal width={1000} open={isRequestTransferModalOpen} onOk={handleRequestTransferOk} onCancel={handleRequestTransferCancel}
                 footer={[
                     <div key="footer" style={{ display: 'flex', justifyContent: 'space-evenly', padding: 10 }}>
-                        <Button style={{ width: '20%' }} key="offer" type="primary" size="large" disabled={!providerEndpoint} icon={<SendOutlined />} onClick={handleRequestTransfer} loading={loading}>
+                        <Button style={{ width: '20%' }} key="offer" type="primary" size="large" disabled={!providerEndpoint} icon={<SendOutlined />} iconPosition='end'  onClick={handleRequestTransfer} loading={loading}>
                             Send Request
                         </Button>
                         <Button style={{ width: '20%' }} key="cancel" type="default" size="large" onClick={handleRequestTransferCancel}>
                             Cancel
                         </Button>
-                    </div>,
+                    </div>
                 ]}>
                 <h2>Request a data-plane transfer</h2>
-                <Form className='formRequest' form={form} labelCol={{ span: 9 }} wrapperCol={{ span: 24 }} style={{ maxWidth: 800, marginLeft: '20.5%' }} layout='vertical'>
+                <Form className='formRequest' form={form} labelCol={{ span: 9 }} wrapperCol={{ span: 24 }} style={{ maxWidth: 800, marginLeft: '20.5%', marginTop: '4%' }} layout='vertical'>
                     <Form.Item label="Transfer Format" name="transferFormat" rules={[{ required: true, message: 'Please select a transfer format' }]}>
-                        <Select style={{ width: '75%' }} value={transferFormat} onChange={(value) => setTransferFormat(value)}>
-                            <Option value="HTTP_PUSH">HTTP_PUSH</Option>
-                            <Option value="HTTP_PULL">HTTP_PULL</Option>
-                        </Select>
+                        <div style={{display:'flex'}}>
+                            <Select style={{ width: '75%' }} value={transferFormat} onChange={(value) => setTransferFormat(value)}>
+                                <Option value="HTTP_PUSH">HTTP_PUSH</Option>
+                                <Option value="HTTP_PULL">HTTP_PULL</Option>
+                            </Select>
+                        </div>
                     </Form.Item>
                     {transferFormat === 'HTTP_PUSH' && (
                         <Form.Item label="Sink Endpoint" name="sinkEndpoint" rules={[{ required: true, message: 'Please provide the Sink Endpoint' }]}>

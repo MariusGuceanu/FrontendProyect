@@ -44,7 +44,7 @@ const OfferModal = ({ isModalOpen, handleOk, handleCancel }) => {
             <Modal width={1000} open={isModalOpen} onOk={handleOffer} onCancel={handleCancel}
                 footer={[
                     <div key="footer" style={{ display: 'flex', justifyContent: 'space-evenly', padding: 10 }}>
-                        <Button style={{ width: '20%' }} key="offer" type="primary" size="large" disabled={!offerId} icon={<SendOutlined />} onClick={handleOffer} loading={loading}>
+                        <Button style={{ width: '20%' }} key="offer" type="primary" size="large" disabled={!offerId} icon={<SendOutlined />} iconPosition='end'  onClick={handleOffer} loading={loading}>
                             Send Offer
                         </Button>
                         <Button style={{ width: '20%' }} key="cancel" type="primary" size="large" onClick={handleCancel}>

@@ -37,16 +37,18 @@ const ProviderCompleteModal = ({ isCompleteModalOpen, handleCompleteOk, handleCo
     return (
         <>
             {contextHolder}
-            <Modal title="Complete a Data-Plane Transfer" open={isCompleteModalOpen} onCancel={handleCompleteCancel}
+            <Modal open={isCompleteModalOpen} onCancel={handleCompleteCancel}
                 footer={[
-                    <Button key="agree" type="primary" icon={<SendOutlined />} loading={loading} onClick={handleComplete}>
-                        Complete
-                    </Button>,
-                    <Button key="cancel" onClick={handleCompleteCancel}>
-                        Cancel
-                    </Button>
-                ]}
-            >
+                    <div key="footer" style={{ display: 'flex', justifyContent: 'space-evenly', padding: 10 }}>
+                        <Button style={{ width: '30%' }} key="agree" size='large' type="primary" icon={<SendOutlined />} iconPosition='end' loading={loading} onClick={handleComplete}>
+                            Complete
+                        </Button>
+                        <Button style={{ width: '30%' }} key="cancel" size='large' onClick={handleCompleteCancel}>
+                            Cancel
+                        </Button>
+                    </div>
+                ]}>
+                <h2>Complete a Data-Plane Transfer</h2>
                 <Form layout="vertical">
                     <Form.Item label="Are you sure you want to Complete this transfer?" required>
                     </Form.Item>

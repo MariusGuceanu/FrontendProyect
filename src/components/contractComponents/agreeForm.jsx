@@ -48,7 +48,7 @@ const AgreeModal = ({ isAgreeModalOpen, handleAgreeOk, handleAgreeCancel, negoti
             <Modal title="Agree on Contract" open={isAgreeModalOpen} onCancel={handleAgreeCancel}
                 footer={[
                     <div key="footer" style={{ display: 'flex', justifyContent: 'space-evenly', padding: 10 }}>
-                        <Button style={{ width: '30%' }} key="agree" type="primary" icon={<SendOutlined />} loading={loading} disabled={!offerId} onClick={handleAgree}>
+                        <Button style={{ width: '30%' }} key="agree" type="primary" icon={<SendOutlined />} iconPosition='end'  loading={loading} disabled={!offerId} onClick={handleAgree}>
                             Agree
                         </Button>
                         <Button style={{ width: '30%' }} key="cancel" onClick={handleAgreeCancel}>

@@ -41,21 +41,21 @@ const StartModal = ({ isStartModalOpen, handleStartOk, handleStartCancel, transf
     return (
         <>
             {contextHolder}
-            <Modal title="Start a Data-Plane Transfer" open={isStartModalOpen} onCancel={handleStartCancel}
+            <Modal open={isStartModalOpen} onCancel={handleStartCancel}
                 footer={[
                     <div key="footer" style={{ display: 'flex', justifyContent: 'space-evenly', padding: 10 }}>
-                        <Button style={{ width: '30%' }} key="agree" type="primary" icon={<SendOutlined />} loading={loading} onClick={handleStart}>
+                        <Button style={{ width: '30%' }} key="agree" size='large' type="primary" icon={<SendOutlined />} iconPosition='end'  loading={loading} onClick={handleStart}>
                             Start
                         </Button>
-                        <Button style={{ width: '30%' }} key="cancel" onClick={handleStartCancel}>
+                        <Button style={{ width: '30%' }} key="cancel" size='large' onClick={handleStartCancel}>
                             Cancel
                         </Button>
                     </div>
-                ]}
-            >
+                ]}>
+                <h2>Start a Data-Plane Transfer</h2>
                 <Form layout="vertical">
                     <Form.Item label="sourceEndpoint" required>
-                        <Input placeholder="Enter sourceEndpoint" value={sourceEndpoint} onChange={(e) => setSourceEndpoint(e.target.value)}/>
+                        <Input placeholder="Enter sourceEndpoint" value={sourceEndpoint} onChange={(e) => setSourceEndpoint(e.target.value)} />
                     </Form.Item>
                 </Form>
             </Modal>

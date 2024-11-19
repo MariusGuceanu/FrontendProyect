@@ -39,7 +39,7 @@ const VerifyModal = ({ isVerifyModalOpen, handleVerifyOk, handleVerifyCancel, co
             <Modal title="Verify agreement" open={isVerifyModalOpen} onCancel={handleVerifyCancel}
                 footer={[
                     <div key="footer" style={{ display: 'flex', justifyContent: 'space-evenly', padding: 10 }}>
-                        <Button style={{ width: '30%' }} key="verify" type="primary" icon={<SendOutlined />} loading={loading} onClick={handleVerify}>
+                        <Button style={{ width: '30%' }} key="verify" type="primary" icon={<SendOutlined />} iconPosition='end' loading={loading} onClick={handleVerify}>
                             Verify
                         </Button>
                         <Button style={{ width: '30%' }} key="cancel" onClick={handleVerifyCancel}>

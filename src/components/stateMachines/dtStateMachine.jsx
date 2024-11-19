@@ -12,16 +12,9 @@ const dtStateMachine = {
             TERMINATED: 'TERMINATED',
         },
     },
-    STARTED2:{
-        transitions: {
-            SUSPENDED: 'SUSPENDED',
-            COMPLETED: 'COMPLETED',
-            TERMINATED: 'TERMINATED',
-        }
-    },
     SUSPENDED: {
         transitions: {
-            STARTED2: 'STARTED2',
+            STARTED: 'STARTED',
             TERMINATED: 'TERMINATED',
         },
     },

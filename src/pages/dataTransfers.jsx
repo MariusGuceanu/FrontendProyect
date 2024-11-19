@@ -7,6 +7,7 @@ import RequestTransferModal from '../components/transferComponents/requestTransf
 import StartModal from '../components/transferComponents/startForm';
 import ProviderCompleteModal from '../components/transferComponents/completeComponents/ProviderCompleteForm';
 import ConsumerCompleteModal from '../components/transferComponents/completeComponents/ConsumerCompleteForm';
+import SuspendModal from '../components/transferComponents/suspendForm';
 import Searcher from '../components/contractComponents/searcher';
 import dtStateMachine from '../components/stateMachines/dtStateMachine';
 import { useWebSocket } from '../WebSocketProvider';
@@ -29,6 +30,7 @@ const DataTransfers = () => {
     const [isRequestTransferModalOpen, setIsRequestTransferModalOpen] = useState(false);
     const [isStartModalOpen, setIsStartModalOpen] = useState(false)
     const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false)
+    const [isSuspendModalOpen, setIsSuspendModalOpen] = useState(false)
     // Selection states
     const selectionType = useState('checkbox');
     const [selectedRow, setSelectedRow] = useState(null);
@@ -110,6 +112,11 @@ const DataTransfers = () => {
     const handleCompleteOk = () => setIsCompleteModalOpen(false);
     const handleCompleteCancel = () => setIsCompleteModalOpen(false);
 
+    // Suspend transfer modal functions
+    const showSuspendModal = () => setIsSuspendModalOpen(true);
+    const handleSuspendOk = () => setIsSuspendModalOpen(false);
+    const handleSuspendCancel = () => setIsSuspendModalOpen(false);
+
     const renderCompleteModal = () => {
         if (!selectedRow) return null;
 
@@ -127,8 +134,6 @@ const DataTransfers = () => {
             );
         }
     };
-
-    //
 
     // Searcher function logic
     const onSearch = (value) => {
@@ -154,19 +159,20 @@ const DataTransfers = () => {
     const changeActionButtons = () => {
         if (!selectedRow) return null;
         const transitions = stateMachine();
-        const provider = selectedRow.provider;
-        console.log("Provider:", provider, "Transitions:", transitions);
+        const provider = selectedRow.provider === 'true';
+        const state = selectedRow.currentState; 
+        console.log("Provider:", provider, "Transitions:", transitions, "CurrentState:", state);
 
         return (
             <>
-                {provider == 'true' && transitions.includes('STARTED') && (
+                {provider && transitions.includes('STARTED') && state === 'REQUESTED' && (
                     <Button onClick={showStartModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Start</Button>
                 )}
-                {transitions.includes('SUSPENDED') && (
-                    <Button className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Suspend</Button>
+                {transitions.includes('SUSPENDED') && state === 'STARTED' && (
+                    <Button onClick={showSuspendModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Suspend</Button>
                 )}
-                {transitions.includes('STARTED2') && (
-                    <Button className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Start</Button>
+                {transitions.includes('STARTED') && state === 'SUSPENDED' && (
+                    <Button onClick={showStartModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Start</Button>
                 )}
                 {transitions.includes('COMPLETED') && (
                     <Button onClick={showCompleteModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Complete</Button>
@@ -175,8 +181,8 @@ const DataTransfers = () => {
                     <Button className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Terminate</Button>
                 )}
             </>
-        )
-    }
+        );
+    };
 
     // Content display
     return (
@@ -216,6 +222,12 @@ const DataTransfers = () => {
             </div>
             {selectedRow && (
                 <StartModal isStartModalOpen={isStartModalOpen} handleStartOk={handleStartOk} handleStartCancel={handleStartCancel}
+                    provider={selectedRow.provider}
+                    transferProcessId={selectedRow.transferId}
+                />
+            )}
+            {selectedRow && (
+                <SuspendModal isSuspendModalOpen={isSuspendModalOpen} handleSuspendOk={handleSuspendOk} handleSuspendCancel={handleSuspendCancel}
                     provider={selectedRow.provider}
                     transferProcessId={selectedRow.transferId}
                 />

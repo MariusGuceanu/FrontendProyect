@@ -39,7 +39,7 @@ const FinalizeModal = ({ isFinalizeModalOpen, handleFinalizeOk, handleFinalizeCa
             <Modal title="Finalize contract" open={isFinalizeModalOpen} onCancel={handleFinalizeCancel}
                 footer={[
                     <div key="footer" style={{ display: 'flex', justifyContent: 'space-evenly', padding: 10 }}>
-                        <Button style={{ width: '30%' }} key="finalize" type="primary" icon={<SendOutlined />} loading={loading} onClick={handleFinalize}>
+                        <Button style={{ width: '30%' }} key="finalize" type="primary" icon={<SendOutlined />} iconPosition='end'  loading={loading} onClick={handleFinalize}>
                             Finalize
                         </Button>
                         <Button style={{ width: '30%' }} key="cancel" onClick={handleFinalizeCancel}>
