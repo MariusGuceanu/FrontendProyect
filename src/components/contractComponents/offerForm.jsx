@@ -12,6 +12,7 @@ const OfferModal = ({ isModalOpen, handleOk, handleCancel }) => {
     const [loading, setLoading] = useState(false);
     const { openNotification, contextHolder } = Notification();
 
+    // Input data managment
     const handleconsumerAddrChange = (e) => {
         setconsumerAddr(e.target.value);
     };
@@ -19,6 +20,7 @@ const OfferModal = ({ isModalOpen, handleOk, handleCancel }) => {
         setOfferId(e.target.value);
     };
 
+    // Main function to request an offer for a contract by sending a request
     const handleOffer = async () => {
         setLoading(true);
         const requestData = {
@@ -26,20 +28,24 @@ const OfferModal = ({ isModalOpen, handleOk, handleCancel }) => {
             offerId: offerId.trim(),
         };
         try {
+            // Sends the request
             await axios.post(`${config.providerEndpoint}/api/gateway/offer-contract`, requestData);
             openNotification('success', 'Offer sent', 'Offer sent succesfully');
+            // Resets the input fields to leave them blank
             form.resetFields();
             setconsumerAddr('');
             setOfferId('');
             handleOk();
-        } catch (error) {
-            console.error('Error sending the offer:', error);
+        } 
+        catch (error) {
             openNotification('error', 'Error', 'The offer could not be send.');
-        } finally {
+        } 
+        finally {
             setLoading(false);
         }
     };
 
+    // Modal display
     return (
         <>
             {contextHolder}

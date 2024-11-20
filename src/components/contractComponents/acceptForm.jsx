@@ -1,42 +1,44 @@
 import React, { useState } from 'react';
-import { Modal, Form, Input, Button } from 'antd';
+import { Modal, Form, Button } from 'antd';
 import Notification from '../notifications';
 import { SendOutlined } from '@ant-design/icons';
 import axios from 'axios';
-import ContractNegotiations from '../../pages/contractNegotiations';
 import config from '../../config';
 
 const AcceptModal = ({ isAcceptModalOpen, handleAcceptOk, handleAcceptCancel, consumerPid }) => {
     const [loading, setLoading] = useState(false);
     const { openNotification, contextHolder } = Notification();
 
+    // Main function to accept the offer by sending a request
     const handleAccept = async () => {
         setLoading(true);
         try {
+
+            // Sends the request
             const response = await axios.post(`${config.consumerEndpoint}/api/gateway/accept-offer/${encodeURIComponent(consumerPid)}`, {
                 consumerPid: consumerPid,
             });
 
             if (response.status === 200) {
-                console.log('Offer accepted succesfully', response.data);
                 openNotification('success', 'Accepted', 'Contract offer is accepted');
                 handleAcceptOk();
             } else {
-                console.error('Unexpected response:', response);
                 openNotification('error', 'Unexpected Response', 'An unexpected response was received.');
             }
-        } catch (error) {
-            console.error('Error in agreement request:', error);
+        } 
+        catch (error) {
             openNotification('error', 'Error accepting', 'An error occurred while attempting to accept.');
-        } finally {
+        } 
+        finally {
             setLoading(false);
         }
     };
 
+    // Modal display
     return (
         <>
             {contextHolder}
-            <Modal title="Accept offer" open={isAcceptModalOpen} onCancel={handleAcceptCancel}
+            <Modal open={isAcceptModalOpen} onCancel={handleAcceptCancel}
                 footer={[
                     <div key="footer" style={{ display: 'flex', justifyContent: 'space-evenly', padding: 10 }}>
                         <Button style={{ width: '30%' }} key="accept" type="primary" icon={<SendOutlined />} iconPosition='end'  loading={loading} onClick={handleAccept}>
@@ -48,6 +50,7 @@ const AcceptModal = ({ isAcceptModalOpen, handleAcceptOk, handleAcceptCancel, co
                     </div>
                 ]}
             >
+                <h2> Accept offer</h2>
                 <Form layout="vertical">
                     <Form.Item label="Are you sure do you want to accept this offer?">
                     </Form.Item>

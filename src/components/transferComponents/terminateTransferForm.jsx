@@ -49,9 +49,11 @@ const TerminateTransferModal = ({ isTerminateTModalOpen, handleTerminateTOk, han
             } else {
                 openNotification('error', 'Unexpected Response', 'An unexpected response was received.');
             }
-        } catch (error) {
+        }
+        catch (error) {
             openNotification('error', 'Error trying to Terminate', 'An error occurred while attempting to terminate.');
-        } finally {
+        }
+        finally {
             setLoading(false);
         }
     };

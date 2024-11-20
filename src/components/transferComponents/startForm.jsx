@@ -29,9 +29,11 @@ const StartModal = ({ isStartModalOpen, handleStartOk, handleStartCancel, transf
             } else {
                 openNotification('error', 'Unexpected Response', 'An unexpected response was received.');
             }
-        } catch (error) {
+        } 
+        catch (error) {
             openNotification('error', 'Error trying to Start', 'An error occurred while attempting to start.');
-        } finally {
+        } 
+        finally {
             setLoading(false);
         }
     };

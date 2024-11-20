@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, Form, Input, Button, Divider, Select } from 'antd';
+import { Modal, Form, Input, Button, Divider } from 'antd';
 import { SendOutlined, PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import Notification from '../notifications';
 import config from '../../config';
@@ -10,10 +10,10 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
     const [inputValue, setInputValue] = useState('');
     const [form] = Form.useForm();
     const [selfDescription, setSelfDescription] = useState(null);
-    const [offerId, setOfferId] = useState('');
     const [loading, setLoading] = useState(false);
 
     // General states
+    const [offerId, setOfferId] = useState('');
     const [constraints, setConstraints] = useState([{ name: '', value: '' }]);
     const { openNotification, contextHolder } = Notification();
 
@@ -46,7 +46,6 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
             const response = await axios.get(inputValue.trim());
             setSelfDescription(response.data);
         } catch (error) {
-            console.error('Error fetching self-description:', error);
             openNotification('error', 'Error getting Self-description', 'Could not retrieve self-description from provider.');
         } finally {
             setLoading(false)
@@ -69,15 +68,14 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
         try {
             const response = await axios.post(`${config.consumerEndpoint}/api/gateway/request-contract`, requestData);
             if (response.status === 200) {
-                console.log('Response:', response.data);
                 openNotification('success', 'Request Successful', `Contract Negotiation ID: ${response.data.contractNegotiationId}`);
+                // Resets the input fields to leave them blank
                 form.resetFields();
                 setInputValue('');
-                setOfferId(''); 
+                setOfferId('');
                 setConstraints([{ name: '', value: '' }]);
                 handleOk();
             } else {
-                console.error('Unexpected response status:', response.status);
             }
             // Error management
         } catch (error) {

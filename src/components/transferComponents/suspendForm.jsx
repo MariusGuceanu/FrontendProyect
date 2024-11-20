@@ -48,9 +48,11 @@ const SuspendModal = ({ isSuspendModalOpen, handleSuspendOk, handleSuspendCancel
             } else {
                 openNotification('error', 'Unexpected Response', 'An unexpected response was received.');
             }
-        } catch (error) {
+        } 
+        catch (error) {
             openNotification('error', 'Error trying to Suspend', 'An error occurred while attempting to suspend.');
-        } finally {
+        } 
+        finally {
             setLoading(false);
         }
     };

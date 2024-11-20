@@ -39,10 +39,12 @@ const RequestTransferModal = ({ isRequestTransferModalOpen, handleRequestTransfe
             openNotification('success', 'Transfer requested', 'Transfer request sent successfully');
             form.resetFields();
             handleRequestTransferOk();
-        } catch (error) {
+        } 
+        catch (error) {
             console.error(error);
             openNotification('error', 'Failed to send transfer request. Please try again.');
-        } finally {
+        } 
+        finally {
             setLoading(false);
         }
     };

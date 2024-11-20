@@ -1,22 +1,22 @@
 import React, { useState } from 'react';
-import { Modal, Form, Input, Button } from 'antd';
+import { Modal, Form, Button } from 'antd';
 import Notification from '../notifications';
 import { SendOutlined } from '@ant-design/icons';
 import axios from 'axios';
-import ContractNegotiations from '../../pages/contractNegotiations';
 import config from '../../config';
 
 const VerifyModal = ({ isVerifyModalOpen, handleVerifyOk, handleVerifyCancel, consumerPid }) => {
     const [loading, setLoading] = useState(false);
     const { openNotification, contextHolder } = Notification();
 
+    // Main function to verify a contract by sending a request
     const handleVerify = async () => {
         setLoading(true);
         try {
+            // Sends the request
             const response = await axios.post(`${config.consumerEndpoint}/api/gateway/verify-agreement/${encodeURIComponent(consumerPid)}`, {
                 consumerPid: consumerPid,
             });
-
             if (response.status === 200) {
                 console.log('Contract agreement is verified', response.data);
                 openNotification('success', 'Verified', 'Contract agreement is verified');
@@ -25,18 +25,21 @@ const VerifyModal = ({ isVerifyModalOpen, handleVerifyOk, handleVerifyCancel, co
                 console.error('Unexpected response:', response);
                 openNotification('error', 'Unexpected Response', 'An unexpected response was received.');
             }
-        } catch (error) {
+        } 
+        catch (error) {
             console.error('Error in agreement request:', error);
             openNotification('error', 'Error in Agreement', 'An error occurred while attempting the agreement.');
-        } finally {
+        } 
+        finally {
             setLoading(false);
         }
     };
 
+    // Modal display
     return (
         <>
             {contextHolder}
-            <Modal title="Verify agreement" open={isVerifyModalOpen} onCancel={handleVerifyCancel}
+            <Modal open={isVerifyModalOpen} onCancel={handleVerifyCancel}
                 footer={[
                     <div key="footer" style={{ display: 'flex', justifyContent: 'space-evenly', padding: 10 }}>
                         <Button style={{ width: '30%' }} key="verify" type="primary" icon={<SendOutlined />} iconPosition='end' loading={loading} onClick={handleVerify}>
@@ -46,8 +49,8 @@ const VerifyModal = ({ isVerifyModalOpen, handleVerifyOk, handleVerifyCancel, co
                             Cancel
                         </Button>
                     </div>
-                ]}
-            >
+                ]}>
+                <h2> Verify contract</h2>
                 <Form layout="vertical">
                     <Form.Item label="Are you sure do you want to verify this agreement?">
                     </Form.Item>

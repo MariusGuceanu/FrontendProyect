@@ -10,6 +10,7 @@ const TerminateModal = ({ isTerminateModalOpen, handleTerminateOk, handleTermina
     const [constraints, setConstraints] = useState([{ name: '', value: '' }]);
     const { openNotification, contextHolder } = Notification();
 
+    // Add, remove and handle constraints functions
     const addConstraint = () => {
         setConstraints([...constraints, { name: '', value: '' }]);
     };
@@ -23,23 +24,23 @@ const TerminateModal = ({ isTerminateModalOpen, handleTerminateOk, handleTermina
         setConstraints(newConstraints);
     };
 
+    // Main function to terminate the contract process by sending a request
     const handleTerminate = async () => {
         setLoading(true);
-
         try {
             const reasons = constraints
                 .filter((constraint) => constraint.value)
                 .map((constraint) => constraint.value);
 
+            // Sends providerPid or consumerPid depending the value of the boolean from the table
             const idKey = provider ? "providerPid" : "consumerPid";
 
-            console.log("Payload enviado:", payload);
+            // Sends the request 
             const response = await axios.post(`${endpoint}/api/gateway/terminate-contract`, {
                 [idKey]: processId,
                 code: code || undefined,
                 reasons: reasons.length > 0 ? reasons : undefined,
             });
-
             if (response.status === 200) {
                 console.log("Terminate successful:", response.data);
                 openNotification("success", "Terminated", "Contract terminated successfully");
@@ -48,14 +49,17 @@ const TerminateModal = ({ isTerminateModalOpen, handleTerminateOk, handleTermina
                 console.error("Unexpected response:", response);
                 openNotification("error", "Unexpected Response", "An unexpected response was received.");
             }
-        } catch (error) {
+        }
+        catch (error) {
             console.error("Error in terminate request:", error);
             openNotification("error", "Error", "An error occurred while attempting to terminate.");
-        } finally {
+        }
+        finally {
             setLoading(false);
         }
     }
 
+    // Modal display
     return (
         <>
             {contextHolder}
