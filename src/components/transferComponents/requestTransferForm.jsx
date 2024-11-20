@@ -65,7 +65,7 @@ const RequestTransferModal = ({ isRequestTransferModalOpen, handleRequestTransfe
                     </div>
                 ]}>
                 <h2>Request a data-plane transfer</h2>
-                <Form className='formRequest' form={form} labelCol={{ span: 9 }} wrapperCol={{ span: 24 }} style={{ maxWidth: 800, marginLeft: '20.5%', marginTop: '4%' }} layout='vertical'>
+                <Form className='formRequest' form={form} preserve={false} autoComplete='off' labelCol={{ span: 9 }} wrapperCol={{ span: 24 }} style={{ maxWidth: 800, marginLeft: '20.5%', marginTop: '4%' }} layout='vertical'>
                     <Form.Item label="Transfer Format" name="transferFormat" rules={[{ required: true, message: 'Please select a transfer format' }]}>
                         <Select style={{ width: '75%' }} value={transferFormat} onChange={(value) => setTransferFormat(value)}>
                             <Option value="HTTP_PUSH">HTTP_PUSH</Option>

@@ -22,7 +22,6 @@ const StartModal = ({ isStartModalOpen, handleStartOk, handleStartCancel, transf
                 transferProcessId: transferProcessId,
                 sourceEndpoint: sourceEndpoint,
             });
-
             if (response.status === 200) {
                 openNotification('success', 'Start Successful', 'Transfer started successfully');
                 handleStartOk();
@@ -55,7 +54,7 @@ const StartModal = ({ isStartModalOpen, handleStartOk, handleStartCancel, transf
                 ]}>
                 <h2>Start a Data-Plane Transfer</h2>
                 <Form layout="vertical">
-                    <Form.Item label="sourceEndpoint" required>
+                    <Form.Item label="Source Endpoint" required>
                         <Input placeholder="Enter sourceEndpoint" value={sourceEndpoint} onChange={(e) => setSourceEndpoint(e.target.value)} />
                     </Form.Item>
                 </Form>
