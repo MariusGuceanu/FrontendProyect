@@ -18,6 +18,7 @@ const RequestTransferModal = ({ isRequestTransferModalOpen, handleRequestTransfe
         setProviderEndpoint(e.target.value);
     };
 
+    // Main function to make the request for a transfer process
     const handleRequestTransfer = async () => {
         try {
             setLoading(true);
@@ -35,7 +36,6 @@ const RequestTransferModal = ({ isRequestTransferModalOpen, handleRequestTransfe
 
             // Send the request
             await axios.post(`${config.consumerEndpoint}/api/gateway/transfer/request`, payload);
-
             openNotification('success', 'Transfer requested', 'Transfer request sent successfully');
             form.resetFields();
             handleRequestTransferOk();
@@ -47,13 +47,14 @@ const RequestTransferModal = ({ isRequestTransferModalOpen, handleRequestTransfe
         }
     };
 
+    // Modal display
     return (
         <>
             {contextHolder}
             <Modal width={1000} open={isRequestTransferModalOpen} onOk={handleRequestTransferOk} onCancel={handleRequestTransferCancel}
                 footer={[
                     <div key="footer" style={{ display: 'flex', justifyContent: 'space-evenly', padding: 10 }}>
-                        <Button style={{ width: '20%' }} key="offer" type="primary" size="large" disabled={!providerEndpoint} icon={<SendOutlined />} iconPosition='end'  onClick={handleRequestTransfer} loading={loading}>
+                        <Button style={{ width: '20%' }} key="offer" type="primary" size="large" disabled={!providerEndpoint} icon={<SendOutlined />} iconPosition='end' onClick={handleRequestTransfer} loading={loading}>
                             Send Request
                         </Button>
                         <Button style={{ width: '20%' }} key="cancel" type="default" size="large" onClick={handleRequestTransferCancel}>
@@ -64,10 +65,10 @@ const RequestTransferModal = ({ isRequestTransferModalOpen, handleRequestTransfe
                 <h2>Request a data-plane transfer</h2>
                 <Form className='formRequest' form={form} labelCol={{ span: 9 }} wrapperCol={{ span: 24 }} style={{ maxWidth: 800, marginLeft: '20.5%', marginTop: '4%' }} layout='vertical'>
                     <Form.Item label="Transfer Format" name="transferFormat" rules={[{ required: true, message: 'Please select a transfer format' }]}>
-                            <Select style={{ width: '75%' }} value={transferFormat} onChange={(value) => setTransferFormat(value)}>
-                                <Option value="HTTP_PUSH">HTTP_PUSH</Option>
-                                <Option value="HTTP_PULL">HTTP_PULL</Option>
-                            </Select>
+                        <Select style={{ width: '75%' }} value={transferFormat} onChange={(value) => setTransferFormat(value)}>
+                            <Option value="HTTP_PUSH">HTTP_PUSH</Option>
+                            <Option value="HTTP_PULL">HTTP_PULL</Option>
+                        </Select>
 
                     </Form.Item>
                     {transferFormat === 'HTTP_PUSH' && (

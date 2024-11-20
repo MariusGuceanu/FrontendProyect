@@ -29,6 +29,8 @@ const OfferModal = ({ isModalOpen, handleOk, handleCancel }) => {
             await axios.post(`${config.providerEndpoint}/api/gateway/offer-contract`, requestData);
             openNotification('success', 'Offer sent', 'Offer sent succesfully');
             form.resetFields();
+            setconsumerAddr('');
+            setOfferId('');
             handleOk();
         } catch (error) {
             console.error('Error sending the offer:', error);
@@ -53,7 +55,7 @@ const OfferModal = ({ isModalOpen, handleOk, handleCancel }) => {
                     </div>,
                 ]}>
                 <h2>Offer a contract</h2>
-                <Form labelCol={{ span: 9 }} wrapperCol={{ span: 24 }} style={{ maxWidth: 800, marginLeft: '20%' }} layout='vertical'>
+                <Form form={form} labelCol={{ span: 9 }} wrapperCol={{ span: 24 }} style={{ maxWidth: 800, marginLeft: '20%' }} layout='vertical'>
                     <Form.Item label="Consumer's Address:" required>
                         <Input value={consumerAddr} onChange={handleconsumerAddrChange} style={{width:'75%'}}/>
                     </Form.Item>

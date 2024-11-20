@@ -72,6 +72,9 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
                 console.log('Response:', response.data);
                 openNotification('success', 'Request Successful', `Contract Negotiation ID: ${response.data.contractNegotiationId}`);
                 form.resetFields();
+                setInputValue('');
+                setOfferId(''); 
+                setConstraints([{ name: '', value: '' }]);
                 handleOk();
             } else {
                 console.error('Unexpected response status:', response.status);
@@ -110,7 +113,7 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
                 ]}>
                 <h2>Request a contract</h2>
                 {/* Modal content display */}
-                <Form className='formRequest' preserve={false} autoComplete='off' name='requestEndPoint' labelCol={{ span: 9 }} wrapperCol={{ span: 24 }} style={{ maxWidth: 800, marginLeft: '5%' }} initialValues={{ remember: false }}>
+                <Form form={form} className='formRequest' preserve={false} autoComplete='off' name='requestEndPoint' labelCol={{ span: 9 }} wrapperCol={{ span: 24 }} style={{ maxWidth: 800, marginLeft: '5%' }}>
                     <Form.Item style={{ marginLeft: '-2%', marginTop: '4%' }} label="Provider's Endpoint : " name="ProvidersEp" rules={[{ required: true, message: 'Insert your URL endpoint' }]}>
                         <div style={{ display: 'flex', }}>
                             <Input value={inputValue} onChange={handleInputChange} />

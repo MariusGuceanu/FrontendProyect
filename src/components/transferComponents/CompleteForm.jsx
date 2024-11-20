@@ -9,33 +9,35 @@ const CompleteModal = ({ isCompleteModalOpen, handleCompleteOk, handleCompleteCa
     const [loading, setLoading] = useState(false);
     const { openNotification, contextHolder } = Notification();
 
+    // Main function to complete a transfer-request 
     const handleComplete = async () => {
-
         setLoading(true);
         try {
+
+            // const to distinct between provider and consumer
             const providerValue = provider === 'true';
 
+            // Sends the request
             const response = await axios.post(`${endpoint}/api/gateway/transfer/complete`, {
                 provider: providerValue,
                 transferProcessId: transferProcessId,
             });
-
             if (response.status === 200) {
-                console.log('Transfer complete successful:', response.data);
                 openNotification('success', 'Completed', 'Transfer completed successfully');
                 handleCompleteOk();
             } else {
-                console.error('Unexpected response:', response);
                 openNotification('error', 'Unexpected Response', 'An unexpected response was received.');
             }
-        } catch (error) {
-            console.error('Error trying to complete request:', error);
+        }
+        catch (error) {
             openNotification('error', 'Error trying to Complete', 'An error occurred while attempting to complete.');
-        } finally {
+        }
+        finally {
             setLoading(false);
         }
     };
 
+    // Modal display
     return (
         <>
             {contextHolder}

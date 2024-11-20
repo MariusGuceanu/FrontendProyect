@@ -3,13 +3,14 @@ import { Modal, Form, Button, Input } from 'antd';
 import { SendOutlined, PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import Notification from '../notifications';
-import config from '../../config';
+
 const SuspendModal = ({ isSuspendModalOpen, handleSuspendOk, handleSuspendCancel, transferProcessId, provider, endpoint }) => {
     const [loading, setLoading] = useState(false);
     const [code, setCode] = useState('');
     const [constraints, setConstraints] = useState([{ name: '', value: '' }]);
     const { openNotification, contextHolder } = Notification();
 
+    // Add, remove and handle constraints functions
     const addConstraint = () => {
         setConstraints([...constraints, { name: '', value: '' }]);
     };
@@ -23,38 +24,38 @@ const SuspendModal = ({ isSuspendModalOpen, handleSuspendOk, handleSuspendCancel
         setConstraints(newConstraints);
     };
 
+    // Main function to suspend a transfer process
     const handleSuspend = async () => {
         setLoading(true);
-
         try {
             const reasons = constraints
                 .filter((constraint) => constraint.name && constraint.value)
                 .map((constraint) => constraint.value);
-                
+            
+            // Const to distinct between provider and consumer
             const validProvider = provider === 'true';
+
+            // Sends the request
             const response = await axios.post(`${endpoint}/api/gateway/transfer/suspend`, {
                 provider: validProvider,
                 transferProcessId: transferProcessId,
                 code: code || undefined,
                 reasons: reasons.length > 0 ? reasons : undefined,
             });
-            console.log(response)
             if (response.status === 200) {
-                console.log('Suspend successful:', response.data);
                 openNotification('success', 'Suspended', 'Transfer suspended successfully');
                 handleSuspendOk();
             } else {
-                console.error('Unexpected response:', response);
                 openNotification('error', 'Unexpected Response', 'An unexpected response was received.');
             }
         } catch (error) {
-            console.error('Error in suspend request:', error);
             openNotification('error', 'Error trying to Suspend', 'An error occurred while attempting to suspend.');
         } finally {
             setLoading(false);
         }
     };
 
+    // Modal display
     return (
         <>
             {contextHolder}

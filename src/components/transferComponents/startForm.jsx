@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Modal, Form, Input, Button, Select } from 'antd';
 import { SendOutlined } from '@ant-design/icons';
-import config from '../../config';
 import axios from 'axios';
 import Notification from '../notifications';
 
@@ -11,11 +10,13 @@ const StartModal = ({ isStartModalOpen, handleStartOk, handleStartCancel, transf
     const { openNotification, contextHolder } = Notification();
 
     const handleStart = async () => {
-        
         setLoading(true);
         try {
+
+            // const to distinct between provider and consumer
             const providerValue = provider === 'true';
 
+            // Sends the request
             const response = await axios.post(`${endpoint}/api/gateway/transfer/start`, {
                 provider: providerValue,
                 transferProcessId: transferProcessId,
@@ -23,28 +24,26 @@ const StartModal = ({ isStartModalOpen, handleStartOk, handleStartCancel, transf
             });
 
             if (response.status === 200) {
-                console.log('Start successful:', response.data);
                 openNotification('success', 'Start Successful', 'Transfer started successfully');
                 handleStartOk();
             } else {
-                console.error('Unexpected response:', response);
                 openNotification('error', 'Unexpected Response', 'An unexpected response was received.');
             }
         } catch (error) {
-            console.error('Error in started request:', error);
             openNotification('error', 'Error trying to Start', 'An error occurred while attempting to start.');
         } finally {
             setLoading(false);
         }
     };
 
+    // Modal display
     return (
         <>
             {contextHolder}
             <Modal open={isStartModalOpen} onCancel={handleStartCancel}
                 footer={[
                     <div key="footer" style={{ display: 'flex', justifyContent: 'space-evenly', padding: 10 }}>
-                        <Button style={{ width: '30%' }} key="agree" size='large' type="primary" icon={<SendOutlined />} iconPosition='end'  loading={loading} onClick={handleStart}>
+                        <Button style={{ width: '30%' }} key="agree" size='large' type="primary" icon={<SendOutlined />} iconPosition='end' loading={loading} onClick={handleStart}>
                             Start
                         </Button>
                         <Button style={{ width: '30%' }} key="cancel" size='large' onClick={handleStartCancel}>

@@ -3,7 +3,6 @@ import { Modal, Form, Button, Input } from 'antd';
 import { SendOutlined, PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import Notification from '../notifications';
-import config from '../../config';
 
 const TerminateTransferModal = ({ isTerminateTModalOpen, handleTerminateTOk, handleTerminateTCancel, transferProcessId, provider, endpoint }) => {
     const [loading, setLoading] = useState(false);
@@ -11,6 +10,7 @@ const TerminateTransferModal = ({ isTerminateTModalOpen, handleTerminateTOk, han
     const [constraints, setConstraints] = useState([{ name: '', value: '' }]);
     const { openNotification, contextHolder } = Notification();
 
+    // Add, remove and handle constraints functions
     const addConstraint = () => {
         setConstraints([...constraints, { name: '', value: '' }]);
     };
@@ -24,40 +24,39 @@ const TerminateTransferModal = ({ isTerminateTModalOpen, handleTerminateTOk, han
         setConstraints(newConstraints);
     };
 
+    // Main function to terminate a transfer process
     const handleTerminateT = async () => {
         setLoading(true);
-
         try {
             const reasons = constraints
                 .filter((constraint) => constraint.name && constraint.value)
                 .map((constraint) => constraint.value);
 
+            // Const to distinct between provider and consumer
             const validProvider = provider === 'true';
-            console.log(provider, transferProcessId, endpoint, code, reasons)
+
+            // Sends the request
             const response = await axios.post(`${endpoint}/api/gateway/transfer/terminate`, {
                 provider: validProvider,
                 transferProcessId: transferProcessId,
                 code: code || undefined,
                 reasons: reasons.length > 0 ? reasons : undefined,
             });
-            console.log(provider, transferProcessId, endpoint, code, reasons)
-            console.log(response)
+
             if (response.status === 200) {
-                console.log('TerminateT successful:', response.data);
                 openNotification('success', 'Terminated', 'Transfer terminated successfully');
                 handleTerminateTOk();
             } else {
-                console.error('Unexpected response:', response);
                 openNotification('error', 'Unexpected Response', 'An unexpected response was received.');
             }
         } catch (error) {
-            console.error('Error in terminate request:', error);
             openNotification('error', 'Error trying to Terminate', 'An error occurred while attempting to terminate.');
         } finally {
             setLoading(false);
         }
     };
 
+    // Modal display
     return (
         <>
             {contextHolder}
