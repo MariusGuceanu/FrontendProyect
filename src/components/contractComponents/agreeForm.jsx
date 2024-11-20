@@ -24,17 +24,17 @@ const AgreeModal = ({ isAgreeModalOpen, handleAgreeOk, handleAgreeCancel, negoti
                 offerId: offerId,
                 ContractNegotiationId: negotiationId,
             });
-
             if (response.status === 200) {
-                openNotification('success', 'Agreement Successful', 'Contract agreement completed successfully');
+                const contractAgreementId = response.data.contractAgreementId;
+                openNotification('success', 'Agreement Successful', `Contract agreement ID: ${contractAgreementId}`);
                 handleAgreeOk();
             } else {
                 openNotification('error', 'Unexpected Response', 'An unexpected response was received.');
             }
-        } 
+        }
         catch (error) {
             openNotification('error', 'Error in Agreement', 'An error occurred while attempting the agreement.');
-        } 
+        }
         finally {
             setLoading(false);
         }
