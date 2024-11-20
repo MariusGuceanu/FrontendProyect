@@ -3,8 +3,8 @@ import { Modal, Form, Button, Input } from 'antd';
 import { SendOutlined, PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import Notification from '../notifications';
-import config from '../../config';
-const SuspendModal = ({ isSuspendModalOpen, handleSuspendOk, handleSuspendCancel, transferProcessId, provider, endpoint }) => {
+
+const TerminateModal = ({ isTerminateModalOpen, handleTerminateOk, handleTerminateCancel, processId, provider, endpoint }) => {
     const [loading, setLoading] = useState(false);
     const [code, setCode] = useState('');
     const [constraints, setConstraints] = useState([{ name: '', value: '' }]);
@@ -23,62 +23,62 @@ const SuspendModal = ({ isSuspendModalOpen, handleSuspendOk, handleSuspendCancel
         setConstraints(newConstraints);
     };
 
-    const handleSuspend = async () => {
+    const handleTerminate = async () => {
         setLoading(true);
 
         try {
             const reasons = constraints
-                .filter((constraint) => constraint.name && constraint.value)
+                .filter((constraint) => constraint.value)
                 .map((constraint) => constraint.value);
-                
-            const validProvider = provider === 'true';
-            const response = await axios.post(`${endpoint}/api/gateway/transfer/suspend`, {
-                provider: validProvider,
-                transferProcessId: transferProcessId,
+
+            const idKey = provider ? "providerPid" : "consumerPid";
+
+            console.log("Payload enviado:", payload);
+            const response = await axios.post(`${endpoint}/api/gateway/terminate-contract`, {
+                [idKey]: processId,
                 code: code || undefined,
                 reasons: reasons.length > 0 ? reasons : undefined,
             });
-            console.log(response)
+
             if (response.status === 200) {
-                console.log('Suspend successful:', response.data);
-                openNotification('success', 'Suspended', 'Transfer suspended successfully');
-                handleSuspendOk();
+                console.log("Terminate successful:", response.data);
+                openNotification("success", "Terminated", "Contract terminated successfully");
+                handleTerminateOk();
             } else {
-                console.error('Unexpected response:', response);
-                openNotification('error', 'Unexpected Response', 'An unexpected response was received.');
+                console.error("Unexpected response:", response);
+                openNotification("error", "Unexpected Response", "An unexpected response was received.");
             }
         } catch (error) {
-            console.error('Error in suspend request:', error);
-            openNotification('error', 'Error trying to Suspend', 'An error occurred while attempting to suspend.');
+            console.error("Error in terminate request:", error);
+            openNotification("error", "Error", "An error occurred while attempting to terminate.");
         } finally {
             setLoading(false);
         }
-    };
+    }
 
     return (
         <>
             {contextHolder}
-            <Modal width={800} open={isSuspendModalOpen} onCancel={handleSuspendCancel}
+            <Modal width={800} open={isTerminateModalOpen} onCancel={handleTerminateCancel}
                 footer={[
                     <div key="footer" style={{ display: 'flex', justifyContent: 'space-evenly', padding: 10 }}>
-                        <Button style={{ width: '30%' }} key="suspend" size='large' type="primary" icon={<SendOutlined />} iconPosition='end' loading={loading} onClick={handleSuspend}> Suspend Transfer
-                        </Button>,
-                        <Button style={{ width: '30%' }} key="cancel" size='large' onClick={handleSuspendCancel}>
+                        <Button style={{ width: '30%' }} key="terminate" size='large' type="primary" icon={<SendOutlined />} iconPosition='end' loading={loading} onClick={handleTerminate}> Terminate contract
+                        </Button>
+                        <Button style={{ width: '30%' }} key="cancel" size='large' onClick={handleTerminateCancel}>
                             Cancel
                         </Button>
                     </div>
                 ]}>
-                <h2>Suspend a Data-Plane Transfer</h2>
+                <h2>Terminate a contract</h2>
                 <Form layout="vertical">
                     <Form.Item label="Code (optional)">
-                        <Input placeholder="Enter suspension code" value={code} onChange={(e) => setCode(e.target.value)}
+                        <Input placeholder="Enter termination code" value={code} onChange={(e) => setCode(e.target.value)}
                         />
                     </Form.Item>
                     <Form.Item label="Reasons (optional)">
                         {constraints.map((constraint, index) => (
                             <div key={index} style={{ display: 'flex', marginBottom: 8 }}>
-                                <Input style={{ flex: 1, marginTop: 8, marginRight: 8 }} placeholder="Enter reason" value={constraint.value} onChange={(e) => handleConstraints(index, 'value', e.target.value)}
-                                />
+                                <Input style={{ flex: 1, marginTop: 8, marginRight: 8 }} placeholder="Enter reason" value={constraint.value} onChange={(e) => handleConstraints(index, 'value', e.target.value)} />
                                 {constraints.length > 1 && (
                                     <MinusCircleOutlined type="danger" style={{ color: 'red', marginTop: 4 }} onClick={() => removeConstraint(index)} />
                                 )}
@@ -94,5 +94,5 @@ const SuspendModal = ({ isSuspendModalOpen, handleSuspendOk, handleSuspendCancel
     );
 };
 
-export default SuspendModal;
+export default TerminateModal;
 

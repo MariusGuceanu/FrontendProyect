@@ -11,6 +11,7 @@ import Searcher from '../components/contractComponents/searcher';
 import dtStateMachine from '../components/stateMachines/dtStateMachine';
 import config from '../config';
 import { useWebSocket } from '../WebSocketProvider';
+import TerminateTransferModal from '../components/transferComponents/terminateTransferForm';
 
 
 // Table columns
@@ -31,6 +32,7 @@ const DataTransfers = () => {
     const [isStartModalOpen, setIsStartModalOpen] = useState(false)
     const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false)
     const [isSuspendModalOpen, setIsSuspendModalOpen] = useState(false)
+    const [isTerminateTModalOpen, setIsTerminateTModalOpen] = useState(false)
     // Selection states
     const selectionType = useState('checkbox');
     const [selectedRow, setSelectedRow] = useState(null);
@@ -120,6 +122,11 @@ const DataTransfers = () => {
     const handleSuspendOk = () => setIsSuspendModalOpen(false);
     const handleSuspendCancel = () => setIsSuspendModalOpen(false);
 
+    // Terminate transfer modal functions
+    const showTerminateTModal = () => setIsTerminateTModalOpen(true);
+    const handleTerminateTOk = () => setIsTerminateTModalOpen(false);
+    const handleTerminateTCancel = () => setIsTerminateTModalOpen(false);
+
     // Searcher function logic
     const onSearch = (value) => {
         const filtered = data.filter(item =>
@@ -167,7 +174,7 @@ const DataTransfers = () => {
                     <Button onClick={showCompleteModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Complete</Button>
                 )}
                 {transitions.includes('TERMINATED') && (
-                    <Button className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Terminate</Button>
+                    <Button onClick={showTerminateTModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Terminate</Button>
                 )}
             </>
         );
@@ -225,6 +232,13 @@ const DataTransfers = () => {
             )}
             {selectedRow && (
                 <CompleteModal isCompleteModalOpen={isCompleteModalOpen} handleCompleteOk={handleCompleteOk} handleCompleteCancel={handleCompleteCancel}
+                    provider={selectedRow.provider}
+                    transferProcessId={selectedRow.transferId}
+                    endpoint={getEndpoint()}
+                />
+            )}
+            {selectedRow && (
+                <TerminateTransferModal isTerminateTModalOpen={isTerminateTModalOpen} handleTerminateTOk={handleTerminateTOk} handleTerminateTCancel={handleTerminateTCancel}
                     provider={selectedRow.provider}
                     transferProcessId={selectedRow.transferId}
                     endpoint={getEndpoint()}

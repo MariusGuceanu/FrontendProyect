@@ -9,8 +9,10 @@ import AcceptModal from '../components/contractComponents/acceptForm';
 import AgreeModal from '../components/contractComponents/agreeForm';
 import VerifyModal from '../components/contractComponents/verifyForm';
 import FinalizeModal from '../components/contractComponents/finalizeForm';
+import TerminateModal from '../components/contractComponents/terminateForm';
 import Searcher from '../components/contractComponents/searcher';
 import cnStateMachine from '../components/stateMachines/cnStateMachine';
+import config from '../config';
 import { useWebSocket } from '../WebSocketProvider';
 
 // Table columns
@@ -32,7 +34,7 @@ const ContractNegotiations = () => {
     const [isAgreeModalOpen, setIsAgreeModalOpen] = useState(false);
     const [isVerifyModalOpen, setIsVerifyModalOpen] = useState(false);
     const [isFinalizeModalOpen, setIsFinalizeModalOpen] = useState(false)
-
+    const [isTerminateModalOpen, setIsTerminateModalOpen] = useState(false)
     // Selection states
     const selectionType = useState('checkbox');
     const [selectedRow, setSelectedRow] = useState(null);
@@ -137,6 +139,11 @@ const ContractNegotiations = () => {
     const handleFinalizeOk = () => setIsFinalizeModalOpen(false);
     const handleFinalizeCancel = () => setIsFinalizeModalOpen(false);
 
+    // Terminate contract modal functions
+    const showTerminateModal = () => setIsTerminateModalOpen(true);
+    const handleTerminateOk = () => setIsTerminateModalOpen(false);
+    const handleTerminateCancel = () => setIsTerminateModalOpen(false);
+
     // Search function
     const onSearch = (value) => {
         const filtered = data.filter(item =>
@@ -158,32 +165,46 @@ const ContractNegotiations = () => {
         return Object.keys(stateTransitions);
     };
 
+    const getEndpoint = () => {
+        if (!selectedRow) return null;
+        return selectedRow.provider === 'true' ? config.providerEndpoint : config.consumerEndpoint;
+    };
     // Renders buttons depending selected current state
     const changeActionButtons = () => {
         if (!selectedRow) return null;
         const transitions = stateMachine();
-        const provider = selectedRow.provider;
+        const provider = selectedRow.provider === 'true';
+        const state = selectedRow.currentState;
         console.log("Provider:", provider, "Transitions:", transitions);
 
         return (
             <>
-                {provider == 'true' && transitions.includes('OFFERED') && (
+                {provider && transitions.includes('OFFERED') && (
                     <Button className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Offer</Button>
                 )}
-                {provider == 'false' && transitions.includes('ACCEPTED') && (
+                {!provider && transitions.includes('ACCEPTED') && (
                     <Button onClick={showAcceptModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Accept</Button>
                 )}
-                {provider == 'true' && transitions.includes('AGREED') && (
+                {provider && transitions.includes('AGREED') && (
                     <Button onClick={showAgreeModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Agree</Button>
                 )}
-                {provider == 'false' && transitions.includes('VERIFIED') && (
+                {!provider && transitions.includes('VERIFIED') && (
                     <Button onClick={showVerifyModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Verify</Button>
                 )}
-                {provider == 'true' && transitions.includes('FINALIZED') && (
+                {provider && transitions.includes('FINALIZED') && (
                     <Button onClick={showFinalizeModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Finalize</Button>
                 )}
-                {transitions.includes('TERMINATED') && (
-                    <Button className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Terminate</Button>
+                {(state === 'REQUESTED' || state === 'OFFERED') && transitions.includes('TERMINATED') && (
+                    <Button onClick={showTerminateModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Terminate</Button>
+                )}
+                {state === 'ACCEPTED' && provider && transitions.includes('TERMINATED') && (
+                    <Button onClick={showTerminateModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Terminate</Button>
+                )}
+                {state === 'AGREED' && !provider && transitions.includes('TERMINATED') && (
+                    <Button onClick={showTerminateModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Terminate</Button>
+                )}
+                {state === 'VERIFIED' && provider && transitions.includes('TERMINATED') && (
+                    <Button onClick={showTerminateModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Terminate</Button>
                 )}
             </>
         )
@@ -252,6 +273,13 @@ const ContractNegotiations = () => {
             {selectedRow && (
                 <FinalizeModal isFinalizeModalOpen={isFinalizeModalOpen} handleFinalizeOk={handleFinalizeOk} handleFinalizeCancel={handleFinalizeCancel}
                     providerPid={selectedRow.processId}
+                />
+            )}
+            {selectedRow && (
+                <TerminateModal isTerminateModalOpen={isTerminateModalOpen} handleTerminateOk={handleTerminateOk} handleTerminateCancel={handleTerminateCancel}
+                    provider={selectedRow.provider === "true"}
+                    processId={selectedRow.processId}
+                    endpoint={getEndpoint()}
                 />
             )}
         </>
