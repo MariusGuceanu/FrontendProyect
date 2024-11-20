@@ -66,7 +66,6 @@ const ContractNegotiations = () => {
                 currentState: newNegotiation.state.replace('dspace:', ''),
                 initiatedDate: new Date().toLocaleString(),
             };
-
             // Retrieve the existing data
             const existingData = JSON.parse(localStorage.getItem('Data')) || [];
 
@@ -113,32 +112,26 @@ const ContractNegotiations = () => {
     const showRequestModal = () => setIsRequestModalOpen(true);
     const handleRequestOk = () => setIsRequestModalOpen(false);
     const handleRequestCancel = () => setIsRequestModalOpen(false);
-
     // Offer-contract modal functions
     const showOfferModal = () => setIsOfferModalOpen(true);
     const handleOfferOk = () => setIsOfferModalOpen(false);
     const handleOfferCancel = () => setIsOfferModalOpen(false);
-
     // Verify-agreement modal functions
     const showAcceptModal = () => setIsAcceptModalOpen(true);
     const handleAcceptOk = () => setIsAcceptModalOpen(false);
     const handleAcceptCancel = () => setIsAcceptModalOpen(false);
-
     // Agree-negotiations modal functions
     const showAgreeModal = () => setIsAgreeModalOpen(true);
     const handleAgreeOk = () => setIsAgreeModalOpen(false);
     const handleAgreeCancel = () => setIsAgreeModalOpen(false);
-
     // Verify-agreement modal functions
     const showVerifyModal = () => setIsVerifyModalOpen(true);
     const handleVerifyOk = () => setIsVerifyModalOpen(false);
     const handleVerifyCancel = () => setIsVerifyModalOpen(false);
-
     // Finalize-contract modal functions
     const showFinalizeModal = () => setIsFinalizeModalOpen(true);
     const handleFinalizeOk = () => setIsFinalizeModalOpen(false);
     const handleFinalizeCancel = () => setIsFinalizeModalOpen(false);
-
     // Terminate contract modal functions
     const showTerminateModal = () => setIsTerminateModalOpen(true);
     const handleTerminateOk = () => setIsTerminateModalOpen(false);
@@ -175,7 +168,6 @@ const ContractNegotiations = () => {
         const transitions = stateMachine();
         const provider = selectedRow.provider === 'true';
         const state = selectedRow.currentState;
-        console.log("Provider:", provider, "Transitions:", transitions);
 
         return (
             <>
@@ -244,8 +236,7 @@ const ContractNegotiations = () => {
                                 type: selectionType,
                                 ...rowSelection,
                             }} columns={columns} dataSource={filteredData} pagination={{ pageSize: 10 }}
-                            scroll={{ y: 55 * 6 }}
-                        />
+                            scroll={{ y: 55 * 6 }}/>
                     </Col>
                 </Row>
                 {/* Reactive state buttons */}
@@ -257,30 +248,25 @@ const ContractNegotiations = () => {
             </div>
             {selectedRow && (
                 <AcceptModal isAcceptModalOpen={isAcceptModalOpen} handleAcceptOk={handleAcceptOk} handleAcceptCancel={handleAcceptCancel}
-                    consumerPid={selectedRow.processId}
-                />
+                    consumerPid={selectedRow.processId}/>
             )}
             {selectedRow && (
                 <AgreeModal isAgreeModalOpen={isAgreeModalOpen} handleAgreeOk={handleAgreeOk} handleAgreeCancel={handleAgreeCancel}
-                    negotiationId={selectedRow.processId}
-                />
+                    negotiationId={selectedRow.processId}/>
             )}
             {selectedRow && (
                 <VerifyModal isVerifyModalOpen={isVerifyModalOpen} handleVerifyOk={handleVerifyOk} handleVerifyCancel={handleVerifyCancel}
-                    consumerPid={selectedRow.processId}
-                />
+                    consumerPid={selectedRow.processId}/>
             )}
             {selectedRow && (
                 <FinalizeModal isFinalizeModalOpen={isFinalizeModalOpen} handleFinalizeOk={handleFinalizeOk} handleFinalizeCancel={handleFinalizeCancel}
-                    providerPid={selectedRow.processId}
-                />
+                    providerPid={selectedRow.processId}/>
             )}
             {selectedRow && (
                 <TerminateModal isTerminateModalOpen={isTerminateModalOpen} handleTerminateOk={handleTerminateOk} handleTerminateCancel={handleTerminateCancel}
                     provider={selectedRow.provider === "true"}
                     processId={selectedRow.processId}
-                    endpoint={getEndpoint()}
-                />
+                    endpoint={getEndpoint()}/>
             )}
         </>
     );

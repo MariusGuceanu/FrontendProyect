@@ -106,22 +106,18 @@ const DataTransfers = () => {
     const showRequestTransferModal = () => setIsRequestTransferModalOpen(true);
     const handleRequestTransferOk = () => setIsRequestTransferModalOpen(false);
     const handleRequestTransferCancel = () => setIsRequestTransferModalOpen(false);
-
     // Start transfer modal fucntions
     const showStartModal = () => setIsStartModalOpen(true);
     const handleStartOk = () => setIsStartModalOpen(false);
     const handleStartCancel = () => setIsStartModalOpen(false);
-
     // Complete transfer modal functions
     const showCompleteModal = () => setIsCompleteModalOpen(true);
     const handleCompleteOk = () => setIsCompleteModalOpen(false);
     const handleCompleteCancel = () => setIsCompleteModalOpen(false);
-
     // Suspend transfer modal functions
     const showSuspendModal = () => setIsSuspendModalOpen(true);
     const handleSuspendOk = () => setIsSuspendModalOpen(false);
     const handleSuspendCancel = () => setIsSuspendModalOpen(false);
-
     // Terminate transfer modal functions
     const showTerminateTModal = () => setIsTerminateTModalOpen(true);
     const handleTerminateTOk = () => setIsTerminateTModalOpen(false);
@@ -147,6 +143,7 @@ const DataTransfers = () => {
         return Object.keys(stateTransitions);
     };
 
+    // Gets the endpoint and sends it to the forms in order to distinct between provider and consumer
     const getEndpoint = () => {
         if (!selectedRow) return null;
         return selectedRow.provider === 'true' ? config.providerEndpoint : config.consumerEndpoint;
@@ -157,7 +154,6 @@ const DataTransfers = () => {
         const transitions = stateMachine();
         const provider = selectedRow.provider === 'true';
         const state = selectedRow.currentState;
-        console.log("Provider:", provider, "Transitions:", transitions, "CurrentState:", state);
 
         return (
             <>
