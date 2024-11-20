@@ -39,11 +39,11 @@ const RequestTransferModal = ({ isRequestTransferModalOpen, handleRequestTransfe
             openNotification('success', 'Transfer requested', 'Transfer request sent successfully');
             form.resetFields();
             handleRequestTransferOk();
-        } 
+        }
         catch (error) {
             console.error(error);
             openNotification('error', 'Failed to send transfer request. Please try again.');
-        } 
+        }
         finally {
             setLoading(false);
         }
@@ -65,8 +65,8 @@ const RequestTransferModal = ({ isRequestTransferModalOpen, handleRequestTransfe
                     </div>
                 ]}>
                 <h2>Request a data-plane transfer</h2>
-                <Form className='formRequest' form={form} preserve={false} autoComplete='off' labelCol={{ span: 9 }} wrapperCol={{ span: 24 }} style={{ maxWidth: 800, marginLeft: '20.5%', marginTop: '4%' }} layout='vertical'>
-                    <Form.Item label="Transfer Format" name="transferFormat" rules={[{ required: true, message: 'Please select a transfer format' }]}>
+                <Form className='formRequest' form={form} preserve={false} autoComplete='off' labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} style={{ maxWidth: 800, marginLeft: '5%', margin: '5% 4% 5% 3%' }} layout='horizontal'>
+                    <Form.Item style={{ paddingBottom: '1.5%' }} label="Transfer Format" name="transferFormat" rules={[{ required: true, message: 'Please select a transfer format' }]}>
                         <Select style={{ width: '75%' }} value={transferFormat} onChange={(value) => setTransferFormat(value)}>
                             <Option value="HTTP_PUSH">HTTP_PUSH</Option>
                             <Option value="HTTP_PULL">HTTP_PULL</Option>
@@ -74,14 +74,14 @@ const RequestTransferModal = ({ isRequestTransferModalOpen, handleRequestTransfe
 
                     </Form.Item>
                     {transferFormat === 'HTTP_PUSH' && (
-                        <Form.Item label="Sink Endpoint" name="sinkEndpoint" rules={[{ required: true, message: 'Please provide the Sink Endpoint' }]}>
+                        <Form.Item style={{ paddingBottom: '1.5%' }} label="Sink Endpoint" name="sinkEndpoint" rules={[{ required: true, message: 'Please provide the Sink Endpoint' }]}>
                             <Input style={{ width: '75%' }} />
                         </Form.Item>
                     )}
-                    <Form.Item label="Agreement Id" name="agreementId" rules={[{ required: true, message: 'Please provide an Agreement ID' }]}                    >
+                    <Form.Item style={{ paddingBottom: '1.5%' }} label="Agreement Id" name="agreementId" rules={[{ required: true, message: 'Please provide an Agreement ID' }]}                    >
                         <Input style={{ width: '75%' }} />
                     </Form.Item>
-                    <Form.Item label="Provider Endpoint" name="providerEndpoint" rules={[{ required: true, message: 'Please provide the Provider Endpoint' }]}>
+                    <Form.Item style={{ paddingBottom: '1.5%' }} label="Provider Endpoint" name="providerEndpoint" rules={[{ required: true, message: 'Please provide the Provider Endpoint' }]}>
                         <Input value={providerEndpoint} onChange={handleProviderEpChange} style={{ width: '75%' }} />
                     </Form.Item>
                 </Form>

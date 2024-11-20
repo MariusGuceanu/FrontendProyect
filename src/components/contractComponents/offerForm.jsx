@@ -61,12 +61,12 @@ const OfferModal = ({ isModalOpen, handleOk, handleCancel }) => {
                     </div>,
                 ]}>
                 <h2>Offer a contract</h2>
-                <Form form={form} labelCol={{ span: 9 }} wrapperCol={{ span: 24 }} style={{ maxWidth: 800, marginLeft: '20%' }} layout='vertical'>
-                    <Form.Item label="Consumer's Address:" required>
-                        <Input value={consumerAddr} onChange={handleconsumerAddrChange} style={{width:'75%'}}/>
+                <Form form={form} labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} style={{marginLeft: '-5%', margin: '5% 4% 2% 3%' }} layout='horizontal'>
+                    <Form.Item style={{ paddingBottom: '1.5%' }} label="Consumer's Address:" required>
+                        <Input value={consumerAddr} onChange={handleconsumerAddrChange} style={{width:'64%'}}/>
                     </Form.Item>
-                    <Form.Item label="Offer Id:" required>
-                        <Input value={offerId} onChange={handleOfferIdChange} style={{width:'75%'}}/>
+                    <Form.Item style={{ paddingBottom: '1.5%' }} label="Offer Id:" required>
+                        <Input value={offerId} onChange={handleOfferIdChange} style={{width:'64%'}}/>
                     </Form.Item>
                 </Form>
             </Modal>

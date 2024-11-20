@@ -111,7 +111,7 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
                 ]}>
                 <h2>Request a contract</h2>
                 {/* Modal content display */}
-                <Form form={form} className='formRequest' preserve={false} autoComplete='off' name='requestEndPoint' labelCol={{ span: 9 }} wrapperCol={{ span: 24 }} style={{ maxWidth: 800, marginLeft: '5%' }}>
+                <Form form={form} className='formRequest' preserve={false} autoComplete='off' name='requestEndPoint' labelCol={{ span: 9 }} wrapperCol={{ span: 13 }} style={{ maxWidth: 800, marginLeft: '5%' }}>
                     <Form.Item style={{ marginLeft: '-2%', marginTop: '4%' }} label="Provider's Endpoint : " name="ProvidersEp" rules={[{ required: true, message: 'Insert your URL endpoint' }]}>
                         <div style={{ display: 'flex', }}>
                             <Input value={inputValue} onChange={handleInputChange} />
@@ -135,12 +135,12 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
                     </div>
 
                     {constraints.map((constraint, index) => (
-                        <div key={index} style={{ marginLeft: '14%', display: 'flex', justifyContent: 'center', marginBottom: '1.5%' }}>
-                            <Form.Item label={`Constraint Name:  `} rules={[{ required: true, message: 'Please input a constraint name' }]}>
-                                <Input style={{ width: '100%', marginLeft: '2%' }} value={constraint.name} onChange={(e) => handleConstraints(index, 'name', e.target.value)} />
+                        <div key={index} style={{ marginLeft: '10%', display: 'flex', justifyContent: 'center', marginBottom: '1.5%' }}>
+                            <Form.Item label={`Constraint Name: `} rules={[{ required: true, message: 'Please input a constraint name' }]}>
+                                <Input style={{ width: '100%', marginLeft: '10%' }} value={constraint.name} onChange={(e) => handleConstraints(index, 'name', e.target.value)} />
                             </Form.Item>
                             <Form.Item label={`Value:  `} rules={[{ required: true, message: 'Please input a value' }]}>
-                                <Input style={{ width: '100%', marginLeft: '2%' }} value={constraint.value} onChange={(e) => handleConstraints(index, 'value', e.target.value)} />
+                                <Input style={{ width: '100%', marginLeft: '6%' }} value={constraint.value} onChange={(e) => handleConstraints(index, 'value', e.target.value)} />
                             </Form.Item>
                             <Button type="danger" icon={<MinusCircleOutlined />} onClick={() => removeConstraint(index)} style={{ marginLeft: '10px' }}>
                             </Button>
@@ -150,7 +150,7 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
                         Add Constraint
                     </Button>
                     <Form.Item label="Offer ID :" name="OfferId" style={{ marginLeft: '-3%' }} rules={[{ required: true, message: 'Provide a valid UUID' }]}>
-                        <Input style={{ width: '82%' }} value={offerId} onChange={handleOfferIdChange} />
+                        <Input style={{ width: '87%' }} value={offerId} onChange={handleOfferIdChange} />
                     </Form.Item>
                 </Form>
             </Modal>
