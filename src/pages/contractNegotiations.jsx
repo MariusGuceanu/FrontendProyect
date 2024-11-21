@@ -55,6 +55,11 @@ const ContractNegotiations = () => {
 
         // Recieves a message with the data
         ws.onmessage = (event) => {
+            const message = JSON.parse(event.data);
+
+            if (message.type !== 'contract negotiation') {
+                return;
+            }
             const newNegotiation = JSON.parse(event.data);
             console.log('WebSocket message: ', newNegotiation);
             const formattedData = {
@@ -141,9 +146,9 @@ const ContractNegotiations = () => {
     const onSearch = (value) => {
         const filtered = data.filter(item =>
             item.processId.toLowerCase().includes(value.toLowerCase()) ||
+            item.offerId.toLowerCase().includes(value.toLowerCase()) ||
             item.title.toLowerCase().includes(value.toLowerCase()) ||
             item.provider.toLowerCase().includes(value.toLowerCase()) ||
-            item.consumer.toLowerCase().includes(value.toLowerCase()) ||
             item.currentState.toLowerCase().includes(value.toLowerCase())
         );
         setFilteredData(filtered);
@@ -236,7 +241,7 @@ const ContractNegotiations = () => {
                                 type: selectionType,
                                 ...rowSelection,
                             }} columns={columns} dataSource={filteredData} pagination={{ pageSize: 10 }}
-                            scroll={{ y: 55 * 6 }}/>
+                            scroll={{ y: 55 * 6 }} />
                     </Col>
                 </Row>
                 {/* Reactive state buttons */}
@@ -248,25 +253,25 @@ const ContractNegotiations = () => {
             </div>
             {selectedRow && (
                 <AcceptModal isAcceptModalOpen={isAcceptModalOpen} handleAcceptOk={handleAcceptOk} handleAcceptCancel={handleAcceptCancel}
-                    consumerPid={selectedRow.processId}/>
+                    consumerPid={selectedRow.processId} />
             )}
             {selectedRow && (
                 <AgreeModal isAgreeModalOpen={isAgreeModalOpen} handleAgreeOk={handleAgreeOk} handleAgreeCancel={handleAgreeCancel}
-                    negotiationId={selectedRow.processId}/>
+                    negotiationId={selectedRow.processId} />
             )}
             {selectedRow && (
                 <VerifyModal isVerifyModalOpen={isVerifyModalOpen} handleVerifyOk={handleVerifyOk} handleVerifyCancel={handleVerifyCancel}
-                    consumerPid={selectedRow.processId}/>
+                    consumerPid={selectedRow.processId} />
             )}
             {selectedRow && (
                 <FinalizeModal isFinalizeModalOpen={isFinalizeModalOpen} handleFinalizeOk={handleFinalizeOk} handleFinalizeCancel={handleFinalizeCancel}
-                    providerPid={selectedRow.processId}/>
+                    providerPid={selectedRow.processId} />
             )}
             {selectedRow && (
                 <TerminateModal isTerminateModalOpen={isTerminateModalOpen} handleTerminateOk={handleTerminateOk} handleTerminateCancel={handleTerminateCancel}
                     provider={selectedRow.provider === "true"}
                     processId={selectedRow.processId}
-                    endpoint={getEndpoint()}/>
+                    endpoint={getEndpoint()} />
             )}
         </>
     );

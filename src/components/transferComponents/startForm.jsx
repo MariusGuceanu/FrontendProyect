@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { Modal, Form, Input, Button, Select } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Modal, Form, Input, Button } from 'antd';
 import { SendOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import Notification from '../notifications';
 
-const StartModal = ({ isStartModalOpen, handleStartOk, handleStartCancel, transferProcessId, provider, endpoint }) => {
+const StartModal = ({ isStartModalOpen, handleStartOk, handleStartCancel, transferProcessId, provider, endpoint, transferFormat }) => {
     const [sourceEndpoint, setSourceEndpoint] = useState('');
     const [loading, setLoading] = useState(false);
     const { openNotification, contextHolder } = Notification();
@@ -15,12 +15,11 @@ const StartModal = ({ isStartModalOpen, handleStartOk, handleStartCancel, transf
 
             // const to distinct between provider and consumer
             const providerValue = provider === 'true';
-
             // Sends the request
             const response = await axios.post(`${endpoint}/api/gateway/transfer/start`, {
                 provider: providerValue,
                 transferProcessId: transferProcessId,
-                sourceEndpoint: sourceEndpoint,
+                sourceEndpoint: transferFormat === 'HTTP_PULL' ? sourceEndpoint : undefined,
             });
             if (response.status === 200) {
                 openNotification('success', 'Start Successful', 'Transfer started successfully');
@@ -28,10 +27,10 @@ const StartModal = ({ isStartModalOpen, handleStartOk, handleStartCancel, transf
             } else {
                 openNotification('error', 'Unexpected Response', 'An unexpected response was received.');
             }
-        } 
+        }
         catch (error) {
             openNotification('error', 'Error trying to Start', 'An error occurred while attempting to start.');
-        } 
+        }
         finally {
             setLoading(false);
         }
@@ -53,10 +52,13 @@ const StartModal = ({ isStartModalOpen, handleStartOk, handleStartCancel, transf
                     </div>
                 ]}>
                 <h2>Start a Data-Plane Transfer</h2>
-                <Form layout="vertical">
-                    <Form.Item label="Source Endpoint" required>
-                        <Input placeholder="Enter sourceEndpoint" value={sourceEndpoint} onChange={(e) => setSourceEndpoint(e.target.value)} />
-                    </Form.Item>
+                <Form layout="horizontal">
+                    <Form.Item label="Do you want to start the transfer?"></Form.Item>
+                    {transferFormat === 'HTTP_PULL' && (
+                        <Form.Item label="Source Endpoint" required>
+                            <Input placeholder="Enter sourceEndpoint" value={sourceEndpoint} onChange={(e) => setSourceEndpoint(e.target.value)} />
+                        </Form.Item>
+                    )}
                 </Form>
             </Modal>
         </>

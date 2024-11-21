@@ -53,6 +53,11 @@ const DataTransfers = () => {
 
         // Recieves a message with the data
         ws.onmessage = (event) => {
+            const message = JSON.parse(event.data);
+
+            if (message.type !== 'transfer process') {
+                return;
+            }
             const newTransfer = JSON.parse(event.data);
             console.log('WebSocket message: ', newTransfer);
             const formattedData = {
@@ -127,6 +132,8 @@ const DataTransfers = () => {
     const onSearch = (value) => {
         const filtered = data.filter(item =>
             item.transferId.toLowerCase().includes(value.toLowerCase()) ||
+            item.agreementId.toLowerCase().includes(value.toLowerCase()) ||
+            item.transferFormat.toLowercase().includes(value.toLowerCase()) ||
             item.title.toLowerCase().includes(value.toLowerCase()) ||
             item.provider.toLowerCase().includes(value.toLowerCase()) ||
             item.currentState.toLowerCase().includes(value.toLowerCase())
@@ -216,6 +223,7 @@ const DataTransfers = () => {
                 <StartModal isStartModalOpen={isStartModalOpen} handleStartOk={handleStartOk} handleStartCancel={handleStartCancel}
                     provider={selectedRow.provider}
                     transferProcessId={selectedRow.transferId}
+                    transferFormat={selectedRow.transferFormat}
                     endpoint={getEndpoint()}
                 />
             )}
