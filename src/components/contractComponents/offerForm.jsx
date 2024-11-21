@@ -36,10 +36,10 @@ const OfferModal = ({ isModalOpen, handleOk, handleCancel }) => {
             setconsumerAddr('');
             setOfferId('');
             handleOk();
-        } 
+        }
         catch (error) {
             openNotification('error', 'Error', 'The offer could not be send.');
-        } 
+        }
         finally {
             setLoading(false);
         }
@@ -52,7 +52,7 @@ const OfferModal = ({ isModalOpen, handleOk, handleCancel }) => {
             <Modal width={1000} open={isModalOpen} onOk={handleOffer} onCancel={handleCancel}
                 footer={[
                     <div key="footer" style={{ display: 'flex', justifyContent: 'space-evenly', padding: 10 }}>
-                        <Button style={{ width: '20%' }} key="offer" type="primary" size="large" disabled={!offerId} icon={<SendOutlined />} iconPosition='end'  onClick={handleOffer} loading={loading}>
+                        <Button style={{ width: '20%' }} key="offer" type="primary" size="large" disabled={!offerId} icon={<SendOutlined />} iconPosition='end' onClick={handleOffer} loading={loading}>
                             Send Offer
                         </Button>
                         <Button style={{ width: '20%' }} key="cancel" type="primary" size="large" onClick={handleCancel}>
@@ -61,12 +61,12 @@ const OfferModal = ({ isModalOpen, handleOk, handleCancel }) => {
                     </div>,
                 ]}>
                 <h2>Offer a contract</h2>
-                <Form form={form} labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} style={{marginLeft: '-5%', margin: '5% 4% 2% 3%' }} layout='horizontal'>
+                <Form form={form} labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} style={{ marginLeft: '-5%', margin: '5% 4% 2% 3%' }} layout='horizontal'>
                     <Form.Item style={{ paddingBottom: '1.5%' }} label="Consumer's Address:" required>
-                        <Input value={consumerAddr} onChange={handleconsumerAddrChange} style={{width:'64%'}}/>
+                        <Input value={consumerAddr} onChange={handleconsumerAddrChange} style={{ width: '64%' }} />
                     </Form.Item>
                     <Form.Item style={{ paddingBottom: '1.5%' }} label="Offer Id:" required>
-                        <Input value={offerId} onChange={handleOfferIdChange} style={{width:'64%'}}/>
+                        <Input value={offerId} onChange={handleOfferIdChange} style={{ width: '64%' }} />
                     </Form.Item>
                 </Form>
             </Modal>

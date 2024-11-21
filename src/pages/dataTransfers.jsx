@@ -143,7 +143,7 @@ const DataTransfers = () => {
         return Object.keys(stateTransitions);
     };
 
-    // Gets the endpoint and sends it to the forms in order to distinct between provider and consumer
+    // Gets the endpoint and send it to the forms in order to distinct between provider and consumer
     const getEndpoint = () => {
         if (!selectedRow) return null;
         return selectedRow.provider === 'true' ? config.providerEndpoint : config.consumerEndpoint;
