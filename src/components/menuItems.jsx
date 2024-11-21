@@ -20,28 +20,22 @@ const SiderItems = () => [
                 label: <Link to="/dashboard">Dashboard</Link>,
             },
             {
-                key: 'subSD',
-                label: 'Self-description',
-                children: [
-                    {
-                        key: '2',
-                        label: <Link to="/self-description/view-edit">View/Edit</Link>,
-                    },
-                    {
-                        key: '3',
-                        label: <Link to="/self-description/publish">Publish</Link>,
-                    },
-                    {
-                        key: '4',
-                        label: <Link to="/self-description/enable-disable">Enable/Disable</Link>,
-                    },
-                ],
+                key: '2',
+                label: <Link to="/organizations">Organizations</Link>,
+            },
+            {
+                key: '3',
+                label: <Link to="/policies">Policies</Link>,
+            },
+            {
+                key: '4',
+                label: <Link to="/catalogs">Catalog</Link>,
             },
         ],
     },
     {
         key: 'sub2',
-        label: 'Catalogs',
+        label: 'Brokers',
         icon: <SnippetsOutlined />,
         children: [
             {

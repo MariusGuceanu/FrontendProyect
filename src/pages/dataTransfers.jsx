@@ -133,7 +133,7 @@ const DataTransfers = () => {
         const filtered = data.filter(item =>
             item.transferId.toLowerCase().includes(value.toLowerCase()) ||
             item.agreementId.toLowerCase().includes(value.toLowerCase()) ||
-            item.transferFormat.toLowercase().includes(value.toLowerCase()) ||
+            item.transferFormat.toLowecase().includes(value.toLowerCase()) ||
             item.title.toLowerCase().includes(value.toLowerCase()) ||
             item.provider.toLowerCase().includes(value.toLowerCase()) ||
             item.currentState.toLowerCase().includes(value.toLowerCase())
@@ -193,7 +193,7 @@ const DataTransfers = () => {
 
             <div style={{ width: '100%', margin: 'auto', border: 'solid', borderRadius: 6 }}>
                 <Row gutter={16} />
-                <Col span={24} className="button-grid" style={{ padding: '2%' }}>
+                <Col span={24} className="button-gridT" style={{ padding: '2%' }}>
                     <Button onClick={showRequestTransferModal} className='large-button' size='large' type='primary'>Request transfer</Button>
                     <RequestTransferModal isRequestTransferModalOpen={isRequestTransferModalOpen} handleRequestTransferOk={handleRequestTransferOk} handleRequestTransferCancel={handleRequestTransferCancel} />
                     <FilterC className="action-buttons" setFilteredData={setFilteredData} initialData={data} />
@@ -209,7 +209,7 @@ const DataTransfers = () => {
                                 type: selectionType,
                                 ...rowSelection,
                             }} columns={columns} dataSource={filteredData} pagination={{ pageSize: 10 }}
-                            scroll={{ y: 55 * 6 }}
+                            scroll={{ y: 61 * 6 }}
                         />
                     </Col>
                 </Row>

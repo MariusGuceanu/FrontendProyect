@@ -71,12 +71,11 @@ const ContractNegotiations = () => {
                 currentState: newNegotiation.state.replace('dspace:', ''),
                 initiatedDate: new Date().toLocaleString(),
             };
+
             // Retrieve the existing data
             const existingData = JSON.parse(localStorage.getItem('Data')) || [];
-
             // Check if the processId already exists
             const existingIndex = existingData.findIndex(item => item.processId === formattedData.processId);
-
             let updatedData;
             if (existingIndex !== -1) {
                 // If processId exists, update the state of the existing row

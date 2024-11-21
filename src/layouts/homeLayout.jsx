@@ -5,6 +5,9 @@ import Profile from '../components/profile';
 import Dashboard from '../pages/dashboard';
 import ContractNegotiations from '../pages/contractNegotiations';
 import DataTransfers from '../pages/dataTransfers';
+import Organizations from '../pages/organizations';
+import Policies from '../pages/policies'
+import Catalogs from '../pages/catalogs'
 import SiderItems from '../components/menuItems';
 const { Header, Content, Sider } = Layout;
 
@@ -60,6 +63,10 @@ const HomeLayout = () => {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/contract-negotiations" element={<ContractNegotiations />} />
                 <Route path="/data-transfers" element={<DataTransfers />}></Route>
+                <Route path="/organizations" element={<Organizations />} />
+                <Route path="/policies" element={<Policies />} />
+                <Route path="/catalogs" element={<Catalogs />} />
+
               </Routes>
             </Content>
           </Layout>

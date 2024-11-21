@@ -35,10 +35,11 @@
   justify-content: space-evenly;
 }
 
-.large-button {
-  grid-column: span 2;
-  font-size: 1.1rem;
-  width: auto;
+.button-gridT {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 80px;
+  justify-content: space-evenly;
 }
 
 .action-buttons {
