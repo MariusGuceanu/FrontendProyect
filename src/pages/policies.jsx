@@ -1,153 +1,108 @@
 import React, { useState } from 'react';
-import { Table, Space } from 'antd';
+import { Table, Space, Button } from 'antd';
 import { PlusCircleOutlined, MinusCircleOutlined } from '@ant-design/icons';
 
 function Policies() {
-    const [expandedCells, setExpandedCells] = useState({}); // Estado para manejar expansión por celda
+    // Estado para manejar las filas expandidas
+    const [expandedRowKeys, setExpandedRowKeys] = useState([]);
 
-    // Manejo de expansión por celda (fila-columna)
-    const toggleExpand = (rowKey, colName) => {
-        const cellKey = `${rowKey}-${colName}`;
-        setExpandedCells((prevState) => ({
-            ...prevState,
-            [cellKey]: !prevState[cellKey], // Alterna expansión
-        }));
-    };
-
-    // Función para renderizar tablas anidadas
-    const renderNestedTable = (data) => {
+    // Definir las columnas de la tabla expandida
+    const expandedRowRender = (record) => {
         const columns = [
-            { title: 'Action', dataIndex: 'action', key: 'action' },
+            { title: 'Action', dataIndex: 'action', key: 'action', width: '20%' },
             {
                 title: 'Rules',
-                dataIndex: 'rules',
-                key: 'rules',
-                render: (rules) => (
-                    <Table
-                        dataSource={rules.map((constraint, index) => ({
-                            key: index,
-                            ...constraint,
-                        }))}
-                        columns={[
-                            { title: 'Left Operand', dataIndex: 'leftOperand', key: 'leftOperand' },
-                            { title: 'Operator', dataIndex: 'operator', key: 'operator' },
-                            { title: 'Right Operand', dataIndex: 'rightOperand', key: 'rightOperand' },
-                        ]}
-                        pagination={false}
-                    />
+                key: 'state',
+                render: () => (
+                    <Space size="middle">
+                        <PlusCircleOutlined
+                            size="small"
+                            onClick={() => toggleExpand(record)} />
+                    </Space>
                 ),
+                width: '80%'
             },
         ];
 
-        return (
-            <Table
-                dataSource={data.map((item, index) => ({
-                    key: index,
-                    ...item,
-                }))}
-                columns={columns}
-                pagination={false}
-            />
-        );
+        const data = [];
+        for (let i = 0; i < 1; ++i) {
+            data.push({
+                key: `${record.key}-${i}`,
+                action: '2014-12-24 23:12:00',
+                rules: `Detail ${i} for ${record.policyId}`,
+            });
+        }
+        return <Table columns={columns} dataSource={data} pagination={false} />;
     };
 
-    // Render para cada columna con expansión
-    const renderExpandableColumn = (record, colName, dataKey) => {
-        const isExpanded = expandedCells[`${record.key}-${colName}`];
-        const data = record[dataKey];
-
-        return (
-            <div>
-                <Space>
-                    {isExpanded ? (
-                        <MinusCircleOutlined
-                            onClick={() => toggleExpand(record.key, colName)}
-                        />
-                    ) : (
-                        <PlusCircleOutlined
-                            onClick={() => toggleExpand(record.key, colName)}
-                        />
-                    )}
-                </Space>
-                {isExpanded && (
-                    <div style={{ marginTop: 10 }}>
-                        {renderNestedTable(data)}
-                    </div>
-                )}
-            </div>
-        );
+    // Manejo de expansión
+    const toggleExpand = (record) => {
+        setExpandedRowKeys((prevKeys) => {
+            if (prevKeys.includes(record.key)) {
+                return prevKeys.filter((key) => key !== record.key);
+            }
+            return [...prevKeys, record.key];
+        });
     };
 
-    // Columnas principales
+    // Definir las columnas de la tabla principal
     const columns = [
         { title: 'Policy ID', dataIndex: 'policyId', key: 'policyId' },
         { title: 'Target', dataIndex: 'target', key: 'target' },
         {
-            title: 'Permissions',
-            key: 'permissions',
-            render: (_, record) => renderExpandableColumn(record, 'permissions', 'permissions'),
+            title: 'Permissions', dataIndex: 'permissions', key: 'permissions',
+            render: (_, record) => (
+                <Space size="middle" style={{ alignSelf: 'center' }}>
+                    <PlusCircleOutlined
+                        size="small"
+                        onClick={() => toggleExpand(record)} />
+                </Space>
+            ),
         },
         {
-            title: 'Prohibitions',
-            key: 'prohibitions',
-            render: (_, record) => renderExpandableColumn(record, 'prohibitions', 'prohibitions'),
+            title: 'Prohibitions', dataIndex: 'prohibitions', key: 'prohibitions',
+            render: (_, record) => (
+                <Space size="middle">
+                    <PlusCircleOutlined
+                        size="small"
+                        onClick={() => toggleExpand(record)} />
+                </Space>
+            ),
         },
         {
-            title: 'Obligations',
-            key: 'obligations',
-            render: (_, record) => renderExpandableColumn(record, 'obligations', 'obligations'),
+            title: 'Obligations', dataIndex: 'obligations', key: 'obligations',
+            render: (_, record) => (
+                <Space size="middle">
+                    <PlusCircleOutlined
+                        size="small"
+                        onClick={() => toggleExpand(record)} />
+                </Space>
+            ),
         },
     ];
 
-    // Datos de ejemplo
-    const data = [
-        {
-            key: '1',
-            policyId: 'Policy-1',
-            target: 'Target-1',
-            permissions: [
-                {
-                    action: 'use',
-                    rules: [
-                        { leftOperand: 'region', operator: 'eq', rightOperand: 'eu' },
-                    ],
-                },
-            ],
-            prohibitions: [
-                {
-                    action: 'deny',
-                    rules: [
-                        { leftOperand: 'age', operator: 'lt', rightOperand: '18' },
-                    ],
-                },
-            ],
-            obligations: [
-                {
-                    action: 'notify',
-                    rules: [
-                        { leftOperand: 'time', operator: 'gt', rightOperand: '2023-01-01' },
-                    ],
-                },
-            ],
-        },
-        {
-            key: '2',
-            policyId: 'Policy-2',
-            target: 'Target-2',
-            permissions: [
-                {
-                    action: 'read',
-                    rules: [
-                        { leftOperand: 'country', operator: 'eq', rightOperand: 'US' },
-                    ],
-                },
-            ],
-            prohibitions: [],
-            obligations: [],
-        },
-    ];
+    const data = Array.from({ length: 2 }).map((_, i) => ({
+        key: i.toString(),
+        policyId: `Policy-${i}`,
+        target: `Target-${i}`,
+        permissions: `Permission-${i}`,
+        prohibitions: `Prohibition-${i}`,
+        obligations: `Obligation-${i}`,
+    }));
 
-    return <Table className='table-contracts' columns={columns} dataSource={data} pagination={false} />;
+    return (
+        <Table
+            className="table-contracts"
+            columns={columns}
+            dataSource={data}
+            expandable={{
+                expandedRowRender,
+                rowExpandable: () => true,
+            }}
+            expandedRowKeys={expandedRowKeys}
+            expandIconColumnIndex={-1}
+        />
+    );
 }
 
 export default Policies;
