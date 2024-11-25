@@ -21,8 +21,8 @@ const columns = [
     { title: 'Transfer Format', dataIndex: 'transferFormat', width: '12.5%' },
     { title: 'Title', dataIndex: 'title', width: '8.75%' },
     { title: 'Provider', dataIndex: 'provider', width: '8.75%' },
-    { title: 'Current state', dataIndex: 'currentState', width: '10%' },
-    { title: 'Initiated date', dataIndex: 'initiatedDate', width: '20%' },
+    { title: 'Current state', dataIndex: 'currentState', width: '12.5%' },
+    { title: 'Initiated date', dataIndex: 'initiatedDate', width: '17.5%' },
 ];
 
 const DataTransfers = () => {
@@ -209,7 +209,7 @@ const DataTransfers = () => {
                                 type: selectionType,
                                 ...rowSelection,
                             }} columns={columns} dataSource={filteredData} pagination={{ pageSize: 10 }}
-                            scroll={{ y: 61 * 6 }}
+                            scroll={{ y: 55 * 6 }}
                         />
                     </Col>
                 </Row>
