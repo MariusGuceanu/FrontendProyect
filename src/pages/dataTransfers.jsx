@@ -100,6 +100,7 @@ const DataTransfers = () => {
 
     // Row selection logic
     const rowSelection = {
+        type: 'radio',
         onChange: (_, selectedRows) => setSelectedRow(selectedRows[0]),
         getCheckboxProps: (record) => ({
             disabled: record.name === 'Disabled User',

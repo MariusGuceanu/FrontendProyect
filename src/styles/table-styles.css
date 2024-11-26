@@ -88,7 +88,6 @@
 }
 
 .table-contracts .ant-table {
-  background: #1c2755;
   font-size: 0.8rem;
   scrollbar-color: rgba(255, 255, 255, 255) rgba(255, 255, 255, 0.06);
   box-shadow: #001844;
@@ -114,9 +113,13 @@
   height: 66px;
 }
 
-.table-contracts .ant-table th {
+.table-contracts .ant-table {
   background: #1a2b4d;
-  color: white;
+  color: black;
+}
+.table-contracts .ant-table-thead > tr > th {
+  text-align: center !important;
+  vertical-align: middle !important;
 }
 
 .table-contracts .ant-btn {

@@ -5,7 +5,7 @@ import Profile from '../components/profile';
 import Dashboard from '../pages/dashboard';
 import ContractNegotiations from '../pages/contractNegotiations';
 import DataTransfers from '../pages/dataTransfers';
-import Organizations from '../pages/organizations';
+import Organizations from '../pages/organization';
 import Policies from '../pages/policies'
 import Catalogs from '../pages/catalogs'
 import SiderItems from '../components/menuItems';

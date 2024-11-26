@@ -103,6 +103,7 @@ const ContractNegotiations = () => {
 
     // Row selection logic
     const rowSelection = {
+        type: 'radio',
         onChange: (selectedRowKeys, selectedRows) => {
             setSelectedRow(selectedRows[0]);
         },

@@ -108,6 +108,11 @@ function Policies() {
                 },
             ],
         },
+        {
+            key: '2', policyId: 'urn:uuid:f41035a9-683f-11ef-b391-7cb27ddc6923', target: 'String',
+
+        },
+        
     ];
 
     // Function made to render a nested table
@@ -176,6 +181,10 @@ function Policies() {
         const uniqueKey = `${record.key}-${colName}`;
         const isExpanded = expandedCells[uniqueKey];
         const data = record[dataKey];
+
+        if (!data || data.length === 0) {
+            return <div style={{ textAlign: 'center', color: 'gray' }}>None</div>;
+        }
 
         return (
             <div>
