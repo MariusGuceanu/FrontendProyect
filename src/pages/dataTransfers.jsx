@@ -94,13 +94,17 @@ const DataTransfers = () => {
         };
 
         // close and error ws functions
-        ws.onclose = () => console.log('WebSocket connection closed');
+        ws.onclose = () => {
+            window.onbeforeunload = function () {
+                ws.close();
+            }
+            console.log('WebSocket connection closed')
+        };
         ws.onerror = (error) => console.error('WebSocket error:', error);
     }, [ws]);
 
     // Row selection logic
     const rowSelection = {
-        type: 'radio',
         onChange: (_, selectedRows) => setSelectedRow(selectedRows[0]),
         getCheckboxProps: (record) => ({
             disabled: record.name === 'Disabled User',

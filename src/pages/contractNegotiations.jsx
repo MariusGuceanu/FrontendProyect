@@ -94,7 +94,10 @@ const ContractNegotiations = () => {
         };
         // close and error ws functions
         ws.onclose = () => {
-            console.log('WebSocket connection closed');
+            window.onbeforeunload = function () {
+                ws.close();
+            }
+            console.log('WebSocket connection closed')
         };
         ws.onerror = (error) => {
             console.error('WebSocket error:', error);
@@ -103,7 +106,6 @@ const ContractNegotiations = () => {
 
     // Row selection logic
     const rowSelection = {
-        type: 'radio',
         onChange: (selectedRowKeys, selectedRows) => {
             setSelectedRow(selectedRows[0]);
         },

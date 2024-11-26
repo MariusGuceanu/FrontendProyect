@@ -5,7 +5,7 @@ import axios from "axios";
 import config from "../../config";
 import Notification from '../notifications';
 
-const PolicyModal = ({ isModalOpen, handlePolicyOk, handlePolicyCancel }) => {
+const PolicyModal = ({ isModalOpen, handlePolicyOk, handlePolicyCancel, addRowToTable }) => {
     const [target, setTarget] = useState("");
     const [loading, setLoading] = useState(false);
     const [form] = Form.useForm();
@@ -71,7 +71,7 @@ const PolicyModal = ({ isModalOpen, handlePolicyOk, handlePolicyCancel }) => {
                 ...sections
             });
             if (response.status === 200) {
-                const policyId = response.data.policyId;
+                const { policyId } = response.data;
                 openNotification('success', 'Offer sent', `Policy ID: ${policyId}`);
                 form.resetFields();
                 setTarget('')
@@ -79,7 +79,8 @@ const PolicyModal = ({ isModalOpen, handlePolicyOk, handlePolicyCancel }) => {
                     permissions: [],
                     prohibitions: [],
                     obligations: [],
-                })
+                });
+                addRowToTable(policyId, target, sections);
                 handlePolicyOk();
             }
         } catch (error) {
@@ -119,8 +120,8 @@ const PolicyModal = ({ isModalOpen, handlePolicyOk, handlePolicyCancel }) => {
                 <Button type="dashed" onClick={() => addConstraint(section, index)} icon={<PlusOutlined />} style={{ width: "100%", marginBottom: 8 }}>
                     Add Constraint
                 </Button>
-                {sections[section].length > 1 && (
-                    <Button danger type="text" onClick={() => removeSectionItem(section, index)} style={{ marginTop: 4 }}>
+                {(
+                    <Button danger onClick={() => removeSectionItem(section, index)} style={{ marginTop: 8, marginLeft:'44%' }}>
                         Remove Action
                     </Button>
                 )}
@@ -152,21 +153,21 @@ const PolicyModal = ({ isModalOpen, handlePolicyOk, handlePolicyCancel }) => {
                     {/* Permissions display */}
                     <Divider>Permissions</Divider>
                     {renderSection("permissions")}
-                    <Button type="dashed" icon={<PlusOutlined />} onClick={() => addSectionItem("permissions")} style={{ width: "100%", marginBottom: 16 }} >
+                    <Button type="dashed" icon={<PlusOutlined />} onClick={() => addSectionItem("permissions")} style={{ width: "100%", marginBottom: 16, marginTop: -16 }} >
                         Add Permission
                     </Button>
 
                     {/* Prohibitions display */}
                     <Divider>Prohibitions</Divider>
                     {renderSection("prohibitions")}
-                    <Button type="dashed" icon={<PlusOutlined />} onClick={() => addSectionItem("prohibitions")} style={{ width: "100%", marginBottom: 16 }} >
+                    <Button type="dashed" icon={<PlusOutlined />} onClick={() => addSectionItem("prohibitions")} style={{ width: "100%", marginBottom: 16, marginTop: -16 }} >
                         Add Prohibition
                     </Button>
 
                     {/* Obligations display */}
                     <Divider>Obligations</Divider>
                     {renderSection("obligations")}
-                    <Button type="dashed" icon={<PlusOutlined />} onClick={() => addSectionItem("obligations")} style={{ width: "100%" }}>
+                    <Button type="dashed" icon={<PlusOutlined />} onClick={() => addSectionItem("obligations")} style={{ width: "100%", marginTop: -16 }}>
                         Add Obligation
                     </Button>
 

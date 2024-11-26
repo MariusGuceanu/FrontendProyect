@@ -10,7 +10,12 @@ export const WebSocketProvider = ({ children }) => {
         setWs(websocket);
 
         websocket.onopen = () => console.log('Connected to WebSocket');
-        websocket.onclose = () => console.log('WebSocket connection closed');
+        websocket.onclose = () => {
+            window.onbeforeunload = function () {
+                ws.close();
+            }
+            console.log('WebSocket connection closed')
+        };
         websocket.onerror = (error) => console.error('WebSocket error:', error);
 
     }, []);

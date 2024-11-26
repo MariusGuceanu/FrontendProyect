@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Table, Space, Button, Col } from 'antd';
 import { PlusCircleOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import PolicyModal from '../components/policiesComponents/addPolicy';
@@ -6,6 +6,7 @@ import PolicyModal from '../components/policiesComponents/addPolicy';
 function Policies() {
     const [expandedCells, setExpandedCells] = useState({});
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [data, setData] = useState([]);
 
     // Toggle expand
     const toggleExpand = (uniqueKey) => {
@@ -36,84 +37,37 @@ function Policies() {
             render: () => (
                 <Space>
                     <Button size="small" type="primary">Edit</Button>
-                    <Button size="small" danger>Delete</Button>
+                    <Button size="small" type='primary' danger>Delete</Button>
                 </Space>
             ),
             width: '9%',
         },
     ];
 
-    // Example data
-    const data = [
-        {
-            key: '1',
-            policyId: 'urn:uuid:f41035a9-683f-11ef-b391-7cb27ddc6923',
-            target: 'String',
-            permissions: [
-                {
-                    action: 'use', constraints: [
-                        { leftOperand: "region", operator: "eq", rightOperand: "eu" },
-                        { leftOperand: "time", operator: "eq", rightOperand: "5.00" },
-                        { leftOperand: "test", operator: "eq", rightOperand: "xyz44" }
-                    ],
-                },
-                {
-                    action: 'read',
-                    constraints: [
-                        { leftOperand: "region", operator: "eq", rightOperand: "eu" },
-                        { leftOperand: "test", operator: "eq", rightOperand: "xyz44" }
-                    ],
-                },
-            ],
-            prohibitions: [
-                {
-                    action: 'string', constraints: [
-                        { leftOperand: "region", operator: "eq", rightOperand: "eu" },
-                        { leftOperand: "test", operator: "eq", rightOperand: "xyz44" }
-                    ],
-                },
-            ],
-            obligations: [
-                {
-                    action: 'string', constraints: [
-                        { leftOperand: "test", operator: "eq", rightOperand: "xyz44" },
-                        { leftOperand: "test", operator: "eq", rightOperand: "xyz44" },
-                        { leftOperand: "test", operator: "eq", rightOperand: "xyz44" }
-                    ],
-                },
-            ],
-        },
-        {
-            key: '2', policyId: 'urn:uuid:f41035a9-683f-11ef-b391-7cb27ddc6923', target: 'String',
-            permissions: [
-                {
-                    action: 'use',
-                    constraints: [
-                        { leftOperand: 'country', operator: 'eq', rightOperand: 'Spain' },
-                    ],
-                },
-            ],
-            prohibitions: [
-                {
-                    action: 'string', constraints: [
-                        { leftOperand: 'string', operator: 'string', rightOperand: 'string' },
-                    ],
-                },
-            ],
-            obligations: [
-                {
-                    action: 'string', constraints: [
-                        { leftOperand: 'string', operator: 'string', rightOperand: 'string' },
-                    ],
-                },
-            ],
-        },
-        {
-            key: '2', policyId: 'urn:uuid:f41035a9-683f-11ef-b391-7cb27ddc6923', target: 'String',
+    // Gets the stored data to show it on the table
+    useEffect(() => {
+        const storedData = JSON.parse(localStorage.getItem('PolicyData') || '[]');
+        setData(storedData);
+    }, []);
 
-        },
-        
-    ];
+    // Adds a new row to the table with the data from the form
+    const addRowToTable = (policyId, target, sections) => {
+        const newData = {
+            key: data.length + 1,
+            policyId: policyId,
+            target: target,
+            permissions: sections.permissions,
+            prohibitions: sections.prohibitions,
+            obligations: sections.obligations,
+        };
+
+        // Sets the data
+        setData((prevData) => {
+            const updatedData = [...prevData, newData]; 
+            localStorage.setItem('PolicyData', JSON.stringify(updatedData)); 
+            return updatedData;
+        });
+    };
 
     // Function made to render a nested table
     const renderNestedTable = (data, parentKey) => {
@@ -146,6 +100,7 @@ function Policies() {
     const renderNestedContraintsTable = (constraints, parentKey) => {
         const uniqueKey = `${parentKey}-constraints`;
         const isExpanded = expandedCells[uniqueKey];
+        
         return (
             <div style={{ marginBottom: 10 }}>
                 <Space style={{ display: 'flex', justifyContent: 'center' }}>
@@ -218,9 +173,12 @@ function Policies() {
         <>
             <Col span={24} className="button-gridP" style={{ padding: '1%' }}>
                 <Button onClick={showPolicyModal} style={{ width: '20%' }} className='action-button' size='large' type='primary'>Add Policy</Button>
-                <PolicyModal isModalOpen={isModalOpen} handlePolicyOk={handlePolicyOk} handlePolicyCancel={handlePolicyCancel}></PolicyModal>
+                <PolicyModal addRowToTable={addRowToTable} isModalOpen={isModalOpen} handlePolicyOk={handlePolicyOk} handlePolicyCancel={handlePolicyCancel}></PolicyModal>
             </Col>
-            <Table style={{ marginTop: '2%' }} className='table-contracts' columns={columns} dataSource={data} pagination={false} />
+            <Table style={{ marginTop: '2%' }} className='table-contracts'
+                columns={columns} dataSource={data}
+                scroll={{ x: '1500px' }}
+                pagination={false} />
         </>
 
 

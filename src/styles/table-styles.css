@@ -94,7 +94,7 @@
 }
 
 :where(.css-dev-only-do-not-override-5pbk6d).ant-table-wrapper .ant-table-tbody .ant-table-row>.ant-table-cell-row-hover {
-  background: #254481;
+  background: #1b3363;
 }
 
 :where(.css-dev-only-do-not-override-5pbk6d).ant-table-wrapper .ant-table-thead >tr>th, :where(.css-dev-only-do-not-override-5pbk6d).ant-table-wrapper .ant-table-thead >tr>td {
@@ -120,6 +120,11 @@
 .table-contracts .ant-table-thead > tr > th {
   text-align: center !important;
   vertical-align: middle !important;
+}
+
+.table-contracts .ant-table > tr > th >td {
+  text-align: center ;
+  vertical-align: middle;
 }
 
 .table-contracts .ant-btn {
