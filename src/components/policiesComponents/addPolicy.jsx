@@ -1,86 +1,71 @@
 import React, { useState } from "react";
-import { Modal, Form, Button, Input, Divider } from "antd";
+import { Modal, Form, Button, Input, Divider, Select } from "antd";
 import { PlusOutlined, MinusCircleOutlined, SendOutlined } from "@ant-design/icons";
 import axios from "axios";
 import config from "../../config";
 import Notification from '../notifications';
 
+const { Option } = Select;
+
 const PolicyModal = ({ isModalOpen, handlePolicyOk, handlePolicyCancel, addRowToTable }) => {
     const [target, setTarget] = useState("");
     const [loading, setLoading] = useState(false);
+    const [rules, setRules] = useState([]);
     const [form] = Form.useForm();
     const { openNotification, contextHolder } = Notification();
-    const [sections, setSections] = useState({
-        permissions: [],
-        prohibitions: [],
-        obligations: [],
-    });
 
-    // Adds a new action with constraints to a specific section
-    const addSectionItem = (section) => {
-        setSections({
-            ...sections,
-            [section]: [
-                ...sections[section],
-                { action: "", constraints: [{ leftOperand: "", operator: "", rightOperand: "" }] },
-            ],
-        });
+    // Adds a new rule
+    const addRule = () => {
+        setRules([...rules, { type: "", action: "", constraints: [{ leftOperand: "", operator: "", rightOperand: "" }] }]);
     };
 
-    // Removes an action from a specific section
-    const removeSectionItem = (section, index) => {
-        const updated = sections[section].filter((_, i) => i !== index);
-        setSections({ ...sections, [section]: updated });
+    // Deletes a rule
+    const removeRule = (index) => {
+        const updatedRules = rules.filter((_, i) => i !== index);
+        setRules(updatedRules);
     };
 
-    // Adds a constraint to a specific action
-    const addConstraint = (section, actionIndex) => {
-        const updatedSection = [...sections[section]];
-        updatedSection[actionIndex].constraints.push({ leftOperand: "", operator: "", rightOperand: "" });
-        setSections({ ...sections, [section]: updatedSection });
+    // Adds a constraint to a rule
+    const addConstraint = (ruleIndex) => {
+        const updatedRules = [...rules];
+        updatedRules[ruleIndex].constraints.push({ leftOperand: "", operator: "", rightOperand: "" });
+        setRules(updatedRules);
     };
 
-    // Removes a constraint from a specific action
-    const removeConstraint = (section, actionIndex, constraintIndex) => {
-        const updatedSection = [...sections[section]];
-        updatedSection[actionIndex].constraints = updatedSection[actionIndex].constraints.filter(
-            (_, i) => i !== constraintIndex
-        );
-        setSections({ ...sections, [section]: updatedSection });
+    // Deletes a constraint from a specific rule
+    const removeConstraint = (ruleIndex, constraintIndex) => {
+        const updatedRules = [...rules];
+        updatedRules[ruleIndex].constraints = updatedRules[ruleIndex].constraints.filter((_, i) => i !== constraintIndex);
+        setRules(updatedRules);
     };
 
-    // Update a value in the sections state
-    const handleFieldChange = (section, actionIndex, field, value, constraintIndex = null) => {
-        const updatedSection = [...sections[section]];
+    // Updates the values of the rules and constraints
+    const handleFieldChange = (ruleIndex, field, value, constraintIndex = null) => {
+        const updatedRules = [...rules];
         if (constraintIndex === null) {
-            // Update action field
-            updatedSection[actionIndex][field] = value;
+            updatedRules[ruleIndex][field] = value;
         } else {
-            updatedSection[actionIndex].constraints[constraintIndex][field] = value; // Update constraint field
+            updatedRules[ruleIndex].constraints[constraintIndex][field] = value;
         }
-        setSections({ ...sections, [section]: updatedSection });
+        setRules(updatedRules);
     };
 
-    // Main function to create a policy by sending a request 
+    // Main function to create a policy by sending a request
     const handleCreatePolicy = async () => {
         setLoading(true);
         try {
-            // Sends the request
             const response = await axios.post(`${config.providerEndpoint}/api/gateway/create-policy`, {
                 target,
-                ...sections
+                rules,
             });
+
             if (response.status === 200) {
                 const { policyId } = response.data;
-                openNotification('success', 'Policy created succesfully', `Policy ID: ${policyId}`);
+                openNotification('success', 'Policy created successfully', `Policy ID: ${policyId}`);
                 form.resetFields();
-                setTarget('')
-                setSections({
-                    permissions: [],
-                    prohibitions: [],
-                    obligations: [],
-                });
-                addRowToTable(policyId, target, sections);
+                setTarget("");
+                setRules([]);
+                addRowToTable(policyId, target, rules);
                 handlePolicyOk();
             }
         } catch (error) {
@@ -91,40 +76,39 @@ const PolicyModal = ({ isModalOpen, handlePolicyOk, handlePolicyCancel, addRowTo
         }
     };
 
-    // Render constraints for an action
-    const renderConstraints = (section, actionIndex, constraints) => (
+    // Renders the constraints field inputs 
+    const renderConstraints = (ruleIndex, constraints) => (
         constraints.map((constraint, constraintIndex) => (
-            <div style={{ display: "flex", marginBottom: 8 }}>
-                <Input placeholder="Left Operand" style={{ flex: 1, marginRight: 8 }} value={constraint.leftOperand} onChange={(e) =>
-                    handleFieldChange(section, actionIndex, "leftOperand", e.target.value, constraintIndex)
-                } />
-                <Input placeholder="Operator" style={{ flex: 1, marginRight: 8 }} value={constraint.operator} onChange={(e) =>
-                    handleFieldChange(section, actionIndex, "operator", e.target.value, constraintIndex)
-                } />
-                <Input placeholder="Right Operand" style={{ flex: 1, marginRight: 8 }} value={constraint.rightOperand} onChange={(e) =>
-                    handleFieldChange(section, actionIndex, "rightOperand", e.target.value, constraintIndex)
-                } />
-                {(
-                    <MinusCircleOutlined style={{ color: "red", marginTop: 8 }} onClick={() => removeConstraint(section, actionIndex, constraintIndex)} />
-                )}
+            <div style={{ display: "flex", marginBottom: 12, marginTop: 12 }} key={constraintIndex}>
+                <Input placeholder="Left Operand" style={{ flex: 1, marginRight: 8 }} value={constraint.leftOperand} onChange={(e) => handleFieldChange(ruleIndex, "leftOperand", e.target.value, constraintIndex)} />
+                <Input placeholder="Operator" style={{ flex: 1, marginRight: 8 }} value={constraint.operator} onChange={(e) => handleFieldChange(ruleIndex, "operator", e.target.value, constraintIndex)} />
+                <Input placeholder="Right Operand" style={{ flex: 1, marginRight: 8 }} value={constraint.rightOperand} onChange={(e) => handleFieldChange(ruleIndex, "rightOperand", e.target.value, constraintIndex)} />
+                <MinusCircleOutlined style={{ color: "red" }} onClick={() => removeConstraint(ruleIndex, constraintIndex)} />
             </div>
         ))
     );
 
-    // Render actions for a section
-    const renderSection = (section) => (
-        sections[section].map((actionItem, index) => (
-            <div key={index} style={{ marginBottom: 16 }}>
-                <Input placeholder="Action" value={actionItem.action} onChange={(e) => handleFieldChange(section, index, "action", e.target.value)} style={{ marginBottom: 8 }} />
-                {renderConstraints(section, index, actionItem.constraints)}
-                <Button type="dashed" onClick={() => addConstraint(section, index)} icon={<PlusOutlined />} style={{ width: "100%", marginBottom: 8 }}>
+    // Render the rules field inputs
+    const renderRules = () => (
+        rules.map((rule, ruleIndex) => (
+            <div key={ruleIndex} style={{ marginBottom: 16 }}>
+                <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
+                    <Select style={{ width: '50%' }} placeholder="Type" value={rule.type} onChange={(value) => handleFieldChange(ruleIndex, "type", value)} rules={[{ required: true, message: 'Select a type of rule' }]} >
+                        <Option value="permissions">Permission</Option>
+                        <Option value="prohibitions">Prohibition</Option>
+                        <Option value="obligations">Obligation</Option>
+                    </Select>
+                    <Input style={{ width: '50%' }} placeholder="Action" value={rule.action} onChange={(e) => handleFieldChange(ruleIndex, "action", e.target.value)} />
+                </div>
+                {renderConstraints(ruleIndex, rule.constraints)}
+                <Button type="dashed" onClick={() => addConstraint(ruleIndex)} icon={<PlusOutlined />} style={{ width: "100%", marginBottom: 8 }} >
                     Add Constraint
                 </Button>
-                {(
-                    <Button danger onClick={() => removeSectionItem(section, index)} style={{ marginTop: 8, marginLeft:'44%' }}>
-                        Remove Action
+                <div style={{ display: 'flex', justifyContent: 'center', }}>
+                    <Button danger onClick={() => removeRule(ruleIndex)} style={{ width: "25%", marginTop: 10 }}>
+                        Remove Rule
                     </Button>
-                )}
+                </div>
                 <Divider />
             </div>
         ))
@@ -136,7 +120,7 @@ const PolicyModal = ({ isModalOpen, handlePolicyOk, handlePolicyCancel, addRowTo
             {contextHolder}
             <Modal width={700} open={isModalOpen} onCancel={handlePolicyCancel} footer={[
                 <div key="footer" style={{ display: 'flex', justifyContent: 'space-evenly', padding: 25 }}>
-                    <Button style={{ width: '30%' }} size="large" type="primary" disabled={!target} loading={loading} onClick={handleCreatePolicy} icon={<SendOutlined />}>
+                    <Button style={{ width: '30%' }} size="large" type="primary" disabled={!target} loading={loading} onClick={handleCreatePolicy} icon={<SendOutlined />} >
                         Add Policy
                     </Button>
                     <Button style={{ width: '30%' }} size="large" key="cancel" onClick={handlePolicyCancel}>
@@ -150,27 +134,12 @@ const PolicyModal = ({ isModalOpen, handlePolicyOk, handlePolicyCancel, addRowTo
                         <Input value={target} onChange={(e) => setTarget(e.target.value)} placeholder="Enter target" />
                     </Form.Item>
 
-                    {/* Permissions display */}
-                    <Divider>Permissions</Divider>
-                    {renderSection("permissions")}
-                    <Button type="dashed" icon={<PlusOutlined />} onClick={() => addSectionItem("permissions")} style={{ width: "100%", marginBottom: 16, marginTop: -16 }} >
-                        Add Permission
+                    {/* Render rules */}
+                    <Divider>Rules</Divider>
+                    {renderRules()}
+                    <Button type="dashed" icon={<PlusOutlined />} onClick={addRule} style={{ width: "100%", marginBottom: 16 }} >
+                        Add Rule
                     </Button>
-
-                    {/* Prohibitions display */}
-                    <Divider>Prohibitions</Divider>
-                    {renderSection("prohibitions")}
-                    <Button type="dashed" icon={<PlusOutlined />} onClick={() => addSectionItem("prohibitions")} style={{ width: "100%", marginBottom: 16, marginTop: -16 }} >
-                        Add Prohibition
-                    </Button>
-
-                    {/* Obligations display */}
-                    <Divider>Obligations</Divider>
-                    {renderSection("obligations")}
-                    <Button type="dashed" icon={<PlusOutlined />} onClick={() => addSectionItem("obligations")} style={{ width: "100%", marginTop: -16 }}>
-                        Add Obligation
-                    </Button>
-
                 </Form>
             </Modal>
         </>

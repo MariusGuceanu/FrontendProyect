@@ -95,9 +95,6 @@ const DataTransfers = () => {
 
         // close and error ws functions
         ws.onclose = () => {
-            window.onbeforeunload = function () {
-                ws.close();
-            }
             console.log('WebSocket connection closed')
         };
         ws.onerror = (error) => console.error('WebSocket error:', error);

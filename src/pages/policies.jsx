@@ -18,8 +18,8 @@ function Policies() {
 
     // Main table columns
     const columns = [
-        { title: 'Policy ID', dataIndex: 'policyId', key: 'policyId', width: '12%' },
-        { title: 'Target', dataIndex: 'target', key: 'target', width: '4%' },
+        { title: 'Policy ID', dataIndex: 'policyId', key: 'policyId', width: '11%' },
+        { title: 'Target', dataIndex: 'target', key: 'target', width: '5%' },
         {
             title: 'Permissions', key: 'permissions',
             render: (record) => renderExpandableColumn(record, 'permissions', 'permissions'), width: '25%'
@@ -51,14 +51,20 @@ function Policies() {
     }, []);
 
     // Adds a new row to the table with the data from the form
-    const addRowToTable = (policyId, target, sections) => {
+    const addRowToTable = (policyId, target, rules) => {
+
+        // Filter to get the data from the form
+        const permissions = rules.filter(rule => rule.type === "permissions");
+        const prohibitions = rules.filter(rule => rule.type === "prohibitions");
+        const obligations = rules.filter(rule => rule.type === "obligations");
+
         const newData = {
             key: data.length + 1,
             policyId: policyId,
             target: target,
-            permissions: sections.permissions,
-            prohibitions: sections.prohibitions,
-            obligations: sections.obligations,
+            permissions,
+            prohibitions,
+            obligations,
         };
 
         // Sets the data
@@ -177,7 +183,7 @@ function Policies() {
             </Col>
             <Table style={{ marginTop: '2%' }} className='table-contracts'
                 columns={columns} dataSource={data}
-                scroll={{ x: '1500px', y: 112 * 6 }}
+                scroll={{ x: '1500px', y: 93 * 6 }}
                 pagination={false} />
         </>
 
