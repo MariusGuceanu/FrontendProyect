@@ -93,7 +93,7 @@ const PolicyModal = ({ isModalOpen, handlePolicyOk, handlePolicyCancel, addRowTo
         rules.map((rule, ruleIndex) => (
             <div key={ruleIndex} style={{ marginBottom: 16 }}>
                 <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
-                    <Select style={{ width: '50%' }} placeholder="Type" value={rule.type} onChange={(value) => handleFieldChange(ruleIndex, "type", value)} rules={[{ required: true, message: 'Select a type of rule' }]} >
+                    <Select placeholder="Select format" style={{ width: '50%' }} value={rule.type} onChange={(value) => handleFieldChange(ruleIndex, "type", value)} rules={[{ required: true, message: 'Select a type of rule' }]} >
                         <Option value="permissions">Permission</Option>
                         <Option value="prohibitions">Prohibition</Option>
                         <Option value="obligations">Obligation</Option>

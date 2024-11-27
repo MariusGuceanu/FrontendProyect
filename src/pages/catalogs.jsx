@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Space, Button, Col } from 'antd';
-import { PlusCircleOutlined, MinusCircleOutlined } from '@ant-design/icons';
-import CatalogModal from '../components/catalogsComponents/addCatalog';
+import CatalogModal from '../components/catalogsComponents/addDataset';
 
 function Catalogs() {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -35,9 +34,17 @@ function Catalogs() {
     }, []);
 
     // Adds a new row to the table with the data from the form
-    const addRowToTable = () => {
-
-        // Sets the data
+    const addRowToTable = (datasetId, title, description, endpoint, offerId, keywords, format) => {
+        const newData = {
+            key: data.length + 1,
+            datasetId,
+            title,
+            description,
+            endpoints: endpoint,
+            offerIds: offerId,  // Aquí debería estar "offerId", pero está tomando valores erróneos
+            keywords,
+            format,
+        };
         setData((prevData) => {
             const updatedData = [...prevData, newData];
             localStorage.setItem('CatalogData', JSON.stringify(updatedData));
@@ -55,11 +62,12 @@ function Catalogs() {
     return (
         <>
             <Col span={24} className="button-gridP" style={{ padding: '1%' }}>
-                <Button onClick={showCatalogModal} style={{ width: '20%' }} className='action-button' size='large' type='primary'>Add Catalog</Button>
+                <Button onClick={showCatalogModal} style={{ width: '20%' }} className='action-button' size='large' type='primary'>Add Dataset</Button>
                 <CatalogModal addRowToTable={addRowToTable} isModalOpen={isModalOpen} handleCatalogOk={handleCatalogOk} handleCatalogCancel={handleCatalogCancel}></CatalogModal>
             </Col>
             <Table style={{ marginTop: '2%' }} className='table-contracts'
                 columns={columns}
+                dataSource={data}
                 scroll={{ x: '1500px', y: 93 * 6 }}
                 pagination={false} />
         </>
