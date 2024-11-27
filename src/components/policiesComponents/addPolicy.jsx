@@ -72,7 +72,7 @@ const PolicyModal = ({ isModalOpen, handlePolicyOk, handlePolicyCancel, addRowTo
             });
             if (response.status === 200) {
                 const { policyId } = response.data;
-                openNotification('success', 'Offer sent', `Policy ID: ${policyId}`);
+                openNotification('success', 'Policy created succesfully', `Policy ID: ${policyId}`);
                 form.resetFields();
                 setTarget('')
                 setSections({
@@ -134,7 +134,7 @@ const PolicyModal = ({ isModalOpen, handlePolicyOk, handlePolicyCancel, addRowTo
     return (
         <>
             {contextHolder}
-            <Modal width={1000} open={isModalOpen} onCancel={handlePolicyCancel} footer={[
+            <Modal width={700} open={isModalOpen} onCancel={handlePolicyCancel} footer={[
                 <div key="footer" style={{ display: 'flex', justifyContent: 'space-evenly', padding: 25 }}>
                     <Button style={{ width: '30%' }} size="large" type="primary" disabled={!target} loading={loading} onClick={handleCreatePolicy} icon={<SendOutlined />}>
                         Add Policy

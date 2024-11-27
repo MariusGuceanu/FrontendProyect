@@ -63,8 +63,8 @@ function Policies() {
 
         // Sets the data
         setData((prevData) => {
-            const updatedData = [...prevData, newData]; 
-            localStorage.setItem('PolicyData', JSON.stringify(updatedData)); 
+            const updatedData = [...prevData, newData];
+            localStorage.setItem('PolicyData', JSON.stringify(updatedData));
             return updatedData;
         });
     };
@@ -100,7 +100,7 @@ function Policies() {
     const renderNestedContraintsTable = (constraints, parentKey) => {
         const uniqueKey = `${parentKey}-constraints`;
         const isExpanded = expandedCells[uniqueKey];
-        
+
         return (
             <div style={{ marginBottom: 10 }}>
                 <Space style={{ display: 'flex', justifyContent: 'center' }}>
@@ -177,7 +177,7 @@ function Policies() {
             </Col>
             <Table style={{ marginTop: '2%' }} className='table-contracts'
                 columns={columns} dataSource={data}
-                scroll={{ x: '1500px' }}
+                scroll={{ x: '1500px', y: 112 * 6 }}
                 pagination={false} />
         </>
 
