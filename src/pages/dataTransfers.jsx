@@ -13,7 +13,6 @@ import config from '../config';
 import { useWebSocket } from '../WebSocketProvider';
 import TerminateTransferModal from '../components/transferComponents/terminateTransferForm';
 
-
 // Table columns
 const columns = [
     { title: 'Transfer ID', dataIndex: 'transferId', width: '20%' },
@@ -41,16 +40,16 @@ const DataTransfers = () => {
     const [filteredData, setFilteredData] = useState([]);
     const [data, setData] = useState([]);
     // History table states
-    const [historyData, setHistoryData] = useState([])
+    const [historyTransferData, setHistoryTransferData] = useState([])
     const [showHistory, setShowHistory] = useState(false);
 
     // Gets the data of the table to keep it stored (reloading purposes)
     useEffect(() => {
         const storedData = JSON.parse(localStorage.getItem('TransfersData') || '[]');
-        const storedHistory = JSON.parse(localStorage.getItem('HistoryData') || '[]');
+        const storedHistory = JSON.parse(localStorage.getItem('HistoryTransferData') || '[]');
         setData(storedData);
         setFilteredData(storedData);
-        setHistoryData(storedHistory);
+        setHistoryTransferData(storedHistory);
     }, []);
 
     // Updates the data from the table every request through websocket connection
@@ -91,9 +90,15 @@ const DataTransfers = () => {
 
                 // If state is COMPLETED OR TERMINATED the data is setted in History data
                 if (['COMPLETED', 'TERMINATED'].includes(formattedData.currentState.toUpperCase())) {
-                    const updatedHistory = [...historyData, existingData[existingIndex]];
-                    setHistoryData(updatedHistory);
-                    localStorage.setItem('HistoryData', JSON.stringify(updatedHistory));
+                    const updatedHistory = [...historyTransferData, existingData[existingIndex]];
+
+                    // If the terminated process doesn't exist, adds a new one to the history table
+                    const uniqueHistory = updatedHistory.filter((item, index, self) =>
+                        index === self.findIndex((t) => t.processId === item.processId)
+                    );
+
+                    setHistoryTransferData(uniqueHistory);
+                    localStorage.setItem('HistoryTransferData', JSON.stringify(uniqueHistory));
                     existingData.splice(existingIndex, 1);
                 }
 
@@ -115,7 +120,7 @@ const DataTransfers = () => {
             console.log('WebSocket connection closed')
         };
         ws.onerror = (error) => console.error('WebSocket error:', error);
-    }, [ws]);
+    }, [ws, historyTransferData]);
 
     // Row selection logic
     const rowSelection = {
@@ -285,7 +290,7 @@ const DataTransfers = () => {
                         ) : (
                             <Table style={{ padding: '2%', overflowX: 'auto' }} className="table-contracts"
                                 columns={columns}
-                                dataSource={historyData}
+                                dataSource={historyTransferData}
                                 pagination={{ pageSize: 10 }}
                                 scroll={{ y: 55 * 6 }} />
                         )}

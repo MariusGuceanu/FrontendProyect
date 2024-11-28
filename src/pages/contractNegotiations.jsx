@@ -93,14 +93,21 @@ const ContractNegotiations = () => {
                 // If state is FINALIZED OR TERMINATED the data is setted in History data
                 if (['FINALIZED', 'TERMINATED'].includes(formattedData.currentState.toUpperCase())) {
                     const updatedHistory = [...historyData, existingData[existingIndex]];
-                    setHistoryData(updatedHistory);
-                    localStorage.setItem('HistoryData', JSON.stringify(updatedHistory));
+
+                    // If the terminated process doesn't exist, adds a new one to the history table
+                    const uniqueHistory = updatedHistory.filter((item, index, self) =>
+                        index === self.findIndex((t) => t.processId === item.processId)
+                    );
+
+                    setHistoryData(uniqueHistory);
+                    localStorage.setItem('HistoryData', JSON.stringify(uniqueHistory));
                     existingData.splice(existingIndex, 1);
                 }
 
                 updatedData = [...existingData];
             } else {
-                // If processId doesn't exist, add the new row
+
+                // If processId doesn't exist, adds the new row
                 updatedData = [...existingData, formattedData];
             }
 
@@ -117,7 +124,7 @@ const ContractNegotiations = () => {
         ws.onerror = (error) => {
             console.error('WebSocket error:', error);
         };
-    }, [ws]);
+    }, [ws, historyData]);
 
     // Row selection logic
     const rowSelection = {
