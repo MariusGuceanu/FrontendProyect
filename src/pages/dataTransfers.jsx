@@ -26,6 +26,7 @@ const columns = [
 ];
 
 const DataTransfers = () => {
+    // Ws connection
     const ws = useWebSocket();
     // Modal states
     const [isRequestTransferModalOpen, setIsRequestTransferModalOpen] = useState(false);
@@ -39,12 +40,17 @@ const DataTransfers = () => {
     // Data states  
     const [filteredData, setFilteredData] = useState([]);
     const [data, setData] = useState([]);
+    // History table states
+    const [historyData, setHistoryData] = useState([])
+    const [showHistory, setShowHistory] = useState(false);
 
     // Gets the data of the table to keep it stored (reloading purposes)
     useEffect(() => {
         const storedData = JSON.parse(localStorage.getItem('TransfersData') || '[]');
+        const storedHistory = JSON.parse(localStorage.getItem('HistoryData') || '[]');
         setData(storedData);
         setFilteredData(storedData);
+        setHistoryData(storedHistory);
     }, []);
 
     // Updates the data from the table every request through websocket connection
@@ -55,6 +61,7 @@ const DataTransfers = () => {
         ws.onmessage = (event) => {
             const message = JSON.parse(event.data);
 
+            // If the recieved message isn't a transfer, is not accepted
             if (message.type !== 'transfer process') {
                 return;
             }
@@ -70,6 +77,7 @@ const DataTransfers = () => {
                 currentState: newTransfer.state.replace('dspace:', ''),
                 initiatedDate: new Date().toLocaleString(),
             };
+
             // Retrieve the existing data
             const existingData = JSON.parse(localStorage.getItem('TransfersData')) || [];
 
@@ -80,6 +88,15 @@ const DataTransfers = () => {
 
                 // If processId exists, update the state of the existing row
                 existingData[existingIndex].currentState = formattedData.currentState;
+
+                // If state is COMPLETED OR TERMINATED the data is setted in History data
+                if (['COMPLETED', 'TERMINATED'].includes(formattedData.currentState.toUpperCase())) {
+                    const updatedHistory = [...historyData, existingData[existingIndex]];
+                    setHistoryData(updatedHistory);
+                    localStorage.setItem('HistoryData', JSON.stringify(updatedHistory));
+                    existingData.splice(existingIndex, 1);
+                }
+
                 updatedData = [...existingData];
             } else {
 
@@ -157,6 +174,7 @@ const DataTransfers = () => {
         if (!selectedRow) return null;
         return selectedRow.provider === 'true' ? config.providerEndpoint : config.consumerEndpoint;
     };
+
     // Renders buttons depending selected current state
     const changeActionButtons = () => {
         if (!selectedRow) return null;
@@ -164,22 +182,70 @@ const DataTransfers = () => {
         const provider = selectedRow.provider === 'true';
         const state = selectedRow.currentState;
 
+        // Renders each state button with its modal
         return (
             <>
                 {provider && transitions.includes('STARTED') && state === 'REQUESTED' && (
-                    <Button onClick={showStartModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Start</Button>
+                    <>
+                        <Button onClick={showStartModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Start</Button>
+                        {selectedRow && (
+                            <StartModal isStartModalOpen={isStartModalOpen} handleStartOk={handleStartOk} handleStartCancel={handleStartCancel}
+                                provider={selectedRow.provider}
+                                transferProcessId={selectedRow.transferId}
+                                transferFormat={selectedRow.transferFormat}
+                                endpoint={getEndpoint()}
+                            />
+                        )}
+                    </>
                 )}
                 {transitions.includes('SUSPENDED') && state === 'STARTED' && (
-                    <Button onClick={showSuspendModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Suspend</Button>
+                    <>
+                        <Button onClick={showSuspendModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Suspend</Button>
+                        {selectedRow && (
+                            <SuspendModal isSuspendModalOpen={isSuspendModalOpen} handleSuspendOk={handleSuspendOk} handleSuspendCancel={handleSuspendCancel}
+                                provider={selectedRow.provider}
+                                transferProcessId={selectedRow.transferId}
+                                endpoint={getEndpoint()}
+                            />
+                        )}
+                    </>
                 )}
                 {transitions.includes('STARTED') && state === 'SUSPENDED' && (
-                    <Button onClick={showStartModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Start</Button>
+                    <>
+                        <Button onClick={showStartModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Start</Button>
+                        {selectedRow && (
+                            <StartModal isStartModalOpen={isStartModalOpen} handleStartOk={handleStartOk} handleStartCancel={handleStartCancel}
+                                provider={selectedRow.provider}
+                                transferProcessId={selectedRow.transferId}
+                                transferFormat={selectedRow.transferFormat}
+                                endpoint={getEndpoint()}
+                            />
+                        )}
+                    </>
                 )}
                 {transitions.includes('COMPLETED') && (
-                    <Button onClick={showCompleteModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Complete</Button>
+                    <>
+                        <Button onClick={showCompleteModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Complete</Button>
+                        {selectedRow && (
+                            <CompleteModal isCompleteModalOpen={isCompleteModalOpen} handleCompleteOk={handleCompleteOk} handleCompleteCancel={handleCompleteCancel}
+                                provider={selectedRow.provider}
+                                transferProcessId={selectedRow.transferId}
+                                endpoint={getEndpoint()}
+                            />
+                        )}
+                    </>
                 )}
                 {transitions.includes('TERMINATED') && (
-                    <Button onClick={showTerminateTModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Terminate</Button>
+                    <>
+                        <Button onClick={showTerminateTModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Terminate</Button>
+                        {selectedRow && (
+                            <TerminateTransferModal isTerminateTModalOpen={isTerminateTModalOpen} handleTerminateTOk={handleTerminateTOk} handleTerminateTCancel={handleTerminateTCancel}
+                                provider={selectedRow.provider}
+                                transferProcessId={selectedRow.transferId}
+                                endpoint={getEndpoint()}
+                            />
+                        )}
+                    </>
                 )}
             </>
         );
@@ -189,8 +255,8 @@ const DataTransfers = () => {
     return (
         <>
             <div style={{ display: 'flex', justifyContent: 'space-around', marginTop: '3%' }}>
-                <Button className="large-buttons" type="primary">Ongoing Transfers</Button>
-                <Button className="large-buttons" type="primary">History</Button>
+                <Button className="large-buttons" type="primary" onClick={() => setShowHistory(false)}>Ongoing Transfers</Button>
+                <Button className="large-buttons" type="primary" onClick={() => setShowHistory(true)}>History</Button>
             </div>
 
             <div style={{ width: '100%', margin: 'auto', border: 'solid', borderRadius: 6 }}>
@@ -203,16 +269,26 @@ const DataTransfers = () => {
                     <Searcher onSearch={onSearch} />
                 </Col>
 
+                {/* Ongoing and History tables */}
                 <Row gutter={16}>
                     <Col span={24}>
-                        <Table style={{ padding: '2%', overflowX: 'auto' }} className="table-contracts"
-                            rowClassName={(record) => (record.provider === 'false' ? 'provider-false' : '')}
-                            rowSelection={{
-                                type: selectionType,
-                                ...rowSelection,
-                            }} columns={columns} dataSource={filteredData} pagination={{ pageSize: 10 }}
-                            scroll={{ y: 55 * 6 }}
-                        />
+                        {/*  Iterates between tables */}
+                        {!showHistory ? (
+                            <Table style={{ padding: '2%', overflowX: 'auto' }} className="table-contracts"
+                                rowClassName={(record) => (record.provider === 'false' ? 'provider-false' : '')}
+                                rowSelection={{
+                                    type: selectionType,
+                                    ...rowSelection,
+                                }} columns={columns} dataSource={filteredData}
+                                pagination={{ pageSize: 10 }}
+                                scroll={{ y: 55 * 6 }} />
+                        ) : (
+                            <Table style={{ padding: '2%', overflowX: 'auto' }} className="table-contracts"
+                                columns={columns}
+                                dataSource={historyData}
+                                pagination={{ pageSize: 10 }}
+                                scroll={{ y: 55 * 6 }} />
+                        )}
                     </Col>
                 </Row>
                 <Row gutter={16}>
@@ -221,35 +297,6 @@ const DataTransfers = () => {
                     </Col>
                 </Row>
             </div>
-            {selectedRow && (
-                <StartModal isStartModalOpen={isStartModalOpen} handleStartOk={handleStartOk} handleStartCancel={handleStartCancel}
-                    provider={selectedRow.provider}
-                    transferProcessId={selectedRow.transferId}
-                    transferFormat={selectedRow.transferFormat}
-                    endpoint={getEndpoint()}
-                />
-            )}
-            {selectedRow && (
-                <SuspendModal isSuspendModalOpen={isSuspendModalOpen} handleSuspendOk={handleSuspendOk} handleSuspendCancel={handleSuspendCancel}
-                    provider={selectedRow.provider}
-                    transferProcessId={selectedRow.transferId}
-                    endpoint={getEndpoint()}
-                />
-            )}
-            {selectedRow && (
-                <CompleteModal isCompleteModalOpen={isCompleteModalOpen} handleCompleteOk={handleCompleteOk} handleCompleteCancel={handleCompleteCancel}
-                    provider={selectedRow.provider}
-                    transferProcessId={selectedRow.transferId}
-                    endpoint={getEndpoint()}
-                />
-            )}
-            {selectedRow && (
-                <TerminateTransferModal isTerminateTModalOpen={isTerminateTModalOpen} handleTerminateTOk={handleTerminateTOk} handleTerminateTCancel={handleTerminateTCancel}
-                    provider={selectedRow.provider}
-                    transferProcessId={selectedRow.transferId}
-                    endpoint={getEndpoint()}
-                />
-            )}
         </>
     );
 };

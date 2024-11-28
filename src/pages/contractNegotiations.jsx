@@ -26,6 +26,7 @@ const columns = [
 ];
 
 const ContractNegotiations = () => {
+    // Ws connection
     const ws = useWebSocket();
     // Modal states
     const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
@@ -41,12 +42,17 @@ const ContractNegotiations = () => {
     // Data states
     const [filteredData, setFilteredData] = useState([]);
     const [data, setData] = useState([]);
+    // History table states
+    const [historyData, setHistoryData] = useState([])
+    const [showHistory, setShowHistory] = useState(false);
 
     // Gets the data of the table to keep it stored (reloading purposes)
     useEffect(() => {
         const storedData = JSON.parse(localStorage.getItem('Data') || '[]');
+        const storedHistory = JSON.parse(localStorage.getItem('HistoryData') || '[]');
         setData(storedData);
         setFilteredData(storedData);
+        setHistoryData(storedHistory);
     }, []);
 
     // Updates the data from the table every request through websocket connection
@@ -57,6 +63,7 @@ const ContractNegotiations = () => {
         ws.onmessage = (event) => {
             const message = JSON.parse(event.data);
 
+            // If the recieved message isn't a contract, is not accepted
             if (message.type !== 'contract negotiation') {
                 return;
             }
@@ -74,12 +81,23 @@ const ContractNegotiations = () => {
 
             // Retrieve the existing data
             const existingData = JSON.parse(localStorage.getItem('Data')) || [];
+
             // Check if the processId already exists
             const existingIndex = existingData.findIndex(item => item.processId === formattedData.processId);
             let updatedData;
             if (existingIndex !== -1) {
+
                 // If processId exists, update the state of the existing row
                 existingData[existingIndex].currentState = formattedData.currentState;
+
+                // If state is FINALIZED OR TERMINATED the data is setted in History data
+                if (['FINALIZED', 'TERMINATED'].includes(formattedData.currentState.toUpperCase())) {
+                    const updatedHistory = [...historyData, existingData[existingIndex]];
+                    setHistoryData(updatedHistory);
+                    localStorage.setItem('HistoryData', JSON.stringify(updatedHistory));
+                    existingData.splice(existingIndex, 1);
+                }
+
                 updatedData = [...existingData];
             } else {
                 // If processId doesn't exist, add the new row
@@ -162,10 +180,12 @@ const ContractNegotiations = () => {
         return Object.keys(stateTransitions);
     };
 
+    // Gets the endpoint depending if it is a provider or a consumer
     const getEndpoint = () => {
         if (!selectedRow) return null;
         return selectedRow.provider === 'true' ? config.providerEndpoint : config.consumerEndpoint;
     };
+
     // Renders buttons depending selected current state
     const changeActionButtons = () => {
         if (!selectedRow) return null;
@@ -173,34 +193,93 @@ const ContractNegotiations = () => {
         const provider = selectedRow.provider === 'true';
         const state = selectedRow.currentState;
 
+        // Render of each button with its modal
         return (
             <>
                 {provider && transitions.includes('OFFERED') && (
-                    <Button className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Offer</Button>
+                    <>
+                        <Button className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Offer</Button>
+                    </>
                 )}
                 {!provider && transitions.includes('ACCEPTED') && (
-                    <Button onClick={showAcceptModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Accept</Button>
+                    <>
+                        <Button onClick={showAcceptModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Accept</Button>
+                        {selectedRow && (
+                            <AcceptModal isAcceptModalOpen={isAcceptModalOpen} handleAcceptOk={handleAcceptOk} handleAcceptCancel={handleAcceptCancel}
+                                consumerPid={selectedRow.processId} />
+                        )}
+                    </>
                 )}
                 {provider && transitions.includes('AGREED') && (
-                    <Button onClick={showAgreeModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Agree</Button>
+                    <>
+                        <Button onClick={showAgreeModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Agree</Button>
+                        {selectedRow && (
+                            <AgreeModal isAgreeModalOpen={isAgreeModalOpen} handleAgreeOk={handleAgreeOk} handleAgreeCancel={handleAgreeCancel}
+                                negotiationId={selectedRow.processId} />
+                        )}
+                    </>
                 )}
                 {!provider && transitions.includes('VERIFIED') && (
-                    <Button onClick={showVerifyModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Verify</Button>
+                    <>
+                        <Button onClick={showVerifyModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Verify</Button>
+                        {selectedRow && (
+                            <VerifyModal isVerifyModalOpen={isVerifyModalOpen} handleVerifyOk={handleVerifyOk} handleVerifyCancel={handleVerifyCancel}
+                                consumerPid={selectedRow.processId} />
+                        )}
+                    </>
                 )}
                 {provider && transitions.includes('FINALIZED') && (
-                    <Button onClick={showFinalizeModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Finalize</Button>
+                    <>
+                        <Button onClick={showFinalizeModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Finalize</Button>
+                        {selectedRow && (
+                            <FinalizeModal isFinalizeModalOpen={isFinalizeModalOpen} handleFinalizeOk={handleFinalizeOk} handleFinalizeCancel={handleFinalizeCancel}
+                                providerPid={selectedRow.processId} />
+                        )}
+                    </>
                 )}
                 {(state === 'REQUESTED' || state === 'OFFERED') && transitions.includes('TERMINATED') && (
-                    <Button onClick={showTerminateModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Terminate</Button>
+                    <>
+                        <Button onClick={showTerminateModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Terminate</Button>
+                        {selectedRow && (
+                            <TerminateModal isTerminateModalOpen={isTerminateModalOpen} handleTerminateOk={handleTerminateOk} handleTerminateCancel={handleTerminateCancel}
+                                provider={selectedRow.provider === "true"}
+                                processId={selectedRow.processId}
+                                endpoint={getEndpoint()} />
+                        )}
+                    </>
                 )}
                 {state === 'ACCEPTED' && provider && transitions.includes('TERMINATED') && (
-                    <Button onClick={showTerminateModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Terminate</Button>
+                    <>
+                        <Button onClick={showTerminateModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Terminate</Button>
+                        {selectedRow && (
+                            <TerminateModal isTerminateModalOpen={isTerminateModalOpen} handleTerminateOk={handleTerminateOk} handleTerminateCancel={handleTerminateCancel}
+                                provider={selectedRow.provider === "true"}
+                                processId={selectedRow.processId}
+                                endpoint={getEndpoint()} />
+                        )}
+                    </>
                 )}
                 {state === 'AGREED' && !provider && transitions.includes('TERMINATED') && (
-                    <Button onClick={showTerminateModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Terminate</Button>
+                    <>
+                        <Button onClick={showTerminateModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Terminate</Button>
+                        {selectedRow && (
+                            <TerminateModal isTerminateModalOpen={isTerminateModalOpen} handleTerminateOk={handleTerminateOk} handleTerminateCancel={handleTerminateCancel}
+                                provider={selectedRow.provider === "true"}
+                                processId={selectedRow.processId}
+                                endpoint={getEndpoint()} />
+                        )}
+                    </>
                 )}
                 {state === 'VERIFIED' && provider && transitions.includes('TERMINATED') && (
-                    <Button onClick={showTerminateModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Terminate</Button>
+                    <>
+                        <Button onClick={showTerminateModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Terminate</Button>
+                        {selectedRow && (
+                            <TerminateModal isTerminateModalOpen={isTerminateModalOpen} handleTerminateOk={handleTerminateOk} handleTerminateCancel={handleTerminateCancel}
+                                provider={selectedRow.provider === "true"}
+                                processId={selectedRow.processId}
+                                endpoint={getEndpoint()} />
+                        )}
+                    </>
                 )}
             </>
         )
@@ -211,8 +290,8 @@ const ContractNegotiations = () => {
         <>
             {/* Table buttons */}
             <div style={{ display: 'flex', justifyContent: 'space-around', marginTop: '3%', }}>
-                <Button className="large-buttons" type="primary">Ongoing Processes</Button>
-                <Button className="large-buttons" type="primary">History</Button>
+                <Button className="large-buttons" type="primary" onClick={() => setShowHistory(false)}>Ongoing Processes</Button>
+                <Button className="large-buttons" type="primary" onClick={() => setShowHistory(true)}>History</Button>
             </div>
 
             {/* Action buttons */}
@@ -231,16 +310,26 @@ const ContractNegotiations = () => {
                     {/* Search */}
                     <Searcher onSearch={onSearch} />
                 </Col>
-                {/* Table and reactive state buttons */}
+                {/* Ongoing and History tables */}
                 <Row gutter={16}>
                     <Col span={24}>
-                        <Table style={{ padding: '2%', overflowX: 'auto' }} className="table-contracts"
-                            rowClassName={(record) => (record.provider === 'false' ? 'provider-false' : '')}
-                            rowSelection={{
-                                type: selectionType,
-                                ...rowSelection,
-                            }} columns={columns} dataSource={filteredData} pagination={{ pageSize: 10 }}
-                            scroll={{ y: 55 * 6 }} />
+                        {/*  Iterates between tables */}
+                        {!showHistory ? (
+                            <Table style={{ padding: '2%', overflowX: 'auto' }} className="table-contracts"
+                                rowClassName={(record) => (record.provider === 'false' ? 'provider-false' : '')}
+                                rowSelection={{
+                                    type: selectionType,
+                                    ...rowSelection,
+                                }} columns={columns} dataSource={filteredData}
+                                pagination={{ pageSize: 10 }}
+                                scroll={{ y: 55 * 6 }} />
+                        ) : (
+                            <Table style={{ padding: '2%', overflowX: 'auto' }} className="table-contracts"
+                                columns={columns}
+                                dataSource={historyData}
+                                pagination={{ pageSize: 10 }}
+                                scroll={{ y: 55 * 6 }} />
+                        )}
                     </Col>
                 </Row>
                 {/* Reactive state buttons */}
@@ -250,28 +339,6 @@ const ContractNegotiations = () => {
                     </Col>
                 </Row>
             </div>
-            {selectedRow && (
-                <AcceptModal isAcceptModalOpen={isAcceptModalOpen} handleAcceptOk={handleAcceptOk} handleAcceptCancel={handleAcceptCancel}
-                    consumerPid={selectedRow.processId} />
-            )}
-            {selectedRow && (
-                <AgreeModal isAgreeModalOpen={isAgreeModalOpen} handleAgreeOk={handleAgreeOk} handleAgreeCancel={handleAgreeCancel}
-                    negotiationId={selectedRow.processId} />
-            )}
-            {selectedRow && (
-                <VerifyModal isVerifyModalOpen={isVerifyModalOpen} handleVerifyOk={handleVerifyOk} handleVerifyCancel={handleVerifyCancel}
-                    consumerPid={selectedRow.processId} />
-            )}
-            {selectedRow && (
-                <FinalizeModal isFinalizeModalOpen={isFinalizeModalOpen} handleFinalizeOk={handleFinalizeOk} handleFinalizeCancel={handleFinalizeCancel}
-                    providerPid={selectedRow.processId} />
-            )}
-            {selectedRow && (
-                <TerminateModal isTerminateModalOpen={isTerminateModalOpen} handleTerminateOk={handleTerminateOk} handleTerminateCancel={handleTerminateCancel}
-                    provider={selectedRow.provider === "true"}
-                    processId={selectedRow.processId}
-                    endpoint={getEndpoint()} />
-            )}
         </>
     );
 };
