@@ -14,7 +14,7 @@ const VerifyModal = ({ isVerifyModalOpen, handleVerifyOk, handleVerifyCancel, co
         setLoading(true);
         try {
             // Sends the request
-            const response = await axios.post(`${config.consumerEndpoint}/api/gateway/verify-agreement/${encodeURIComponent(consumerPid)}`, {
+            const response = await axios.post(`${config.url}${config.consumer}${config.gatewayPath}/verify-agreement/${encodeURIComponent(consumerPid)}`, {
                 consumerPid: consumerPid,
             });
             if (response.status === 200) {
@@ -25,11 +25,11 @@ const VerifyModal = ({ isVerifyModalOpen, handleVerifyOk, handleVerifyCancel, co
                 console.error('Unexpected response:', response);
                 openNotification('error', 'Unexpected Response', 'An unexpected response was received.');
             }
-        } 
+        }
         catch (error) {
             console.error('Error in agreement request:', error);
             openNotification('error', 'Error in Agreement', 'An error occurred while attempting the agreement.');
-        } 
+        }
         finally {
             setLoading(false);
         }

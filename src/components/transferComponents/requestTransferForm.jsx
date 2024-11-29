@@ -35,7 +35,7 @@ const RequestTransferModal = ({ isRequestTransferModalOpen, handleRequestTransfe
             }
 
             // Send the request
-            await axios.post(`${config.consumerEndpoint}/api/gateway/transfer/request`, payload);
+            await axios.post(`${config.url}${config.consumer}${config.gatewayPath}/transfer/request`, payload);
             openNotification('success', 'Transfer requested', 'Transfer request sent successfully');
             form.resetFields();
             handleRequestTransferOk();

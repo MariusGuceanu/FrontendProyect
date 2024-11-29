@@ -20,7 +20,7 @@ const AgreeModal = ({ isAgreeModalOpen, handleAgreeOk, handleAgreeCancel, negoti
         try {
 
             // Sends the request
-            const response = await axios.post(`${config.providerEndpoint}/api/gateway/agree-contract`, {
+            const response = await axios.post(`${config.url}${config.provider}${config.gatewayPath}/agree-contract`, {
                 offerId: offerId,
                 ContractNegotiationId: negotiationId,
             });

@@ -23,13 +23,12 @@ const OfferModal = ({ isModalOpen, handleOk, handleCancel }) => {
     // Main function to request an offer for a contract by sending a request
     const handleOffer = async () => {
         setLoading(true);
-        const requestData = {
-            consumerAddr: consumerAddr.trim(),
-            offerId: offerId.trim(),
-        };
         try {
             // Sends the request
-            await axios.post(`${config.providerEndpoint}/api/gateway/offer-contract`, requestData);
+            await axios.post(`${config.url}${config.provider}${config.gatewayPath}/offer-contract`, {
+                consumerAddr: consumerAddr.trim(),
+                offerId: offerId.trim(),
+            });
             openNotification('success', 'Offer sent', 'Offer sent succesfully');
             // Resets the input fields to leave them blank
             form.resetFields();

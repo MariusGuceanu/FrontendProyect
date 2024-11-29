@@ -13,9 +13,8 @@ const AcceptModal = ({ isAcceptModalOpen, handleAcceptOk, handleAcceptCancel, co
     const handleAccept = async () => {
         setLoading(true);
         try {
-
             // Sends the request
-            const response = await axios.post(`${config.consumerEndpoint}/api/gateway/accept-offer/${encodeURIComponent(consumerPid)}`, {
+            const response = await axios.post(`${config.url}${config.consumer}${config.gatewayPath}/accept-offer/${encodeURIComponent(consumerPid)}`, {
                 consumerPid: consumerPid,
             });
 
@@ -25,10 +24,10 @@ const AcceptModal = ({ isAcceptModalOpen, handleAcceptOk, handleAcceptCancel, co
             } else {
                 openNotification('error', 'Unexpected Response', 'An unexpected response was received.');
             }
-        } 
+        }
         catch (error) {
             openNotification('error', 'Error accepting', 'An error occurred while attempting to accept.');
-        } 
+        }
         finally {
             setLoading(false);
         }
@@ -41,7 +40,7 @@ const AcceptModal = ({ isAcceptModalOpen, handleAcceptOk, handleAcceptCancel, co
             <Modal open={isAcceptModalOpen} onCancel={handleAcceptCancel}
                 footer={[
                     <div key="footer" style={{ display: 'flex', justifyContent: 'space-evenly', padding: 10 }}>
-                        <Button style={{ width: '30%' }} key="accept" type="primary" icon={<SendOutlined />} iconPosition='end'  loading={loading} onClick={handleAccept}>
+                        <Button style={{ width: '30%' }} key="accept" type="primary" icon={<SendOutlined />} iconPosition='end' loading={loading} onClick={handleAccept}>
                             Accept offer
                         </Button>
                         <Button style={{ width: '30%' }} key="cancel" onClick={handleAcceptCancel}>

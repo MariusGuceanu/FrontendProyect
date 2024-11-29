@@ -199,7 +199,7 @@ const DataTransfers = () => {
     // Gets the endpoint and send it to the forms in order to distinct between provider and consumer
     const getEndpoint = () => {
         if (!selectedRow) return null;
-        return selectedRow.provider === 'true' ? config.providerEndpoint : config.consumerEndpoint;
+        return selectedRow.provider === 'true' ? config.provider : config.consumer;
     };
 
     // Renders buttons depending selected current state

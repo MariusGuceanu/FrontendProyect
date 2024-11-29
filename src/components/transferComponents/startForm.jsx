@@ -3,6 +3,7 @@ import { Modal, Form, Input, Button } from 'antd';
 import { SendOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import Notification from '../notifications';
+import config from '../../config';
 
 const StartModal = ({ isStartModalOpen, handleStartOk, handleStartCancel, transferProcessId, provider, endpoint, transferFormat }) => {
     const [sourceEndpoint, setSourceEndpoint] = useState('');
@@ -16,7 +17,7 @@ const StartModal = ({ isStartModalOpen, handleStartOk, handleStartCancel, transf
             // const to distinct between provider and consumer
             const providerValue = provider === 'true';
             // Sends the request
-            const response = await axios.post(`${endpoint}/api/gateway/transfer/start`, {
+            const response = await axios.post(`${config.url}${endpoint}${config.gatewayPath}/transfer/start`, {
                 provider: providerValue,
                 transferProcessId: transferProcessId,
                 sourceEndpoint: transferFormat === 'HTTP_PULL' ? sourceEndpoint : undefined,

@@ -262,7 +262,7 @@ const ContractNegotiations = () => {
     // Gets the endpoint depending if it is a provider or a consumer
     const getEndpoint = () => {
         if (!selectedRow) return null;
-        return selectedRow.provider === 'true' ? config.providerEndpoint : config.consumerEndpoint;
+        return selectedRow.provider === 'true' ? config.provider : config.consumer;
     };
 
     // Renders buttons depending selected current state

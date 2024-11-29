@@ -3,6 +3,7 @@ import { Modal, Form, Button } from 'antd';
 import { SendOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import Notification from '../notifications';
+import config from '../../config';
 
 const CompleteModal = ({ isCompleteModalOpen, handleCompleteOk, handleCompleteCancel, transferProcessId, provider, endpoint }) => {
     const [loading, setLoading] = useState(false);
@@ -17,7 +18,7 @@ const CompleteModal = ({ isCompleteModalOpen, handleCompleteOk, handleCompleteCa
             const providerValue = provider === 'true';
 
             // Sends the request
-            const response = await axios.post(`${endpoint}/api/gateway/transfer/complete`, {
+            const response = await axios.post(`${config.url}${endpoint}${config.gatewayPath}/transfer/complete`, {
                 provider: providerValue,
                 transferProcessId: transferProcessId,
             });

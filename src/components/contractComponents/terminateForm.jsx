@@ -3,6 +3,7 @@ import { Modal, Form, Button, Input } from 'antd';
 import { SendOutlined, PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import Notification from '../notifications';
+import config from '../../config';
 
 const TerminateModal = ({ isTerminateModalOpen, handleTerminateOk, handleTerminateCancel, processId, provider, endpoint }) => {
     const [loading, setLoading] = useState(false);
@@ -36,7 +37,8 @@ const TerminateModal = ({ isTerminateModalOpen, handleTerminateOk, handleTermina
             const idKey = provider ? "providerPid" : "consumerPid";
 
             // Sends the request 
-            const response = await axios.post(`${endpoint}/api/gateway/terminate-contract`, {
+            console.log(endpoint)
+            const response = await axios.post(`${config.url}${endpoint}${config.gatewayPath}/terminate-contract`, {
                 [idKey]: processId,
                 code: code || undefined,
                 reasons: reasons.length > 0 ? reasons : undefined,

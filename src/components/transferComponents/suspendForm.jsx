@@ -3,6 +3,7 @@ import { Modal, Form, Button, Input } from 'antd';
 import { SendOutlined, PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import Notification from '../notifications';
+import config from '../../config';
 
 const SuspendModal = ({ isSuspendModalOpen, handleSuspendOk, handleSuspendCancel, transferProcessId, provider, endpoint }) => {
     const [loading, setLoading] = useState(false);
@@ -36,7 +37,7 @@ const SuspendModal = ({ isSuspendModalOpen, handleSuspendOk, handleSuspendCancel
             const validProvider = provider === 'true';
 
             // Sends the request
-            const response = await axios.post(`${endpoint}/api/gateway/transfer/suspend`, {
+            const response = await axios.post(`${config.url}${endpoint}${config.gatewayPath}/transfer/suspend`, {
                 provider: validProvider,
                 transferProcessId: transferProcessId,
                 code: code || undefined,

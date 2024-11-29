@@ -14,7 +14,7 @@ const FinalizeModal = ({ isFinalizeModalOpen, handleFinalizeOk, handleFinalizeCa
         setLoading(true);
         try {
             // Sends the request
-            const response = await axios.post(`${config.providerEndpoint}/api/gateway/finalize-contract/${encodeURIComponent(providerPid)}`, {
+            const response = await axios.post(`${config.url}${config.provider}${config.gatewayPath}/finalize-contract/${encodeURIComponent(providerPid)}`, {
                 providerPid: providerPid,
             });
             if (response.status === 200) {
