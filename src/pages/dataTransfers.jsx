@@ -130,27 +130,48 @@ const DataTransfers = () => {
             disabled: record.name === 'Disabled User',
             name: record.name,
         }),
+        selectedRowKeys: selectedRow ? [selectedRow.key] : [],
+
     };
 
     // Request-transfer modal functions
     const showRequestTransferModal = () => setIsRequestTransferModalOpen(true);
-    const handleRequestTransferOk = () => setIsRequestTransferModalOpen(false);
+    const handleRequestTransferOk = () => {
+        setIsRequestTransferModalOpen(false)
+        setSelectedRow(false);
+    };
     const handleRequestTransferCancel = () => setIsRequestTransferModalOpen(false);
+
     // Start transfer modal fucntions
     const showStartModal = () => setIsStartModalOpen(true);
-    const handleStartOk = () => setIsStartModalOpen(false);
+    const handleStartOk = () => {
+        setIsStartModalOpen(false)
+        setSelectedRow(false);
+    };
     const handleStartCancel = () => setIsStartModalOpen(false);
+
     // Complete transfer modal functions
     const showCompleteModal = () => setIsCompleteModalOpen(true);
-    const handleCompleteOk = () => setIsCompleteModalOpen(false);
+    const handleCompleteOk = () => {
+        setIsCompleteModalOpen(false)
+        setSelectedRow(false);
+    };
     const handleCompleteCancel = () => setIsCompleteModalOpen(false);
+
     // Suspend transfer modal functions
     const showSuspendModal = () => setIsSuspendModalOpen(true);
-    const handleSuspendOk = () => setIsSuspendModalOpen(false);
+    const handleSuspendOk = () => {
+        setIsSuspendModalOpen(false)
+        setSelectedRow(false);
+    };
     const handleSuspendCancel = () => setIsSuspendModalOpen(false);
+
     // Terminate transfer modal functions
     const showTerminateTModal = () => setIsTerminateTModalOpen(true);
-    const handleTerminateTOk = () => setIsTerminateTModalOpen(false);
+    const handleTerminateTOk = () => {
+        setIsTerminateTModalOpen(false)
+        setSelectedRow(false);
+    };
     const handleTerminateTCancel = () => setIsTerminateTModalOpen(false);
 
     // Searcher function logic

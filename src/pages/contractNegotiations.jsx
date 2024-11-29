@@ -170,35 +170,63 @@ const ContractNegotiations = () => {
             disabled: record.name === 'Disabled User',
             name: record.name,
         }),
+        selectedRowKeys: selectedRow ? [selectedRow.key] : [],
     };
 
     // Request-contract modal functions
     const showRequestModal = () => setIsRequestModalOpen(true);
-    const handleRequestOk = () => setIsRequestModalOpen(false);
+    const handleRequestOk = () => {
+        setIsRequestModalOpen(false)
+        setSelectedRow(false);
+    };
     const handleRequestCancel = () => setIsRequestModalOpen(false);
+
     // Offer-contract modal functions
     const showOfferModal = () => setIsOfferModalOpen(true);
-    const handleOfferOk = () => setIsOfferModalOpen(false);
+    const handleOfferOk = () => {
+        setIsOfferModalOpen(false)
+        setSelectedRow(false);
+    };
     const handleOfferCancel = () => setIsOfferModalOpen(false);
+
     // Verify-agreement modal functions
     const showAcceptModal = () => setIsAcceptModalOpen(true);
-    const handleAcceptOk = () => setIsAcceptModalOpen(false);
+    const handleAcceptOk = () => {
+        setIsAcceptModalOpen(false)
+        setSelectedRow(false);
+    };
     const handleAcceptCancel = () => setIsAcceptModalOpen(false);
+
     // Agree-negotiations modal functions
     const showAgreeModal = () => setIsAgreeModalOpen(true);
-    const handleAgreeOk = () => setIsAgreeModalOpen(false);
+    const handleAgreeOk = () => {
+        setIsAgreeModalOpen(false)
+        setSelectedRow(false);
+    };
     const handleAgreeCancel = () => setIsAgreeModalOpen(false);
+
     // Verify-agreement modal functions
     const showVerifyModal = () => setIsVerifyModalOpen(true);
-    const handleVerifyOk = () => setIsVerifyModalOpen(false);
+    const handleVerifyOk = () => {
+        setIsVerifyModalOpen(false)
+        setSelectedRow(false);
+    };
     const handleVerifyCancel = () => setIsVerifyModalOpen(false);
+
     // Finalize-contract modal functions
     const showFinalizeModal = () => setIsFinalizeModalOpen(true);
-    const handleFinalizeOk = () => setIsFinalizeModalOpen(false);
+    const handleFinalizeOk = () => {
+        setIsFinalizeModalOpen(false)
+        setSelectedRow(false);
+    };
     const handleFinalizeCancel = () => setIsFinalizeModalOpen(false);
+
     // Terminate contract modal functions
     const showTerminateModal = () => setIsTerminateModalOpen(true);
-    const handleTerminateOk = () => setIsTerminateModalOpen(false);
+    const handleTerminateOk = () => {
+        setIsTerminateModalOpen(false)
+        setSelectedRow(false);
+    };
     const handleTerminateCancel = () => setIsTerminateModalOpen(false);
 
     const handleAgreement = (agreementId) => {
