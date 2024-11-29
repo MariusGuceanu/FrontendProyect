@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Modal, Form, Input, Button, Select } from "antd";
-import { SendOutlined } from "@ant-design/icons";
+import { GatewayOutlined, SendOutlined } from "@ant-design/icons";
 import axios from "axios";
 import config from "../../config";
 import Notification from '../notifications';
@@ -18,7 +18,7 @@ const CatalogModal = ({ isModalOpen, handleCatalogCancel, handleCatalogOk, addRo
             setLoading(true);
             const values = await form.validateFields();
             // Sends the request
-            const response = await axios.post(`${config.providerEndpoint}/api/gateway/create-dataset`, {
+            const response = await axios.post(`${config.url}${config.provider}${config.gatewayPath}/create-dataset`, {
                 title: values.title,
                 description: [values.description],
                 endpoints: [values.endpoint],
