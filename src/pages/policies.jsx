@@ -8,14 +8,6 @@ function Policies() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [data, setData] = useState([]);
 
-    // Toggle expand
-    const toggleExpand = (uniqueKey) => {
-        setExpandedCells((prevState) => ({
-            ...prevState,
-            [uniqueKey]: !prevState[uniqueKey],
-        }));
-    };
-
     // Main table columns
     const columns = [
         { title: 'Policy ID', dataIndex: 'policyId', key: 'policyId', width: '11%' },
@@ -73,6 +65,14 @@ function Policies() {
             localStorage.setItem('PolicyData', JSON.stringify(updatedData));
             return updatedData;
         });
+    };
+
+    // Toggle expand
+    const toggleExpand = (uniqueKey) => {
+        setExpandedCells((prevState) => ({
+            ...prevState,
+            [uniqueKey]: !prevState[uniqueKey],
+        }));
     };
 
     // Function made to render a nested table

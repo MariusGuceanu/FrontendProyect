@@ -134,7 +134,7 @@
 
 /* Selected row of the table */
 .ant-table-wrapper .ant-table-tbody .ant-table-row.ant-table-row-selected>.ant-table-cell {
-  background: #00c58a !important;
+  background: #01a574 !important;
   color: black;
 }
 

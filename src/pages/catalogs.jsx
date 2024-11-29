@@ -41,7 +41,7 @@ function Catalogs() {
             title,
             description,
             endpoints: endpoint,
-            offerIds: offerId,  // Aquí debería estar "offerId", pero está tomando valores erróneos
+            offerIds: offerId,  
             keywords,
             format,
         };

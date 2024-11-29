@@ -13,16 +13,6 @@ import config from '../config';
 import { useWebSocket } from '../WebSocketProvider';
 import TerminateTransferModal from '../components/transferComponents/terminateTransferForm';
 
-// Table columns
-const columns = [
-    { title: 'Transfer ID', dataIndex: 'transferId', width: '20%' },
-    { title: 'Agreement ID', dataIndex: 'agreementId', width: '20%' },
-    { title: 'Transfer Format', dataIndex: 'transferFormat', width: '12.5%' },
-    { title: 'Title', dataIndex: 'title', width: '8.75%' },
-    { title: 'Provider', dataIndex: 'provider', width: '8.75%' },
-    { title: 'Current state', dataIndex: 'currentState', width: '12.5%' },
-    { title: 'Initiated date', dataIndex: 'initiatedDate', width: '17.5%' },
-];
 
 const DataTransfers = () => {
     // Ws connection
@@ -42,6 +32,17 @@ const DataTransfers = () => {
     // History table states
     const [historyTransferData, setHistoryTransferData] = useState([])
     const [showHistory, setShowHistory] = useState(false);
+
+    // Table columns
+    const columns = [
+        { title: 'Transfer ID', dataIndex: 'transferId', width: '20%' },
+        { title: 'Agreement ID', dataIndex: 'agreementId', width: '20%' },
+        { title: 'Transfer Format', dataIndex: 'transferFormat', width: '12.5%' },
+        { title: 'Title', dataIndex: 'title', width: '8.75%' },
+        { title: 'Provider', dataIndex: 'provider', width: '8.75%' },
+        { title: 'Current state', dataIndex: 'currentState', width: '12.5%' },
+        { title: 'Initiated date', dataIndex: 'initiatedDate', width: '17.5%' },
+    ];
 
     // Gets the data of the table to keep it stored (reloading purposes)
     useEffect(() => {
@@ -65,7 +66,7 @@ const DataTransfers = () => {
                 return;
             }
             const newTransfer = JSON.parse(event.data);
-            console.log('WebSocket message: ', newTransfer);
+            console.log('WebSocket message: ', message);
             const formattedData = {
                 key: newTransfer.id,
                 transferId: newTransfer.id,
@@ -80,12 +81,12 @@ const DataTransfers = () => {
             // Retrieve the existing data
             const existingData = JSON.parse(localStorage.getItem('TransfersData')) || [];
 
-            // Check if the processId already exists
+            // Check if the transferId already exists
             const existingIndex = existingData.findIndex(item => item.transferId === formattedData.transferId);
             let updatedData;
             if (existingIndex !== -1) {
 
-                // If processId exists, update the state of the existing row
+                // If transferId exists, update the state of the existing row
                 existingData[existingIndex].currentState = formattedData.currentState;
 
                 // If state is COMPLETED OR TERMINATED the data is setted in History data
@@ -94,7 +95,7 @@ const DataTransfers = () => {
 
                     // If the terminated process doesn't exist, adds a new one to the history table
                     const uniqueHistory = updatedHistory.filter((item, index, self) =>
-                        index === self.findIndex((t) => t.processId === item.processId)
+                        index === self.findIndex((t) => t.transferId === item.transferId)
                     );
 
                     setHistoryTransferData(uniqueHistory);
@@ -105,7 +106,7 @@ const DataTransfers = () => {
                 updatedData = [...existingData];
             } else {
 
-                // If processId doesn't exist, add the new row               
+                // If transferId doesn't exist, add the new row               
                 updatedData = [...existingData, formattedData];
             }
 
@@ -222,7 +223,6 @@ const DataTransfers = () => {
                             <StartModal isStartModalOpen={isStartModalOpen} handleStartOk={handleStartOk} handleStartCancel={handleStartCancel}
                                 provider={selectedRow.provider}
                                 transferProcessId={selectedRow.transferId}
-                                transferFormat={selectedRow.transferFormat}
                                 endpoint={getEndpoint()}
                             />
                         )}
@@ -289,6 +289,7 @@ const DataTransfers = () => {
                                 scroll={{ y: 55 * 6 }} />
                         ) : (
                             <Table style={{ padding: '2%', overflowX: 'auto' }} className="table-contracts"
+                                rowClassName={(record) => (record.provider === 'false' ? 'provider-false' : '')}
                                 columns={columns}
                                 dataSource={historyTransferData}
                                 pagination={{ pageSize: 10 }}

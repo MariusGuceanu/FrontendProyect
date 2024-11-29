@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Row, Col } from 'antd';
+import { Table, Button, Row, Col, Space } from 'antd';
 import '../styles/table-styles.css';
 import SorterC from '../components/contractComponents/sortMenu';
 import FilterC from '../components/contractComponents/filterMenu';
@@ -10,20 +10,12 @@ import AgreeModal from '../components/contractComponents/agreeForm';
 import VerifyModal from '../components/contractComponents/verifyForm';
 import FinalizeModal from '../components/contractComponents/finalizeForm';
 import TerminateModal from '../components/contractComponents/terminateForm';
+import AgreementModal from '../components/agreementModal';
 import Searcher from '../components/contractComponents/searcher';
 import cnStateMachine from '../components/stateMachines/cnStateMachine';
 import config from '../config';
 import { useWebSocket } from '../WebSocketProvider';
 
-// Table columns
-const columns = [
-    { title: 'Process ID', dataIndex: 'processId', width: '25%' },
-    { title: 'Offer ID', dataIndex: 'offerId', width: '25%' },
-    { title: 'Title', dataIndex: 'title', width: '10%' },
-    { title: 'Provider', dataIndex: 'provider', width: '10%' },
-    { title: 'Current state', dataIndex: 'currentState', width: '10%' },
-    { title: 'Initiated date', dataIndex: 'initiatedDate', width: '20%' },
-];
 
 const ContractNegotiations = () => {
     // Ws connection
@@ -36,6 +28,9 @@ const ContractNegotiations = () => {
     const [isVerifyModalOpen, setIsVerifyModalOpen] = useState(false);
     const [isFinalizeModalOpen, setIsFinalizeModalOpen] = useState(false)
     const [isTerminateModalOpen, setIsTerminateModalOpen] = useState(false)
+    // Agreement states
+    const [isAgreementModalOpen, setIsAgreementModalOpen] = useState(false)
+    const [agreementData, setAgreementData] = useState(null);
     // Selection states
     const selectionType = useState('checkbox');
     const [selectedRow, setSelectedRow] = useState(null);
@@ -45,6 +40,36 @@ const ContractNegotiations = () => {
     // History table states
     const [historyData, setHistoryData] = useState([])
     const [showHistory, setShowHistory] = useState(false);
+
+    // Table columns
+    const columns = [
+        { title: 'Process ID', dataIndex: 'processId', width: '18.5%' },
+        { title: 'Offer ID', dataIndex: 'offerId', width: '18.5%' },
+        {
+            title: 'Agreement Id', dataIndex: 'agreementId', width: '23%',
+            render: (agreementId) => (
+                <Space>
+                    {agreementId ? (
+                        <>
+                            <a size="large" type="primary" onClick={() => handleAgreement(agreementId)}>
+                                {agreementId}
+                            </a>
+                            <AgreementModal
+                                open={isAgreementModalOpen}
+                                onClose={() => setIsAgreementModalOpen(false)}
+                                agreementData={agreementData} />
+                        </>
+                    ) : (
+                        <span>N/A</span>
+                    )}
+                </Space>
+            ),
+        },
+        { title: 'Title', dataIndex: 'title', width: '10%' },
+        { title: 'Provider', dataIndex: 'provider', width: '10%' },
+        { title: 'Current state', dataIndex: 'currentState', width: '10%' },
+        { title: 'Initiated date', dataIndex: 'initiatedDate', width: '10%' },
+    ];
 
     // Gets the data of the table to keep it stored (reloading purposes)
     useEffect(() => {
@@ -73,11 +98,14 @@ const ContractNegotiations = () => {
                 key: newNegotiation.id,
                 processId: newNegotiation.id,
                 offerId: newNegotiation.params?.offerId || 'N/A',
+                agreementId: newNegotiation.params?.agreement?.["@id"],
+                params: newNegotiation.params,
                 title: newNegotiation.title || 'Title',
                 provider: newNegotiation.provider ? 'true' : 'false',
                 currentState: newNegotiation.state.replace('dspace:', ''),
                 initiatedDate: new Date().toLocaleString(),
             };
+            console.log('Message params:', newNegotiation.params);
 
             // Retrieve the existing data
             const existingData = JSON.parse(localStorage.getItem('Data')) || [];
@@ -89,6 +117,12 @@ const ContractNegotiations = () => {
 
                 // If processId exists, update the state of the existing row
                 existingData[existingIndex].currentState = formattedData.currentState;
+
+                // If the currentState is AGREED it starts showing the agreementId and its params
+                if (formattedData.currentState === 'AGREED' && newNegotiation.params.agreement["@id"]) {
+                    existingData[existingIndex].agreementId = newNegotiation.params.agreement["@id"];
+                    existingData[existingIndex].params = newNegotiation.params;
+                }
 
                 // If state is FINALIZED OR TERMINATED the data is setted in History data
                 if (['FINALIZED', 'TERMINATED'].includes(formattedData.currentState.toUpperCase())) {
@@ -110,6 +144,7 @@ const ContractNegotiations = () => {
                 // If processId doesn't exist, adds the new row
                 updatedData = [...existingData, formattedData];
             }
+            console.log('agreementData en AgreementModal:', agreementData);
 
             // Updates the data of the table and saves it locally
             setData(updatedData);
@@ -165,6 +200,15 @@ const ContractNegotiations = () => {
     const showTerminateModal = () => setIsTerminateModalOpen(true);
     const handleTerminateOk = () => setIsTerminateModalOpen(false);
     const handleTerminateCancel = () => setIsTerminateModalOpen(false);
+
+    const handleAgreement = (agreementId) => {
+        const agreement = data.find(item => item.agreementId === agreementId);
+        if (agreement) {
+            setAgreementData(agreement.params);
+            setIsAgreementModalOpen(true);
+        }
+        console.log(agreement)
+    };
 
     // Search function
     const onSearch = (value) => {
