@@ -43,8 +43,11 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
     const getSelfDescription = async () => {
         setLoading(true)
         try {
-            const response = await axios.get(inputValue.trim());
-            setSelfDescription(response.data);
+            const response = await axios.post(`${config.url}${config.consumer}${config.gatewayPath}/request-catalog`,
+                { providerEndpoint: inputValue.trim() }
+            );
+            setSelfDescription(response.data); 
+            openNotification('success', 'Self-Description Retrieved', 'The self-description was successfully retrieved.');
         } catch (error) {
             openNotification('error', 'Error getting Self-description', 'Could not retrieve self-description from provider.');
         } finally {

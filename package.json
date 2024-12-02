@@ -8,8 +8,8 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start:consumer": "cross-env VITE_WS_URL=ws://localhost:9082/api/gateway/ws/notifications vite",
-    "start:provider": "cross-env VITE_WS_URL=ws://localhost:8082/api/gateway/ws/notifications vite"
+    "start:consumer": "cross-env VITE_WS_URL=ws://localhost:9082/api/gateway/v1/ws/notifications vite",
+    "start:provider": "cross-env VITE_WS_URL=ws://localhost:8082/api/gateway/v1/ws/notifications vite"
   },
   "dependencies": {
     "@ant-design/icons": "^5.5.1",
