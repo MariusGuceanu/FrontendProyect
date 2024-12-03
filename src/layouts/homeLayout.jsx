@@ -27,6 +27,21 @@ const HomeLayout = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, [])
 
+  const DefaultContent = () => (
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100%',
+        color: 'black',
+        opacity: 0.25,
+      }}
+    >
+      <h1 style={{ fontSize: '3rem', textAlign: 'center' }}>Select from the side menu</h1>
+    </div>
+  );
+
   return (
     <Layout
       style={{
@@ -35,7 +50,7 @@ const HomeLayout = () => {
     >
       <Header style={{ padding: 0, background: '#001529', width: '100%', minHeight: 150 }}>
         <div style={{ padding: '0 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h2 style={{ color: 'white', textAlign: 'center', alignSelf: 'end', flexGrow: '1', marginLeft:'8%' }}>Data space: Railway data space <Button>Change</Button> </h2>
+          <h2 style={{ color: 'white', textAlign: 'center', alignSelf: 'end', flexGrow: '1', marginLeft: '8%' }}>Data space: Railway data space <Button>Change</Button> </h2>
           <Profile />
         </div>
       </Header>
@@ -60,6 +75,7 @@ const HomeLayout = () => {
               }}
             >
               <Routes>
+                <Route path="/" element={<DefaultContent />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/contract-negotiations" element={<ContractNegotiations />} />
                 <Route path="/data-transfers" element={<DataTransfers />}></Route>

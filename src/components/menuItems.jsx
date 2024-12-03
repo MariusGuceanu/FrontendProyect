@@ -17,19 +17,19 @@ const SiderItems = () => [
         children: [
             {
                 key: '1',
-                label: <Link to="/dashboard">Dashboard</Link>,
+                label: <Link to="/home/dashboard">Dashboard</Link>,
             },
             {
                 key: '2',
-                label: <Link to="/organizations">Organizations</Link>,
+                label: <Link to="/home/organizations">Organization</Link>,
             },
             {
                 key: '3',
-                label: <Link to="/policies">Policies</Link>,
+                label: <Link to="/home/policies">Policies</Link>,
             },
             {
                 key: '4',
-                label: <Link to="/catalogs">Catalog</Link>,
+                label: <Link to="/home/catalogs">Catalog</Link>,
             },
         ],
     },
@@ -40,7 +40,7 @@ const SiderItems = () => [
         children: [
             {
                 key: '5',
-                label: <Link to="/catalogs/new">+New</Link>,
+                label: <Link to="/home/catalogs/new">+New</Link>,
             },
             {
                 key: '6',
@@ -69,12 +69,12 @@ const SiderItems = () => [
     },
     {
         key: 'sub4',
-        label: <Link to="/contract-negotiations">Contract Negotiations</Link>,
+        label: <Link to="/home/contract-negotiations">Contract Negotiations</Link>,
         icon: <ContainerOutlined />,
     },
     {
         key: 'sub5',
-        label: <Link to="/data-transfers">Data transfers</Link>,
+        label: <Link to="/home/data-transfers">Data transfers</Link>,
         icon: <SolutionOutlined />,
     },
 ];

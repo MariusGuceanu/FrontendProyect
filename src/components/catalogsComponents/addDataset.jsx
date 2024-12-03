@@ -44,18 +44,17 @@ const CatalogModal = ({ isModalOpen, handleCatalogCancel, handleCatalogOk, addRo
     return (
         <>
             {contextHolder}
-            <Modal width={700} open={isModalOpen} onCancel={handleCatalogCancel} footer={[
+            <Modal width={800} open={isModalOpen} onCancel={handleCatalogCancel} footer={[
                 <div key="footer" style={{ display: 'flex', justifyContent: 'space-evenly', padding: 25 }}>
                     <Button style={{ width: '30%' }} size="large" key="submit" type="primary" loading={loading} onClick={handleCreateDataset} icon={<SendOutlined />} >
                         Add Dataset
                     </Button>
                     <Button style={{ width: '30%' }} size="large" key="cancel" onClick={handleCatalogCancel}>Cancel</Button>
-                </div>
-            ]} >
+                </div>]}>
                 <h2>Add a new Dataset</h2>
-                <Form form={form} layout="horizontal">
+                <Form form={form} autoComplete="off" layout="horizontal" labelCol={{ span: 3 }} wrapperCol={{ span: 24 }}>
                     <Form.Item label="Title" name="title"  >
-                        <Input />
+                        <Input rules={[{ required: true, message: 'Please input the endpoint' }]} />
                     </Form.Item>
 
                     <Form.Item label="Description" name="description"  >
