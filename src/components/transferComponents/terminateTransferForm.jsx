@@ -5,7 +5,7 @@ import axios from 'axios';
 import Notification from '../notifications';
 import config from '../../config';
 
-const TerminateTransferModal = ({ isTerminateTModalOpen, handleTerminateTOk, handleTerminateTCancel, transferProcessId, provider, endpoint }) => {
+const TerminateTransferModal = ({ isTerminateTModalOpen, handleTerminateTOk, handleTerminateTCancel, transferId, provider, endpoint }) => {
     const [loading, setLoading] = useState(false);
     const [code, setCode] = useState('');
     const [constraints, setConstraints] = useState([{ name: '', value: '' }]);
@@ -34,12 +34,11 @@ const TerminateTransferModal = ({ isTerminateTModalOpen, handleTerminateTOk, han
                 .map((constraint) => constraint.value);
 
             // Const to distinct between provider and consumer
-            const validProvider = provider === 'true';
+            const providerValue = provider === 'true';
 
             // Sends the request
-            const response = await axios.post(`${config.url}${endpoint}${config.gatewayPath}/transfer/terminate`, {
-                provider: validProvider,
-                transferProcessId: transferProcessId,
+            const response = await axios.post(`${config.url}${endpoint}${config.gatewayTransfersPath}/${encodeURIComponent(transferId)}/termination`, {
+                isProvider: providerValue,
                 code: code || undefined,
                 reasons: reasons.length > 0 ? reasons : undefined,
             });

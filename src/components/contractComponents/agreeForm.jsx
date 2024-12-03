@@ -20,9 +20,8 @@ const AgreeModal = ({ isAgreeModalOpen, handleAgreeOk, handleAgreeCancel, negoti
         try {
 
             // Sends the request
-            const response = await axios.post(`${config.url}${config.provider}${config.gatewayPath}/agree-contract`, {
+            const response = await axios.post(`${config.url}${config.provider}${config.gatewayNegotiationsPath}/${encodeURIComponent(negotiationId)}/agreements`, {
                 offerId: offerId,
-                ContractNegotiationId: negotiationId,
             });
             if (response.status === 200) {
                 const contractAgreementId = response.data.contractAgreementId;

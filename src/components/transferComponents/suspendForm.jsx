@@ -5,7 +5,7 @@ import axios from 'axios';
 import Notification from '../notifications';
 import config from '../../config';
 
-const SuspendModal = ({ isSuspendModalOpen, handleSuspendOk, handleSuspendCancel, transferProcessId, provider, endpoint }) => {
+const SuspendModal = ({ isSuspendModalOpen, handleSuspendOk, handleSuspendCancel, transferId, provider, endpoint }) => {
     const [loading, setLoading] = useState(false);
     const [code, setCode] = useState('');
     const [constraints, setConstraints] = useState([{ name: '', value: '' }]);
@@ -32,14 +32,13 @@ const SuspendModal = ({ isSuspendModalOpen, handleSuspendOk, handleSuspendCancel
             const reasons = constraints
                 .filter((constraint) => constraint.name && constraint.value)
                 .map((constraint) => constraint.value);
-            
+
             // Const to distinct between provider and consumer
-            const validProvider = provider === 'true';
+            const providerValue = provider === 'true';
 
             // Sends the request
-            const response = await axios.post(`${config.url}${endpoint}${config.gatewayPath}/transfer/suspend`, {
-                provider: validProvider,
-                transferProcessId: transferProcessId,
+            const response = await axios.post(`${config.url}${endpoint}${config.gatewayTransfersPath}/${encodeURIComponent(transferId)}/suspension`, {
+                isProvider: providerValue,
                 code: code || undefined,
                 reasons: reasons.length > 0 ? reasons : undefined,
             });
@@ -49,10 +48,10 @@ const SuspendModal = ({ isSuspendModalOpen, handleSuspendOk, handleSuspendCancel
             } else {
                 openNotification('error', 'Unexpected Response', 'An unexpected response was received.');
             }
-        } 
+        }
         catch (error) {
             openNotification('error', 'Error trying to Suspend', 'An error occurred while attempting to suspend.');
-        } 
+        }
         finally {
             setLoading(false);
         }

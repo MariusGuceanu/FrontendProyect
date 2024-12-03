@@ -5,12 +5,13 @@ import axios from 'axios';
 import Notification from '../notifications';
 import config from '../../config';
 
-const CompleteModal = ({ isCompleteModalOpen, handleCompleteOk, handleCompleteCancel, transferProcessId, provider, endpoint }) => {
+const CompleteModal = ({ isCompleteModalOpen, handleCompleteOk, handleCompleteCancel, transferId, provider, endpoint }) => {
     const [loading, setLoading] = useState(false);
     const { openNotification, contextHolder } = Notification();
 
     // Main function to complete a transfer-request 
     const handleComplete = async () => {
+        console.log(provider, transferId, endpoint)
         setLoading(true);
         try {
 
@@ -18,10 +19,10 @@ const CompleteModal = ({ isCompleteModalOpen, handleCompleteOk, handleCompleteCa
             const providerValue = provider === 'true';
 
             // Sends the request
-            const response = await axios.post(`${config.url}${endpoint}${config.gatewayPath}/transfer/complete`, {
-                provider: providerValue,
-                transferProcessId: transferProcessId,
+            const response = await axios.post(`${config.url}${endpoint}${config.gatewayTransfersPath}/${encodeURIComponent(transferId)}/completion`, {
+                isProvider: providerValue,
             });
+            console.log(providerValue)
             if (response.status === 200) {
                 openNotification('success', 'Completed', 'Transfer completed successfully');
                 handleCompleteOk();

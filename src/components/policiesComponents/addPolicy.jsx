@@ -54,7 +54,7 @@ const PolicyModal = ({ isModalOpen, handlePolicyOk, handlePolicyCancel, addRowTo
     const handleCreatePolicy = async () => {
         setLoading(true);
         try {
-            const response = await axios.post(`${config.url}${config.provider}${config.gatewayPath}/create-policy`, {
+            const response = await axios.post(`${config.url}${config.provider}${config.gatewayCatalogPath}/policies`, {
                 target,
                 rules,
             });

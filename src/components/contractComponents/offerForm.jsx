@@ -25,9 +25,9 @@ const OfferModal = ({ isModalOpen, handleOk, handleCancel }) => {
         setLoading(true);
         try {
             // Sends the request
-            await axios.post(`${config.url}${config.provider}${config.gatewayPath}/offer-contract`, {
-                consumerAddr: consumerAddr.trim(),
+            await axios.post(`${config.url}${config.provider}${config.gatewayNegotiationsPath}/offer`, {
                 offerId: offerId.trim(),
+                consumerEndpoint: consumerAddr.trim(),
             });
             openNotification('success', 'Offer sent', 'Offer sent succesfully');
             // Resets the input fields to leave them blank

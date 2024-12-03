@@ -5,7 +5,7 @@ import axios from 'axios';
 import Notification from '../notifications';
 import config from '../../config';
 
-const TerminateModal = ({ isTerminateModalOpen, handleTerminateOk, handleTerminateCancel, processId, provider, endpoint }) => {
+const TerminateModal = ({ isTerminateModalOpen, handleTerminateOk, handleTerminateCancel, negotiationId, provider, endpoint }) => {
     const [loading, setLoading] = useState(false);
     const [code, setCode] = useState('');
     const [constraints, setConstraints] = useState([{ name: '', value: '' }]);
@@ -38,8 +38,8 @@ const TerminateModal = ({ isTerminateModalOpen, handleTerminateOk, handleTermina
 
             // Sends the request 
             console.log(endpoint)
-            const response = await axios.post(`${config.url}${endpoint}${config.gatewayPath}/terminate-contract`, {
-                [idKey]: processId,
+            const response = await axios.post(`${config.url}${endpoint}${config.gatewayNegotiationsPath}/${encodeURIComponent(negotiationId)}/termination`, {
+                [idKey]: negotiationId,
                 code: code || undefined,
                 reasons: reasons.length > 0 ? reasons : undefined,
             });

@@ -43,13 +43,11 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
     const getSelfDescription = async () => {
         setLoading(true)
         try {
-            const response = await axios.post(`${config.url}${config.consumer}${config.gatewayPath}/request-catalog`,
-                { providerEndpoint: inputValue.trim() }
-            );
-            setSelfDescription(response.data); 
+            const response = await axios.get(`${config.url}${config.consumer}${config.gatewayClientPath}/self-descriptions?endpoint=${encodeURIComponent(inputValue.trim())}`);
+            setSelfDescription(response.data);
             openNotification('success', 'Self-Description Retrieved', 'The self-description was successfully retrieved.');
         } catch (error) {
-            openNotification('error', 'Error getting Self-description', 'Could not retrieve self-description from provider.');
+            openNotification('error', 'Error getting Self-description', error.response?.data?.message || 'Could not retrieve self-description from provider.');
         } finally {
             setLoading(false)
         }
@@ -69,12 +67,14 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
             }, {}),
         };
         try {
-            const response = await axios.post(`${config.url}${config.consumer}${config.gatewayPath}/request-contract`, requestData);
+            const response = await axios.post(`${config.url}${config.consumer}${config.gatewayNegotiationsPath}/request`, requestData);
+            console.log(response)
             if (response.status === 200) {
-                openNotification('success', 'Request Successful', `Contract Negotiation ID: ${response.data.contractNegotiationId}`);
+                openNotification('success', 'Request Successful', `Contract Negotiation ID: ${response.data.negotiationId}`);
                 // Resets the input fields to leave them blank
                 form.resetFields();
                 setInputValue('');
+                setSelfDescription('')
                 setOfferId('');
                 setConstraints([{ name: '', value: '' }]);
                 handleOk();
@@ -104,7 +104,7 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
             <Modal destroyOnClose={true} width={1000} open={isModalOpen} onOk={handleOk} onCancel={handleCancel}
                 footer={[
                     <div key="footer" style={{ display: 'flex', justifyContent: 'space-evenly', padding: 10 }}>
-                        <Button style={{ width: '20%' }} disabled={!inputValue || !offerId} key="request" type="primary" size="large" icon={<SendOutlined />} iconPosition='end' onClick={() => handleRequest(openNotification)}>
+                        <Button style={{ width: '20%' }} disabled={!inputValue || !offerId || !selfDescription} key="request" type="primary" size="large" icon={<SendOutlined />} iconPosition='end' onClick={() => handleRequest(openNotification)}>
                             Request
                         </Button>
                         <Button style={{ width: '20%' }} key="cancel" type="primary" size="large" onClick={handleCancel}>

@@ -218,7 +218,7 @@ const DataTransfers = () => {
                         {selectedRow && (
                             <StartModal isStartModalOpen={isStartModalOpen} handleStartOk={handleStartOk} handleStartCancel={handleStartCancel}
                                 provider={selectedRow.provider}
-                                transferProcessId={selectedRow.transferId}
+                                transferId={selectedRow.transferId}
                                 transferFormat={selectedRow.transferFormat}
                                 endpoint={getEndpoint()}
                             />
@@ -231,7 +231,7 @@ const DataTransfers = () => {
                         {selectedRow && (
                             <SuspendModal isSuspendModalOpen={isSuspendModalOpen} handleSuspendOk={handleSuspendOk} handleSuspendCancel={handleSuspendCancel}
                                 provider={selectedRow.provider}
-                                transferProcessId={selectedRow.transferId}
+                                transferId={selectedRow.transferId}
                                 endpoint={getEndpoint()}
                             />
                         )}
@@ -243,7 +243,7 @@ const DataTransfers = () => {
                         {selectedRow && (
                             <StartModal isStartModalOpen={isStartModalOpen} handleStartOk={handleStartOk} handleStartCancel={handleStartCancel}
                                 provider={selectedRow.provider}
-                                transferProcessId={selectedRow.transferId}
+                                transferId={selectedRow.transferId}
                                 endpoint={getEndpoint()}
                             />
                         )}
@@ -255,7 +255,7 @@ const DataTransfers = () => {
                         {selectedRow && (
                             <CompleteModal isCompleteModalOpen={isCompleteModalOpen} handleCompleteOk={handleCompleteOk} handleCompleteCancel={handleCompleteCancel}
                                 provider={selectedRow.provider}
-                                transferProcessId={selectedRow.transferId}
+                                transferId={selectedRow.transferId}
                                 endpoint={getEndpoint()}
                             />
                         )}
@@ -267,7 +267,7 @@ const DataTransfers = () => {
                         {selectedRow && (
                             <TerminateTransferModal isTerminateTModalOpen={isTerminateTModalOpen} handleTerminateTOk={handleTerminateTOk} handleTerminateTCancel={handleTerminateTCancel}
                                 provider={selectedRow.provider}
-                                transferProcessId={selectedRow.transferId}
+                                transferId={selectedRow.transferId}
                                 endpoint={getEndpoint()}
                             />
                         )}
@@ -281,8 +281,8 @@ const DataTransfers = () => {
     return (
         <>
             <div style={{ display: 'flex', justifyContent: 'space-around', marginTop: '3%' }}>
-                <Button className="large-buttons" type="primary" onClick={() => setShowHistory(false)}>Ongoing Transfers</Button>
-                <Button className="large-buttons" type="primary" onClick={() => setShowHistory(true)}>History</Button>
+                <Button className="large-buttons" type="primary" onClick={() => setShowHistory(false)} style={showHistory ? {} : { backgroundColor: '#3C8AE8' }}>Ongoing Transfers</Button>
+                <Button className="large-buttons" type="primary" onClick={() => setShowHistory(true)} style={showHistory ? { backgroundColor: '#3C8AE8' } : {}}>History</Button>
             </div>
 
             <div style={{ width: '100%', margin: 'auto', border: 'solid', borderRadius: 6 }}>

@@ -285,7 +285,7 @@ const ContractNegotiations = () => {
                         <Button onClick={showAcceptModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Accept</Button>
                         {selectedRow && (
                             <AcceptModal isAcceptModalOpen={isAcceptModalOpen} handleAcceptOk={handleAcceptOk} handleAcceptCancel={handleAcceptCancel}
-                                consumerPid={selectedRow.processId} />
+                                negotiationId={selectedRow.processId} />
                         )}
                     </>
                 )}
@@ -303,7 +303,9 @@ const ContractNegotiations = () => {
                         <Button onClick={showVerifyModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Verify</Button>
                         {selectedRow && (
                             <VerifyModal isVerifyModalOpen={isVerifyModalOpen} handleVerifyOk={handleVerifyOk} handleVerifyCancel={handleVerifyCancel}
-                                consumerPid={selectedRow.processId} />
+                                negotiationId={selectedRow.processId}
+                                agreementId={selectedRow.agreementId} />
+
                         )}
                     </>
                 )}
@@ -312,7 +314,7 @@ const ContractNegotiations = () => {
                         <Button onClick={showFinalizeModal} className='action-buttons' style={{ width: '20%' }} size='large' type="primary">Finalize</Button>
                         {selectedRow && (
                             <FinalizeModal isFinalizeModalOpen={isFinalizeModalOpen} handleFinalizeOk={handleFinalizeOk} handleFinalizeCancel={handleFinalizeCancel}
-                                providerPid={selectedRow.processId} />
+                                negotiationId={selectedRow.processId} />
                         )}
                     </>
                 )}
@@ -322,7 +324,7 @@ const ContractNegotiations = () => {
                         {selectedRow && (
                             <TerminateModal isTerminateModalOpen={isTerminateModalOpen} handleTerminateOk={handleTerminateOk} handleTerminateCancel={handleTerminateCancel}
                                 provider={selectedRow.provider === "true"}
-                                processId={selectedRow.processId}
+                                negotiationId={selectedRow.processId}
                                 endpoint={getEndpoint()} />
                         )}
                     </>
@@ -333,7 +335,7 @@ const ContractNegotiations = () => {
                         {selectedRow && (
                             <TerminateModal isTerminateModalOpen={isTerminateModalOpen} handleTerminateOk={handleTerminateOk} handleTerminateCancel={handleTerminateCancel}
                                 provider={selectedRow.provider === "true"}
-                                processId={selectedRow.processId}
+                                negotiationId={selectedRow.processId}
                                 endpoint={getEndpoint()} />
                         )}
                     </>
@@ -344,7 +346,7 @@ const ContractNegotiations = () => {
                         {selectedRow && (
                             <TerminateModal isTerminateModalOpen={isTerminateModalOpen} handleTerminateOk={handleTerminateOk} handleTerminateCancel={handleTerminateCancel}
                                 provider={selectedRow.provider === "true"}
-                                processId={selectedRow.processId}
+                                negotiationId={selectedRow.processId}
                                 endpoint={getEndpoint()} />
                         )}
                     </>
@@ -355,7 +357,7 @@ const ContractNegotiations = () => {
                         {selectedRow && (
                             <TerminateModal isTerminateModalOpen={isTerminateModalOpen} handleTerminateOk={handleTerminateOk} handleTerminateCancel={handleTerminateCancel}
                                 provider={selectedRow.provider === "true"}
-                                processId={selectedRow.processId}
+                                negotiationId={selectedRow.processId}
                                 endpoint={getEndpoint()} />
                         )}
                     </>
@@ -369,8 +371,8 @@ const ContractNegotiations = () => {
         <>
             {/* Table buttons */}
             <div style={{ display: 'flex', justifyContent: 'space-around', marginTop: '3%', }}>
-                <Button className="large-buttons" type="primary" onClick={() => setShowHistory(false)}>Ongoing Processes</Button>
-                <Button className="large-buttons" type="primary" onClick={() => setShowHistory(true)}>History</Button>
+                <Button className="large-buttons" type="primary" onClick={() => setShowHistory(false)} style={showHistory ? {} : { backgroundColor: '#3C8AE8' }}>Ongoing Processes</Button>
+                <Button className="large-buttons" type="primary" onClick={() => setShowHistory(true)} style={showHistory ? { backgroundColor: '#3C8AE8' } : {}}>History</Button>
             </div>
 
             {/* Action buttons */}

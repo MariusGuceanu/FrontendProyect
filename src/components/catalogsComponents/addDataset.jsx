@@ -18,7 +18,7 @@ const CatalogModal = ({ isModalOpen, handleCatalogCancel, handleCatalogOk, addRo
             setLoading(true);
             const values = await form.validateFields();
             // Sends the request
-            const response = await axios.post(`${config.url}${config.provider}${config.gatewayPath}/create-dataset`, {
+            const response = await axios.post(`${config.url}${config.provider}${config.gatewayCatalogPath}/datasets`, {
                 title: values.title,
                 description: [values.description],
                 endpoints: [values.endpoint],
@@ -47,19 +47,19 @@ const CatalogModal = ({ isModalOpen, handleCatalogCancel, handleCatalogOk, addRo
             <Modal width={700} open={isModalOpen} onCancel={handleCatalogCancel} footer={[
                 <div key="footer" style={{ display: 'flex', justifyContent: 'space-evenly', padding: 25 }}>
                     <Button style={{ width: '30%' }} size="large" key="submit" type="primary" loading={loading} onClick={handleCreateDataset} icon={<SendOutlined />} >
-                        Create Dataset
+                        Add Dataset
                     </Button>
                     <Button style={{ width: '30%' }} size="large" key="cancel" onClick={handleCatalogCancel}>Cancel</Button>
                 </div>
             ]} >
-                <h2>Create a new Dataset</h2>
+                <h2>Add a new Dataset</h2>
                 <Form form={form} layout="horizontal">
                     <Form.Item label="Title" name="title"  >
                         <Input />
                     </Form.Item>
 
                     <Form.Item label="Description" name="description"  >
-                        <Input.TextArea rows={4}  />
+                        <Input.TextArea rows={4} />
                     </Form.Item>
 
                     <Form.Item label="Endpoints" name="endpoint" rules={[{ required: true, message: 'Please input the endpoint' }]} >

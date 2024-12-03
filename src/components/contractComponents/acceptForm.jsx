@@ -5,7 +5,7 @@ import { SendOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import config from '../../config';
 
-const AcceptModal = ({ isAcceptModalOpen, handleAcceptOk, handleAcceptCancel, consumerPid }) => {
+const AcceptModal = ({ isAcceptModalOpen, handleAcceptOk, handleAcceptCancel, negotiationId }) => {
     const [loading, setLoading] = useState(false);
     const { openNotification, contextHolder } = Notification();
 
@@ -14,8 +14,7 @@ const AcceptModal = ({ isAcceptModalOpen, handleAcceptOk, handleAcceptCancel, co
         setLoading(true);
         try {
             // Sends the request
-            const response = await axios.post(`${config.url}${config.consumer}${config.gatewayPath}/accept-offer/${encodeURIComponent(consumerPid)}`, {
-                consumerPid: consumerPid,
+            const response = await axios.post(`${config.url}${config.consumer}${config.gatewayNegotiationsPath}/${encodeURIComponent(negotiationId)}/acceptance`, {
             });
 
             if (response.status === 200) {

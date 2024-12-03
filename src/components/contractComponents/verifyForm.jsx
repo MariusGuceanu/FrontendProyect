@@ -5,7 +5,7 @@ import { SendOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import config from '../../config';
 
-const VerifyModal = ({ isVerifyModalOpen, handleVerifyOk, handleVerifyCancel, consumerPid }) => {
+const VerifyModal = ({ isVerifyModalOpen, handleVerifyOk, handleVerifyCancel, negotiationId, agreementId }) => {
     const [loading, setLoading] = useState(false);
     const { openNotification, contextHolder } = Notification();
 
@@ -14,9 +14,13 @@ const VerifyModal = ({ isVerifyModalOpen, handleVerifyOk, handleVerifyCancel, co
         setLoading(true);
         try {
             // Sends the request
-            const response = await axios.post(`${config.url}${config.consumer}${config.gatewayPath}/verify-agreement/${encodeURIComponent(consumerPid)}`, {
-                consumerPid: consumerPid,
+            console.log(agreementId)
+            console.log(negotiationId)
+            const response = await axios.post(`${config.url}${config.consumer}${config.gatewayNegotiationsPath}/${encodeURIComponent(negotiationId)}/agreements/${encodeURIComponent(agreementId)}/verification`, {
             });
+            console.log(response)
+
+
             if (response.status === 200) {
                 console.log('Contract agreement is verified', response.data);
                 openNotification('success', 'Verified', 'Contract agreement is verified');
@@ -28,7 +32,7 @@ const VerifyModal = ({ isVerifyModalOpen, handleVerifyOk, handleVerifyCancel, co
         }
         catch (error) {
             console.error('Error in agreement request:', error);
-            openNotification('error', 'Error in Agreement', 'An error occurred while attempting the agreement.');
+            openNotification('error', 'Error in Agreement', 'An error occurred while attempting the verification.');
         }
         finally {
             setLoading(false);
