@@ -129,7 +129,7 @@ const ContractNegotiations = () => {
                     const updatedHistory = [...historyData, existingData[existingIndex]];
 
                     // If the terminated process doesn't exist, adds a new one to the history table
-                    const uniqueHistory = updatedHistory.filter((item, index, self) =>
+                    const uniqueHistory = updatedHistory.filter((item, index, self) => 
                         index === self.findIndex((t) => t.processId === item.processId)
                     );
 
