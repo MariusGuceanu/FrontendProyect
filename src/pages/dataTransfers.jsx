@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Row, Col } from 'antd';
+import { Table, Button, Row, Col, Space } from 'antd';
 import '../styles/table-styles.css';
 import SorterC from '../components/contractComponents/sortMenu';
 import FilterC from '../components/contractComponents/filterMenu';
@@ -7,11 +7,13 @@ import RequestTransferModal from '../components/transferComponents/requestTransf
 import StartModal from '../components/transferComponents/startForm';
 import CompleteModal from '../components/transferComponents/completeForm';
 import SuspendModal from '../components/transferComponents/suspendForm';
+import AgreementModal from '../components/agreementModal';
+import TerminateTransferModal from '../components/transferComponents/terminateTransferForm';
 import Searcher from '../components/contractComponents/searcher';
 import dtStateMachine from '../components/stateMachines/dtStateMachine';
 import config from '../config';
+import axios from 'axios';
 import { useWebSocket } from '../WebSocketProvider';
-import TerminateTransferModal from '../components/transferComponents/terminateTransferForm';
 
 
 const DataTransfers = () => {
@@ -23,6 +25,9 @@ const DataTransfers = () => {
     const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false)
     const [isSuspendModalOpen, setIsSuspendModalOpen] = useState(false)
     const [isTerminateTModalOpen, setIsTerminateTModalOpen] = useState(false)
+    // Agreement states
+    const [isAgreementModalOpen, setIsAgreementModalOpen] = useState(false);
+    const [agreementData, setAgreementData] = useState(null);
     // Selection states
     const selectionType = useState('checkbox');
     const [selectedRow, setSelectedRow] = useState(null);
@@ -36,8 +41,23 @@ const DataTransfers = () => {
     // Table columns
     const columns = [
         { title: 'Transfer ID', dataIndex: 'transferId', width: '20%' },
-        { title: 'Agreement ID', dataIndex: 'agreementId', width: '20%' },
-        { title: 'Transfer Format', dataIndex: 'transferFormat', width: '12.5%' },
+        {
+            title: 'Agreement ID', dataIndex: 'agreementId', width: '22.5%',
+            render: (agreementId) => (
+                <Space>
+                    {agreementId ? (
+                        <>
+                            <a size="large" type="primary" onClick={() => handleAgreement(agreementId)}>
+                                {agreementId}
+                            </a>
+                        </>
+                    ) : (
+                        <span>N/A</span>
+                    )}
+                </Space>
+            )
+        },
+        { title: 'Transfer Format', dataIndex: 'transferFormat', width: '10%' },
         { title: 'Title', dataIndex: 'title', width: '8.75%' },
         { title: 'Provider', dataIndex: 'provider', width: '8.75%' },
         { title: 'Current state', dataIndex: 'currentState', width: '12.5%' },
@@ -122,6 +142,19 @@ const DataTransfers = () => {
         };
         ws.onerror = (error) => console.error('WebSocket error:', error);
     }, [ws, historyTransferData]);
+
+    const handleAgreement = async (agreementId) => {
+        try {
+            const response = await axios.get(`${config.url}${config.provider}${config.gatewayNegotiationsPath}/${agreementId}/agreements/${agreementId}`);
+            if (response.data) {
+                setAgreementData(response.data);
+                setIsAgreementModalOpen(true);
+            }
+            console.log(response)
+        } catch (error) {
+            console.error('Error fetching agreement details:', error);
+        }
+    };
 
     // Row selection logic
     const rowSelection = {
@@ -324,6 +357,11 @@ const DataTransfers = () => {
                     </Col>
                 </Row>
             </div>
+            <AgreementModal
+                open={isAgreementModalOpen}
+                onClose={() => setIsAgreementModalOpen(false)}
+                agreementData={agreementData}
+            />
         </>
     );
 };

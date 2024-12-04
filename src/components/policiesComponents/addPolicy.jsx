@@ -58,7 +58,6 @@ const PolicyModal = ({ isModalOpen, handlePolicyOk, handlePolicyCancel, addRowTo
                 target,
                 rules,
             });
-
             if (response.status === 200) {
                 const { policyId } = response.data;
                 openNotification('success', 'Policy created successfully', `Policy ID: ${policyId}`);

@@ -43,7 +43,7 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
     const getSelfDescription = async () => {
         setLoading(true)
         try {
-            const response = await axios.get(`${config.url}${config.consumer}${config.gatewayClientPath}/self-descriptions?endpoint=${encodeURIComponent(inputValue.trim())}`);
+            const response = await axios.get(`${config.url}${config.consumer}${config.gatewayNegotiationsPath}/self-description?endpoint=${encodeURIComponent(inputValue.trim())}`);
             setSelfDescription(response.data);
             openNotification('success', 'Self-Description Retrieved', 'The self-description was successfully retrieved.');
         } catch (error) {

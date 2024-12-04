@@ -14,6 +14,7 @@ import AgreementModal from '../components/agreementModal';
 import Searcher from '../components/contractComponents/searcher';
 import cnStateMachine from '../components/stateMachines/cnStateMachine';
 import config from '../config';
+import axios from 'axios';
 import { useWebSocket } from '../WebSocketProvider';
 
 
@@ -54,16 +55,12 @@ const ContractNegotiations = () => {
                             <a size="large" type="primary" onClick={() => handleAgreement(agreementId)}>
                                 {agreementId}
                             </a>
-                            <AgreementModal
-                                open={isAgreementModalOpen}
-                                onClose={() => setIsAgreementModalOpen(false)}
-                                agreementData={agreementData} />
                         </>
                     ) : (
                         <span>N/A</span>
                     )}
                 </Space>
-            ),
+            )
         },
         { title: 'Title', dataIndex: 'title', width: '10%' },
         { title: 'Provider', dataIndex: 'provider', width: '10%' },
@@ -118,18 +115,12 @@ const ContractNegotiations = () => {
                 // If processId exists, update the state of the existing row
                 existingData[existingIndex].currentState = formattedData.currentState;
 
-                // If the currentState is AGREED it starts showing the agreementId and its params
-                if (formattedData.currentState === 'AGREED' && newNegotiation.params.agreement["@id"]) {
-                    existingData[existingIndex].agreementId = newNegotiation.params.agreement["@id"];
-                    existingData[existingIndex].params = newNegotiation.params;
-                }
-
                 // If state is FINALIZED OR TERMINATED the data is setted in History data
                 if (['FINALIZED', 'TERMINATED'].includes(formattedData.currentState.toUpperCase())) {
                     const updatedHistory = [...historyData, existingData[existingIndex]];
 
                     // If the terminated process doesn't exist, adds a new one to the history table
-                    const uniqueHistory = updatedHistory.filter((item, index, self) => 
+                    const uniqueHistory = updatedHistory.filter((item, index, self) =>
                         index === self.findIndex((t) => t.processId === item.processId)
                     );
 
@@ -229,14 +220,19 @@ const ContractNegotiations = () => {
     };
     const handleTerminateCancel = () => setIsTerminateModalOpen(false);
 
-    const handleAgreement = (agreementId) => {
-        const agreement = data.find(item => item.agreementId === agreementId);
-        if (agreement) {
-            setAgreementData(agreement.params);
-            setIsAgreementModalOpen(true);
+    const handleAgreement = async (agreementId) => {
+        try {
+            const response = await axios.get(`${config.url}${config.provider}${config.gatewayNegotiationsPath}/${agreementId}/agreements/${agreementId}`);
+            if (response.data) {
+                setAgreementData(response.data);
+                setIsAgreementModalOpen(true);
+            }
+            console.log(response)
+        } catch (error) {
+            console.error('Error fetching agreement details:', error);
         }
-        console.log(agreement)
     };
+
 
     // Search function
     const onSearch = (value) => {
@@ -420,6 +416,11 @@ const ContractNegotiations = () => {
                     </Col>
                 </Row>
             </div>
+            <AgreementModal
+                open={isAgreementModalOpen}
+                onClose={() => setIsAgreementModalOpen(false)}
+                agreementData={agreementData}
+            />
         </>
     );
 };
