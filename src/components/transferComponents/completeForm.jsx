@@ -11,7 +11,6 @@ const CompleteModal = ({ isCompleteModalOpen, handleCompleteOk, handleCompleteCa
 
     // Main function to complete a transfer-request 
     const handleComplete = async () => {
-        console.log(provider, transferId, endpoint)
         setLoading(true);
         try {
 
@@ -22,7 +21,6 @@ const CompleteModal = ({ isCompleteModalOpen, handleCompleteOk, handleCompleteCa
             const response = await axios.post(`${config.url}${endpoint}${config.gatewayTransfersPath}/${encodeURIComponent(transferId)}/completion`, {
                 isProvider: providerValue,
             });
-            console.log(providerValue)
             if (response.status === 200) {
                 openNotification('success', 'Completed', 'Transfer completed successfully');
                 handleCompleteOk();

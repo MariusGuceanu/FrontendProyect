@@ -37,14 +37,12 @@ const TerminateModal = ({ isTerminateModalOpen, handleTerminateOk, handleTermina
             const idKey = provider ? "providerPid" : "consumerPid";
 
             // Sends the request 
-            console.log(endpoint)
             const response = await axios.post(`${config.url}${endpoint}${config.gatewayNegotiationsPath}/${encodeURIComponent(negotiationId)}/termination`, {
                 [idKey]: negotiationId,
                 code: code || undefined,
                 reasons: reasons.length > 0 ? reasons : undefined,
             });
             if (response.status === 200) {
-                console.log("Terminate successful:", response.data);
                 openNotification("success", "Terminated", "Contract terminated successfully");
                 handleTerminateOk();
             } else {

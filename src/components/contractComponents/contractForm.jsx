@@ -68,7 +68,6 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
         };
         try {
             const response = await axios.post(`${config.url}${config.consumer}${config.gatewayNegotiationsPath}/request`, requestData);
-            console.log(response)
             if (response.status === 200) {
                 openNotification('success', 'Request Successful', `Contract Negotiation ID: ${response.data.negotiationId}`);
                 // Resets the input fields to leave them blank

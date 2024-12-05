@@ -11,18 +11,15 @@ const StartModal = ({ isStartModalOpen, handleStartOk, handleStartCancel, provid
     const { openNotification, contextHolder } = Notification();
 
     const handleStart = async () => {
-        console.log(provider, transferFormat, transferId, endpoint)
         setLoading(true);
         try {
             // const to distinct between provider and consumer
             const providerValue = provider === 'true';
-            console.log(providerValue)
             // Sends the request
             const response = await axios.post(`${config.url}${endpoint}${config.gatewayTransfersPath}/${encodeURIComponent(transferId)}/start`, {
                 isProvider: providerValue,
                 sourceEndpoint: transferFormat === 'HTTP_PULL' ? sourceEndpoint : undefined,
             });
-            console.log(providerValue)
             if (response.status === 200) {
                 openNotification('success', 'Start Successful', 'Transfer started successfully');
                 handleStartOk();

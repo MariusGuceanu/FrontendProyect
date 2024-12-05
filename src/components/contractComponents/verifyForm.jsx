@@ -14,15 +14,11 @@ const VerifyModal = ({ isVerifyModalOpen, handleVerifyOk, handleVerifyCancel, ne
         setLoading(true);
         try {
             // Sends the request
-            console.log(agreementId)
-            console.log(negotiationId)
             const response = await axios.post(`${config.url}${config.consumer}${config.gatewayNegotiationsPath}/${encodeURIComponent(negotiationId)}/agreements/${encodeURIComponent(agreementId)}/verification`, {
             });
-            console.log(response)
 
 
             if (response.status === 200) {
-                console.log('Contract agreement is verified', response.data);
                 openNotification('success', 'Verified', 'Contract agreement is verified');
                 handleVerifyOk();
             } else {

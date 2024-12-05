@@ -129,7 +129,6 @@ const DataTransfers = () => {
                 // If transferId doesn't exist, add the new row               
                 updatedData = [...existingData, formattedData];
             }
-            console.log('agreementData en AgreementModal:', agreementData);
 
             // Updates the data of the table and saves it locally
             setData(updatedData);
@@ -151,7 +150,6 @@ const DataTransfers = () => {
                 setAgreementData(response.data);
                 setIsAgreementModalOpen(true);
             }
-            console.log(response)
         } catch (error) {
             console.error('Error fetching agreement details:', error);
         }

@@ -102,10 +102,7 @@ const ContractNegotiations = () => {
                 currentState: newNegotiation.state.replace('dspace:', ''),
                 initiatedDate: new Date().toLocaleString(),
             };
-            console.log('Message params:', newNegotiation.params);
             const agreementId = message.params?.agreement?.["@id"];
-            console.log("Agreement ID detectado:", agreementId);
-            console.log('Message structure:', JSON.stringify(message, null, 2));
             // Retrieve the existing data
             const existingData = JSON.parse(localStorage.getItem('Data')) || [];
 
@@ -143,7 +140,6 @@ const ContractNegotiations = () => {
                 // If processId doesn't exist, adds the new row
                 updatedData = [...existingData, formattedData];
             }
-            console.log('agreementData en AgreementModal:', agreementData);
 
             // Updates the data of the table and saves it locally
             setData(updatedData);
@@ -235,8 +231,6 @@ const ContractNegotiations = () => {
                 setAgreementData(response.data);
                 setIsAgreementModalOpen(true);
             }
-            console.log(response)
-
         } catch (error) {
             console.error('Error fetching agreement details:', error);
         }
