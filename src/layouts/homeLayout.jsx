@@ -64,7 +64,7 @@ const HomeLayout = () => {
               background: colorBgContainer,
               borderRadius: borderRadiusLG,
             }}>
-            <Sider width={280} collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)} style={{
+            <Sider width={260} collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)} style={{
               background: '#001529',
             }}>
               <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={SiderItems()} />
