@@ -103,7 +103,9 @@ const ContractNegotiations = () => {
                 initiatedDate: new Date().toLocaleString(),
             };
             console.log('Message params:', newNegotiation.params);
-
+            const agreementId = message.params?.agreement?.["@id"];
+            console.log("Agreement ID detectado:", agreementId);
+            console.log('Message structure:', JSON.stringify(message, null, 2));
             // Retrieve the existing data
             const existingData = JSON.parse(localStorage.getItem('Data')) || [];
 
@@ -114,6 +116,12 @@ const ContractNegotiations = () => {
 
                 // If processId exists, update the state of the existing row
                 existingData[existingIndex].currentState = formattedData.currentState;
+
+                // If the currentState is AGREED it starts showing the agreementId and its params
+                if (formattedData.currentState === 'AGREED' && newNegotiation.params.agreement["@id"]) {
+                    existingData[existingIndex].agreementId = newNegotiation.params.agreement["@id"];
+                    existingData[existingIndex].params = newNegotiation.params;
+                }
 
                 // If state is FINALIZED OR TERMINATED the data is setted in History data
                 if (['FINALIZED', 'TERMINATED'].includes(formattedData.currentState.toUpperCase())) {
@@ -228,11 +236,11 @@ const ContractNegotiations = () => {
                 setIsAgreementModalOpen(true);
             }
             console.log(response)
+
         } catch (error) {
             console.error('Error fetching agreement details:', error);
         }
     };
-
 
     // Search function
     const onSearch = (value) => {
@@ -399,13 +407,14 @@ const ContractNegotiations = () => {
                                     ...rowSelection,
                                 }} columns={columns} dataSource={filteredData}
                                 pagination={{ pageSize: 10 }}
-                                scroll={{ y: 55 * 6 }} />
+                                scroll={{x: '1480px', y: 55 * 6 }} />
                         ) : (
                             <Table style={{ padding: '2%', overflowX: 'auto' }} className="table-contracts"
                                 columns={columns}
                                 dataSource={historyData}
                                 pagination={{ pageSize: 10 }}
-                                scroll={{ y: 55 * 6 }} />
+                                scroll={{x: '1480px', y: 55 * 6 }} />
+                                
                         )}
                     </Col>
                 </Row>

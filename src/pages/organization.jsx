@@ -1,25 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, Space, Typography } from 'antd';
+import Notification from '../components/notifications';
+import axios from 'axios';
 
 const { TextArea } = Input;
 
-const OrganizationDetails = () => {
+const Organizations = () => {
     // Initial example data showed on the inputs
     const initialData = {
-        participant_id: "org1",
-        agent_id: "connector1",
-        title: "Ceit Centro Tecnológico",
+        agentId: "",
+        participantId: "",
+        title: "",
         description:
-            "Ceit is a non-profit research centre created by the University of Navarra in 1982. The main objective of the centre is to carry out applied industrial research projects through close collaboration with the R&D departments.",
-        url: "https://www.ceit.es/",
+            "",
     };
 
     // Defining states
     const [form] = Form.useForm();
     const [formData, setFormData] = useState(initialData);
     const [isEditing, setIsEditing] = useState(false);
+    const [loading, setLoading] = useState(false)
+    const { openNotification, contextHolder } = Notification();
 
-    // Set the inputs to be editable
+    // First request to get the organization details from the endpoint
+    useEffect(() => {
+        const GetData = async () => {
+            setLoading(true);
+            try {
+                const response = await axios.get('http://localhost:8081/api/v1/management/organization');
+                setFormData(response.data);
+                form.setFieldsValue(response.data);
+            } catch (error) {
+                console.error("Fetch error:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        GetData();
+    }, [form]);
+
+    // Sets the inputs to be editable
     const handleEdit = () => {
         setIsEditing(true);
     };
@@ -28,10 +48,20 @@ const OrganizationDetails = () => {
     const handleSave = async () => {
         try {
             const values = await form.validateFields();
-            setFormData(values);
-            setIsEditing(false);
+            setLoading(true);
+
+            const response = await axios.post('http://localhost:8081/api/v1/management/organization', values);
+            if (response.status === 200) {
+                setFormData(values);
+                setIsEditing(false);
+                openNotification('success', 'Organization updated', 'The details of the organizations were updated successfully');
+            } else {
+                openNotification('error', 'Unexpected Response', 'An unexpected response was received.');
+            }
         } catch (error) {
-            console.error("Validation Failed:", error);
+            openNotification('error', 'Error in organization', error.response?.data?.message || 'An error occurred while attempting the update');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -39,90 +69,75 @@ const OrganizationDetails = () => {
     const handleCancel = () => {
         form.setFieldsValue(formData);
         setIsEditing(false);
+        setLoading(false)
     };
-
-    React.useEffect(() => {
-        form.setFieldsValue(formData);
-    }, [formData, form]);
-
     // Content display
     return (
-        <div style={{ padding: "20px", maxWidth: "900px", margin: "auto" }}>
-            <fieldset
-                style={{
-                    border: "1.5px solid #1a2b4d",
-                    borderRadius: "8px",
-                    padding: "20px",
-                    backgroundColor: "#eee",
-                    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-                    position: "relative",
-                }}>
-                <legend
+        <>
+            {contextHolder}
+            <div style={{ padding: "20px", maxWidth: "800px", margin: "auto" }}>
+                <fieldset
                     style={{
-                        fontSize: "18px",
-                        fontWeight: "bold",
-                        color: "#1a2b4d",
-                        padding: "0 10px",
+                        border: "1.5px solid #1e4792", borderRadius: "8px", padding: "20px", backgroundColor: "#fff", boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)", position: "relative",
                     }}>
-                    <h2>Organization Details</h2>
-                </legend>
-                <Form form={form} layout="horizontal" labelCol={{ span: 5 }} wrapperCol={{ span: 16 }}
-                >
-                    <Form.Item
-                        label={<Typography.Text strong style={{ fontSize: "16px" }}>Participant ID</Typography.Text>} name="participant_id"
-                        rules={[{ required: true, message: "Please input the Participant" }]}
-                    >
-                        <Input style={{ color: '#727272' }} size="large" disabled={!isEditing} />
-                    </Form.Item>
+                    <legend
+                        style={{
+                            fontSize: "18px", fontWeight: "bold", color: "#1a2b4d", padding: "0 10px",
+                        }}>
+                        <h2>Organization Details</h2>
+                    </legend>
+                    <Form form={form} layout="vertical" labelAlign="center" labelCol={{ span: 24 }} wrapperCol={{ span: 24 }}>
+                        <Form.Item
+                            label={<Typography.Text strong style={{ fontSize: "16px", textAlign: "center" }}>Agent ID</Typography.Text>} name="agentId"
+                            rules={[{ required: true, message: "Please input the Agent Id" }]}
+                        >
+                            <Input size="large" disabled={!isEditing} />
+                        </Form.Item>
 
-                    <Form.Item
-                        label={<Typography.Text strong style={{ fontSize: "16px" }}>Agent ID</Typography.Text>} name="agent_id"
-                        rules={[{ required: true, message: "Please input the Agent Id" }]}
-                    >
-                        <Input style={{ color: '#727272' }} size="large" disabled={!isEditing} />
-                    </Form.Item>
+                        <Form.Item
+                            label={<Typography.Text strong style={{ fontSize: "16px", textAlign: "center" }}>Participant ID</Typography.Text>} name="participantId"
+                            rules={[{ required: true, message: "Please input the Participant Id" }]}
+                        >
+                            <Input size="large" disabled={!isEditing} />
+                        </Form.Item>
 
-                    <Form.Item
-                        label={<Typography.Text strong style={{ fontSize: "16px" }}>Title</Typography.Text>} name="title"
-                        rules={[{ required: true, message: "Please input the title" }]}
-                    >
-                        <Input style={{ color: '#727272' }} size="large" disabled={!isEditing} />
-                    </Form.Item>
+                        <Form.Item
+                            label={<Typography.Text strong style={{ fontSize: "16px", textAlign: "center" }}>Title</Typography.Text>} name="title"
+                            rules={[{ required: true, message: "Please input the title" }]}
+                        >
+                            <Input size="large" disabled={!isEditing} />
+                        </Form.Item>
 
-                    <Form.Item
-                        label={<Typography.Text strong style={{ fontSize: "16px" }}>Description</Typography.Text>} name="description">
-                        <TextArea style={{ color: '#727272' }} rows={4} size="large" disabled={!isEditing} />
-                    </Form.Item>
+                        <Form.Item
+                            label={<Typography.Text strong style={{ fontSize: "16px", textAlign: "center" }}>Description</Typography.Text>} name="description"
+                            rules={[{ required: true, message: "Please input a description" }]}
+                        >
+                            <TextArea rows={4} size="large" disabled={!isEditing} />
+                        </Form.Item>
 
-                    <Form.Item
-                        label={<Typography.Text strong style={{ fontSize: "16px" }}>URL</Typography.Text>} name="url"
-                        rules={[{ type: "url", message: "Please input a valid URL!" }]}
-                    >
-                        <Input style={{ color: '#727272' }} size="large" disabled={!isEditing} />
-                    </Form.Item>
-
-                    <Form.Item wrapperCol={{ span: 24 }} style={{ display: 'flex', justifyContent: 'center', marginTop: "20px" }}>
-                        <Space style={{ display: 'flex', justifyContent: 'space-between' }}>
-                            {isEditing ? (
-                                <Space>
-                                    <Button type="primary" size="large" onClick={handleSave}>
-                                        Save
+                        <Form.Item wrapperCol={{ span: 24 }} style={{ display: 'flex', justifyContent: 'center', marginTop: "20px" }}>
+                            <Space style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                {isEditing ? (
+                                    <Space>
+                                        <Button type="primary" size="large" loading={loading} onClick={handleSave}>
+                                            Save
+                                        </Button>
+                                        <Button danger size="large" onClick={handleCancel}>
+                                            Cancel
+                                        </Button>
+                                    </Space>
+                                ) : (
+                                    <Button type="primary" size="large" onClick={handleEdit}>
+                                        Edit
                                     </Button>
-                                    <Button size="large" onClick={handleCancel}>
-                                        Cancel
-                                    </Button>
-                                </Space>
-                            ) : (
-                                <Button type="primary" size="large" onClick={handleEdit}>
-                                    Edit
-                                </Button>
-                            )}
-                        </Space>
-                    </Form.Item>
-                </Form>
-            </fieldset>
-        </div>
+                                )}
+                            </Space>
+                        </Form.Item>
+                    </Form>
+                </fieldset>
+            </div>
+        </>
     );
 };
 
-export default OrganizationDetails;
+export default Organizations;

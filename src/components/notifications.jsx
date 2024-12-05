@@ -9,7 +9,7 @@ const Notification = () => {
             message: title,
             description:
                 description,
-            duration: 7,
+            duration: 8,
             onClose : onClose,
         });
     };

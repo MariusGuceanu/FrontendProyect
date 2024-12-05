@@ -129,6 +129,7 @@ const DataTransfers = () => {
                 // If transferId doesn't exist, add the new row               
                 updatedData = [...existingData, formattedData];
             }
+            console.log('agreementData en AgreementModal:', agreementData);
 
             // Updates the data of the table and saves it locally
             setData(updatedData);
@@ -325,7 +326,9 @@ const DataTransfers = () => {
                     <RequestTransferModal isRequestTransferModalOpen={isRequestTransferModalOpen} handleRequestTransferOk={handleRequestTransferOk} handleRequestTransferCancel={handleRequestTransferCancel} />
                     <FilterC className="action-buttons" setFilteredData={setFilteredData} initialData={data} />
                     <SorterC className="action-buttons" filteredData={filteredData} setFilteredData={setFilteredData} />
-                    <Searcher onSearch={onSearch} />
+                    <div className='searcherT'>
+                        <Searcher onSearch={onSearch} />
+                    </div>
                 </Col>
 
                 {/* Ongoing and History tables */}
@@ -340,14 +343,14 @@ const DataTransfers = () => {
                                     ...rowSelection,
                                 }} columns={columns} dataSource={filteredData}
                                 pagination={{ pageSize: 10 }}
-                                scroll={{ y: 55 * 6 }} />
+                                scroll={{ x: '1480px', y: 55 * 6 }} />
                         ) : (
                             <Table style={{ padding: '2%', overflowX: 'auto' }} className="table-contracts"
                                 rowClassName={(record) => (record.provider === 'false' ? 'provider-false' : '')}
                                 columns={columns}
                                 dataSource={historyTransferData}
                                 pagination={{ pageSize: 10 }}
-                                scroll={{ y: 55 * 6 }} />
+                                scroll={{ x: '1480px', y: 55 * 6 }} />
                         )}
                     </Col>
                 </Row>

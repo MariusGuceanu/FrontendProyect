@@ -1,20 +1,16 @@
-* {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-  ;
-}
-
 /* Upper buttons */
-
 .large-buttons {
   width: 18%;
   padding: 22px;
-  font-size: 1.1rem;
+  font-size: 1rem;
+  white-space: normal;
 }
 
-@media (max-width: 980px) {
+@media (max-width: 1060px) {
   .large-buttons {
-    padding: 22px;
-    font-size: 1rem;
+    padding: 20px;
+    padding: 20px;
+    font-size: 0.9rem;
   }
 }
 
@@ -55,35 +51,56 @@
   padding: 10px;
 }
 
-@media (max-width: 980px) {
+@media (max-width: 1060px) {
   .button-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .button-gridT {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
   }
 
   .action-buttons {
     font-size: 0.9rem;
   }
 
+  .searcherT {
+    grid-column: 2 / -1;
+    width: 100%;
+  }
+
   .searcher {
     grid-column: 1 / -1;
     width: 100%;
-    margin-top: 10px;
   }
+
 }
 
 @media (max-width: 560px) {
   .action-buttons {
+    width: 100%;
     font-size: 0.8rem;
   }
 
   .button-grid {
     grid-template-columns: 1fr;
   }
+
+  .button-gridT {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
 }
 
 /* Table and reactive buttons */
 .provider-false .ant-table-cell {
   background-color: #1A4B4D !important;
+  color: white;
+}
+
+.provider-false:hover .ant-table-cell {
+  background-color: #2d6f6f !important;
   color: white;
 }
 
@@ -94,17 +111,18 @@
 }
 
 :where(.css-dev-only-do-not-override-5pbk6d).ant-table-wrapper .ant-table-tbody .ant-table-row>.ant-table-cell-row-hover {
-  background: #1b3363;
+  background: #1e3c79;
 }
 
-:where(.css-dev-only-do-not-override-5pbk6d).ant-table-wrapper .ant-table-thead >tr>th, :where(.css-dev-only-do-not-override-5pbk6d).ant-table-wrapper .ant-table-thead >tr>td {
+:where(.css-dev-only-do-not-override-5pbk6d).ant-table-wrapper .ant-table-thead>tr>th,
+:where(.css-dev-only-do-not-override-5pbk6d).ant-table-wrapper .ant-table-thead>tr>td {
   position: relative;
-    color: rgba(255, 255, 255, 255);
-    font-weight: 600;
-    text-align: start;
-    background: #1e4792;
-    border-bottom: 1px solid #f0f0f0;
-    transition: background 0.2s ease;
+  color: rgba(255, 255, 255, 255);
+  font-weight: 600;
+  text-align: start;
+  background: #1e4792;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background 0.2s ease;
 }
 
 .table-contracts .ant-table td {
@@ -117,13 +135,14 @@
   background: #1a2b4d;
   color: black;
 }
-.table-contracts .ant-table-thead > tr > th {
+
+.table-contracts .ant-table-thead>tr>th {
   text-align: center !important;
   vertical-align: middle !important;
 }
 
-.table-contracts .ant-table > tr > th >td {
-  text-align: center ;
+.table-contracts .ant-table>tr>th>td {
+  text-align: center;
   vertical-align: middle;
 }
 
@@ -138,9 +157,10 @@
   color: black;
 }
 
-@media (max-width: 980px) {
+@media (max-width: 1060px) {
   .table-contracts .ant-table {
     font-size: 0.7rem;
+    padding: 5px 8px;
   }
 
   .ant-btn {
@@ -169,7 +189,7 @@
   padding: 10px;
 }
 
-@media (max-width: 980px) {
+@media (max-width: 1060px) {
   .reactive-buttons {
     font-size: 0.9rem;
   }
