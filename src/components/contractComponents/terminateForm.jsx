@@ -3,7 +3,7 @@ import { Modal, Form, Button, Input } from 'antd';
 import { SendOutlined, PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import Notification from '../notifications';
-import config from '../../config';
+import { negotiationEndpoints } from '../endpoints';
 
 const TerminateModal = ({ isTerminateModalOpen, handleTerminateOk, handleTerminateCancel, negotiationId, provider, endpoint }) => {
     const [loading, setLoading] = useState(false);
@@ -32,12 +32,11 @@ const TerminateModal = ({ isTerminateModalOpen, handleTerminateOk, handleTermina
             const reasons = constraints
                 .filter((constraint) => constraint.value)
                 .map((constraint) => constraint.value);
-
             // Sends providerPid or consumerPid depending the value of the boolean from the table
             const idKey = provider ? "providerPid" : "consumerPid";
-
+            const url = negotiationEndpoints.terminateEndpoint(endpoint, negotiationId);
             // Sends the request 
-            const response = await axios.post(`${config.url}${endpoint}${config.gatewayNegotiationsPath}/${encodeURIComponent(negotiationId)}/termination`, {
+            const response = await axios.post(url, {
                 [idKey]: negotiationId,
                 code: code || undefined,
                 reasons: reasons.length > 0 ? reasons : undefined,

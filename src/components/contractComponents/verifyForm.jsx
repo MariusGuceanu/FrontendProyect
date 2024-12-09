@@ -3,7 +3,7 @@ import { Modal, Form, Button } from 'antd';
 import Notification from '../notifications';
 import { SendOutlined } from '@ant-design/icons';
 import axios from 'axios';
-import config from '../../config';
+import { negotiationEndpoints } from '../endpoints';
 
 const VerifyModal = ({ isVerifyModalOpen, handleVerifyOk, handleVerifyCancel, negotiationId, agreementId }) => {
     const [loading, setLoading] = useState(false);
@@ -12,11 +12,11 @@ const VerifyModal = ({ isVerifyModalOpen, handleVerifyOk, handleVerifyCancel, ne
     // Main function to verify a contract by sending a request
     const handleVerify = async () => {
         setLoading(true);
+        const url = negotiationEndpoints.verifyEndpoint(negotiationId, agreementId)
         try {
             // Sends the request
-            const response = await axios.post(`${config.url}${config.consumer}${config.gatewayNegotiationsPath}/${encodeURIComponent(negotiationId)}/agreements/${encodeURIComponent(agreementId)}/verification`, {
+            const response = await axios.post(url, {
             });
-
 
             if (response.status === 200) {
                 openNotification('success', 'Verified', 'Contract agreement is verified');

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Modal, Form, Input, Button, Divider } from 'antd';
 import { SendOutlined, PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import Notification from '../notifications';
-import config from '../../config';
+import { negotiationEndpoints } from '../endpoints';
 import axios from 'axios';
 
 const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
@@ -43,7 +43,7 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
     const getSelfDescription = async () => {
         setLoading(true)
         try {
-            const response = await axios.get(`${config.url}${config.consumer}${config.gatewayNegotiationsPath}/self-description?endpoint=${encodeURIComponent(inputValue.trim())}`);
+            const response = await axios.get(`${negotiationEndpoints.selfDescriptionEndpoint}${encodeURIComponent(inputValue.trim())}`);
             setSelfDescription(response.data);
             openNotification('success', 'Self-Description Retrieved', 'The self-description was successfully retrieved.');
         } catch (error) {
@@ -67,7 +67,7 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
             }, {}),
         };
         try {
-            const response = await axios.post(`${config.url}${config.consumer}${config.gatewayNegotiationsPath}/request`, requestData);
+            const response = await axios.post(`${negotiationEndpoints.requestEndpoint}`, requestData);
             if (response.status === 200) {
                 openNotification('success', 'Request Successful', `Contract Negotiation ID: ${response.data.negotiationId}`);
                 // Resets the input fields to leave them blank

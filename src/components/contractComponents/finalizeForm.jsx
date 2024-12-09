@@ -3,7 +3,7 @@ import { Modal, Form, Button } from 'antd';
 import Notification from '../notifications';
 import { SendOutlined } from '@ant-design/icons';
 import axios from 'axios';
-import config from '../../config';
+import { negotiationEndpoints } from '../endpoints';
 
 const FinalizeModal = ({ isFinalizeModalOpen, handleFinalizeOk, handleFinalizeCancel, negotiationId }) => {
     const [loading, setLoading] = useState(false);
@@ -13,8 +13,9 @@ const FinalizeModal = ({ isFinalizeModalOpen, handleFinalizeOk, handleFinalizeCa
     const handleFinalize = async () => {
         setLoading(true);
         try {
+            const url = negotiationEndpoints.finalizeEndpoint(negotiationId)
             // Sends the request
-            const response = await axios.post(`${config.url}${config.provider}${config.gatewayNegotiationsPath}/${encodeURIComponent(negotiationId)}/finalization`, {
+            const response = await axios.post(url, {
             });
             if (response.status === 200) {
                 openNotification('success', 'Contract finalized', 'Contract is finalized');

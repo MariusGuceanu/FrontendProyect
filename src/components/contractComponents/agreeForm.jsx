@@ -3,7 +3,7 @@ import { Modal, Form, Input, Button } from 'antd';
 import Notification from '../notifications';
 import { SendOutlined } from '@ant-design/icons';
 import axios from 'axios';
-import config from '../../config';
+import { negotiationEndpoints } from '../endpoints';
 
 const AgreeModal = ({ isAgreeModalOpen, handleAgreeOk, handleAgreeCancel, negotiationId }) => {
     const [offerId, setOfferId] = useState('');
@@ -18,9 +18,9 @@ const AgreeModal = ({ isAgreeModalOpen, handleAgreeOk, handleAgreeCancel, negoti
     const handleAgree = async () => {
         setLoading(true);
         try {
-
+            const url = negotiationEndpoints.agreeEndpoint(negotiationId)
             // Sends the request
-            const response = await axios.post(`${config.url}${config.provider}${config.gatewayNegotiationsPath}/${encodeURIComponent(negotiationId)}/agreements`, {
+            const response = await axios.post(url, {
                 offerId: offerId,
             });
             if (response.status === 200) {

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Modal, Form, Input, Button } from 'antd';
 import { SendOutlined } from '@ant-design/icons';
 import axios from 'axios';
-import config from '../../config';
+import { negotiationEndpoints } from '../endpoints';
 import Notification from '../notifications';
 
 const OfferModal = ({ isModalOpen, handleOk, handleCancel }) => {
@@ -25,7 +25,7 @@ const OfferModal = ({ isModalOpen, handleOk, handleCancel }) => {
         setLoading(true);
         try {
             // Sends the request
-            await axios.post(`${config.url}${config.provider}${config.gatewayNegotiationsPath}/offer`, {
+            await axios.post(`${negotiationEndpoints.offerEndpoint}`, {
                 offerId: offerId.trim(),
                 consumerEndpoint: consumerAddr.trim(),
             });
