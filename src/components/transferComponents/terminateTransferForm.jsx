@@ -4,6 +4,7 @@ import { SendOutlined, PlusOutlined, MinusCircleOutlined } from '@ant-design/ico
 import axios from 'axios';
 import Notification from '../notifications';
 import config from '../../config';
+import { transferEndpoints } from '../endpoints';
 
 const TerminateTransferModal = ({ isTerminateTModalOpen, handleTerminateTOk, handleTerminateTCancel, transferId, provider, endpoint }) => {
     const [loading, setLoading] = useState(false);
@@ -35,9 +36,9 @@ const TerminateTransferModal = ({ isTerminateTModalOpen, handleTerminateTOk, han
 
             // Const to distinct between provider and consumer
             const providerValue = provider === 'true';
-
+            const url = transferEndpoints.terminateTEndpoint(transferId, endpoint)
             // Sends the request
-            const response = await axios.post(`${config.url}${endpoint}${config.gatewayTransfersPath}/${encodeURIComponent(transferId)}/termination`, {
+            const response = await axios.post(url, {
                 isProvider: providerValue,
                 code: code || undefined,
                 reasons: reasons.length > 0 ? reasons : undefined,

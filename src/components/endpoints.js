@@ -20,9 +20,22 @@ export const negotiationEndpoints = {
 };
 
 export const transferEndpoints = {
-    requestTransferEndpoint: ``,
-    startEndpoint: ``,
-    suspendNEndpoint: ``,
-    completeEndpoint: ``,
-    terminateTEndpoint: ``,
+    requestTransferEndpoint: `${config.url}${config.consumer}${config.gatewayTransfersPath}/request`,
+    startEndpoint: (transferId, endpoint) =>
+        `${config.url}${endpoint}${config.gatewayTransfersPath}/${encodeURIComponent(transferId)}/start`,
+    suspendEndpoint: (transferId, endpoint) =>
+        `${config.url}${endpoint}${config.gatewayTransfersPath}/${encodeURIComponent(transferId)}/suspension`,
+    completeEndpoint: (transferId, endpoint) =>
+        `${config.url}${endpoint}${config.gatewayTransfersPath}/${encodeURIComponent(transferId)}/completion`,
+    terminateTEndpoint: (transferId, endpoint) =>
+        `${config.url}${endpoint}${config.gatewayTransfersPath}/${encodeURIComponent(transferId)}/termination`,
 };
+
+export const catalogEndpoints = {
+    addPolicyEndpoint: `${config.url}${config.provider}${config.gatewayCatalogPath}/policies`,
+    addDatasetEndpoint: `${config.url}${config.provider}${config.gatewayCatalogPath}/datasets`
+}
+
+export const clientEndpoints = {
+
+}

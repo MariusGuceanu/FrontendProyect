@@ -4,6 +4,7 @@ import { PlusOutlined, MinusCircleOutlined, SendOutlined } from "@ant-design/ico
 import axios from "axios";
 import config from "../../config";
 import Notification from '../notifications';
+import { catalogEndpoints } from "../endpoints";
 
 const { Option } = Select;
 
@@ -53,8 +54,9 @@ const PolicyModal = ({ isModalOpen, handlePolicyOk, handlePolicyCancel, addRowTo
     // Main function to create a policy by sending a request
     const handleCreatePolicy = async () => {
         setLoading(true);
+        const url = catalogEndpoints.addPolicyEndpoint
         try {
-            const response = await axios.post(`${config.url}${config.provider}${config.gatewayCatalogPath}/policies`, {
+            const response = await axios.post(url, {
                 target,
                 rules,
             });

@@ -4,6 +4,7 @@ import { GatewayOutlined, SendOutlined } from "@ant-design/icons";
 import axios from "axios";
 import config from "../../config";
 import Notification from '../notifications';
+import { catalogEndpoints } from "../endpoints";
 
 const { Option } = Select;
 
@@ -17,8 +18,9 @@ const CatalogModal = ({ isModalOpen, handleCatalogCancel, handleCatalogOk, addRo
         try {
             setLoading(true);
             const values = await form.validateFields();
+            const url = catalogEndpoints.addDatasetEndpoint
             // Sends the request
-            const response = await axios.post(`${config.url}${config.provider}${config.gatewayCatalogPath}/datasets`, {
+            const response = await axios.post(url, {
                 title: values.title,
                 description: [values.description],
                 endpoints: [values.endpoint],

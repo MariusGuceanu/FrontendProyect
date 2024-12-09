@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Modal, Form, Input, Button, Select } from 'antd';
 import { SendOutlined } from '@ant-design/icons';
-import config from '../../config';
 import axios from 'axios';
 import Notification from '../notifications';
+import { transferEndpoints } from '../endpoints';
 
 const { Option } = Select;
 
@@ -33,9 +33,9 @@ const RequestTransferModal = ({ isRequestTransferModalOpen, handleRequestTransfe
                 // Adds sinkEndpoint only for HTTP_PUSH
                 payload.sinkEndpoint = values.sinkEndpoint;
             }
-
+            const url = transferEndpoints.requestTransferEndpoint
             // Send the request
-            await axios.post(`${config.url}${config.consumer}${config.gatewayTransfersPath}/request`, payload);
+            await axios.post(url, payload);
             openNotification('success', 'Transfer requested', 'Transfer request sent successfully');
             form.resetFields();
             handleRequestTransferOk();

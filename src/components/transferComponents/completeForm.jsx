@@ -4,6 +4,7 @@ import { SendOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import Notification from '../notifications';
 import config from '../../config';
+import { transferEndpoints } from '../endpoints';
 
 const CompleteModal = ({ isCompleteModalOpen, handleCompleteOk, handleCompleteCancel, transferId, provider, endpoint }) => {
     const [loading, setLoading] = useState(false);
@@ -16,9 +17,9 @@ const CompleteModal = ({ isCompleteModalOpen, handleCompleteOk, handleCompleteCa
 
             // const to distinct between provider and consumer
             const providerValue = provider === 'true';
-
+            const url = transferEndpoints.completeEndpoint(transferId, endpoint)
             // Sends the request
-            const response = await axios.post(`${config.url}${endpoint}${config.gatewayTransfersPath}/${encodeURIComponent(transferId)}/completion`, {
+            const response = await axios.post( url, {
                 isProvider: providerValue,
             });
             if (response.status === 200) {
