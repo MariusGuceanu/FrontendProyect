@@ -36,6 +36,7 @@ export const catalogEndpoints = {
     addDatasetEndpoint: `${config.url}${config.provider}${config.gatewayCatalogPath}/datasets`
 }
 
-export const clientEndpoints = {
-
+export const managmentEndpoints = {
+    getOrganization: `${config.url}${config.provider}${config.gatewatManagmentPath}/organization`,
+    postOrganization: `${config.url}${config.provider}${config.gatewatManagmentPath}/organization`,
 }

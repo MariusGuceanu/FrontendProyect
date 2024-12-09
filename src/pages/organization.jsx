@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, Space, Typography } from 'antd';
 import Notification from '../components/notifications';
 import axios from 'axios';
-
+import { managmentEndpoints } from '../components/endpoints';
 const { TextArea } = Input;
 
 const Organizations = () => {
@@ -26,8 +26,9 @@ const Organizations = () => {
     useEffect(() => {
         const GetData = async () => {
             setLoading(true);
+            const getUrl = managmentEndpoints.getOrganization
             try {
-                const response = await axios.get('http://localhost:8081/api/v1/management/organization');
+                const response = await axios.get(getUrl);
                 setFormData(response.data);
                 form.setFieldsValue(response.data);
             } catch (error) {
@@ -49,8 +50,9 @@ const Organizations = () => {
         try {
             const values = await form.validateFields();
             setLoading(true);
+            const postUrl = managmentEndpoints.postOrganization
 
-            const response = await axios.post('http://localhost:8081/api/v1/management/organization', values);
+            const response = await axios.post(postUrl, values);
             if (response.status === 200) {
                 setFormData(values);
                 setIsEditing(false);

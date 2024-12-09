@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Modal, Form, Button, Input, Divider, Select } from "antd";
 import { PlusOutlined, MinusCircleOutlined, SendOutlined } from "@ant-design/icons";
 import axios from "axios";
-import config from "../../config";
 import Notification from '../notifications';
 import { catalogEndpoints } from "../endpoints";
 

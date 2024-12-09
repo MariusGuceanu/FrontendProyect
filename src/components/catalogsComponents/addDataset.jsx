@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { Modal, Form, Input, Button, Select } from "antd";
-import { GatewayOutlined, SendOutlined } from "@ant-design/icons";
+import { SendOutlined } from "@ant-design/icons";
 import axios from "axios";
-import config from "../../config";
 import Notification from '../notifications';
 import { catalogEndpoints } from "../endpoints";
 
