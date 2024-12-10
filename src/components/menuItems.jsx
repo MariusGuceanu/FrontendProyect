@@ -21,14 +21,10 @@ const SiderItems = () => [
             },
             {
                 key: '2',
-                label: <Link to="/home/organizations">Organization</Link>,
-            },
-            {
-                key: '3',
                 label: <Link to="/home/policies">Policies</Link>,
             },
             {
-                key: '4',
+                key: '3',
                 label: <Link to="/home/catalogs">Catalog</Link>,
             },
         ],

@@ -82,39 +82,33 @@ const Organizations = () => {
                     style={{
                         border: "1.5px solid #1e4792", borderRadius: "8px", padding: "20px", backgroundColor: "#fff", boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)", position: "relative",
                     }}>
-                    <legend
-                        style={{
-                            fontSize: "18px", fontWeight: "bold", color: "#1a2b4d", padding: "0 10px",
-                        }}>
-                        <h2>Organization Details</h2>
-                    </legend>
                     <Form form={form} layout="vertical" labelAlign="center" labelCol={{ span: 24 }} wrapperCol={{ span: 24 }}>
                         <Form.Item
                             label={<Typography.Text strong style={{ fontSize: "16px", textAlign: "center" }}>Agent ID</Typography.Text>} name="agentId"
                             rules={[{ required: true, message: "Please input the Agent Id" }]}
                         >
-                            <Input size="large" disabled={!isEditing} />
+                            <Input  disabled={!isEditing} />
                         </Form.Item>
 
                         <Form.Item
                             label={<Typography.Text strong style={{ fontSize: "16px", textAlign: "center" }}>Participant ID</Typography.Text>} name="participantId"
                             rules={[{ required: true, message: "Please input the Participant Id" }]}
                         >
-                            <Input size="large" disabled={!isEditing} />
+                            <Input  disabled={!isEditing} />
                         </Form.Item>
 
                         <Form.Item
                             label={<Typography.Text strong style={{ fontSize: "16px", textAlign: "center" }}>Title</Typography.Text>} name="title"
                             rules={[{ required: true, message: "Please input the title" }]}
                         >
-                            <Input size="large" disabled={!isEditing} />
+                            <Input disabled={!isEditing} />
                         </Form.Item>
 
                         <Form.Item
                             label={<Typography.Text strong style={{ fontSize: "16px", textAlign: "center" }}>Description</Typography.Text>} name="description"
                             rules={[{ required: true, message: "Please input a description" }]}
                         >
-                            <TextArea rows={4} size="large" disabled={!isEditing} />
+                            <TextArea rows={4}  disabled={!isEditing} />
                         </Form.Item>
 
                         <Form.Item wrapperCol={{ span: 24 }} style={{ display: 'flex', justifyContent: 'center', marginTop: "20px" }}>

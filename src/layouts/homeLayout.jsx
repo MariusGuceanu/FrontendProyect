@@ -78,7 +78,6 @@ const HomeLayout = () => {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/contract-negotiations" element={<ContractNegotiations />} />
                 <Route path="/data-transfers" element={<DataTransfers />}></Route>
-                <Route path="/organizations" element={<Organizations />} />
                 <Route path="/policies" element={<Policies />} />
                 <Route path="/catalogs" element={<Catalogs />} />
 

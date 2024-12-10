@@ -7,7 +7,7 @@ const Login = () => {
 
     const onFinish = (values) => {
         localStorage.setItem('username', values.username);
-        navigate('/home/organizations');
+        navigate('/home/dashboard');
     };
 
     return (
