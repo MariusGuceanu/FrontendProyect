@@ -5,7 +5,8 @@ import { useNavigate } from 'react-router-dom';
 const Login = () => {
     const navigate = useNavigate();
 
-    const onFinish = () => {
+    const onFinish = (values) => {
+        localStorage.setItem('username', values.username);
         navigate('/home/organizations');
     };
 
@@ -18,8 +19,8 @@ const Login = () => {
                 style={{
                     width: 320, padding: 32, background: '#fff', borderRadius: 10, boxShadow: '0 6px 12px rgba(0, 0, 0, 0.1)',
                 }}>
-                <Typography.Title level={3} style={{ textAlign: 'center', color: '#1E4792', marginBottom:20 }}>
-                    Sign in 
+                <Typography.Title level={3} style={{ textAlign: 'center', color: '#1E4792', marginBottom: 20 }}>
+                    Sign in
                 </Typography.Title>
                 <Form name="login" onFinish={onFinish} layout="vertical">
                     <Form.Item
