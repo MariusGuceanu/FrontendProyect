@@ -2,25 +2,25 @@ import config from "../config";
 
 export const negotiationEndpoints = {
     requestEndpoint:
-        `${config.url}${config.consumer}${config.gatewayNegotiationsPath}/request`,
+        `${config.url}${config.gatewayNegotiationsPath}/request`,
     selfDescriptionEndpoint:
-        `${config.url}${config.consumer}${config.gatewayNegotiationsPath}/self-description?endpoint=`,
+        `${config.url}${config.gatewayNegotiationsPath}/self-description?endpoint=`,
     offerEndpoint:
-        `${config.url}${config.provider}${config.gatewayNegotiationsPath}/offer`,
+        `${config.url}${config.gatewayNegotiationsPath}/offer`,
     acceptEndpoint: (negotiationId) =>
-        `${config.url}${config.consumer}${config.gatewayNegotiationsPath}/${encodeURIComponent(negotiationId)}/acceptance`,
+        `${config.url}${config.gatewayNegotiationsPath}/${encodeURIComponent(negotiationId)}/acceptance`,
     agreeEndpoint: (negotiationId) =>
-        `${config.url}${config.provider}${config.gatewayNegotiationsPath}/${encodeURIComponent(negotiationId)}/agreements`,
+        `${config.url}${config.gatewayNegotiationsPath}/${encodeURIComponent(negotiationId)}/agreements`,
     verifyEndpoint: (negotiationId, agreementId) =>
-        `${config.url}${config.consumer}${config.gatewayNegotiationsPath}/${encodeURIComponent(negotiationId)}/agreements/${encodeURIComponent(agreementId)}/verification`,
+        `${config.url}${config.gatewayNegotiationsPath}/${encodeURIComponent(negotiationId)}/agreements/${encodeURIComponent(agreementId)}/verification`,
     finalizeEndpoint: (negotiationId) =>
-        `${config.url}${config.provider}${config.gatewayNegotiationsPath}/${encodeURIComponent(negotiationId)}/finalization`,
+        `${config.url}${config.gatewayNegotiationsPath}/${encodeURIComponent(negotiationId)}/finalization`,
     terminateEndpoint: (endpoint, negotiationId) =>
         `${config.url}${endpoint}${config.gatewayNegotiationsPath}/${encodeURIComponent(negotiationId)}/termination`,
 };
 
 export const transferEndpoints = {
-    requestTransferEndpoint: `${config.url}${config.consumer}${config.gatewayTransfersPath}/request`,
+    requestTransferEndpoint: `${config.url}${config.gatewayTransfersPath}/request`,
     startEndpoint: (transferId, endpoint) =>
         `${config.url}${endpoint}${config.gatewayTransfersPath}/${encodeURIComponent(transferId)}/start`,
     suspendEndpoint: (transferId, endpoint) =>
@@ -32,11 +32,11 @@ export const transferEndpoints = {
 };
 
 export const catalogEndpoints = {
-    addPolicyEndpoint: `${config.url}${config.provider}${config.gatewayCatalogPath}/policies`,
-    addDatasetEndpoint: `${config.url}${config.provider}${config.gatewayCatalogPath}/datasets`
+    addPolicyEndpoint: `${config.url}${config.gatewayCatalogPath}/policies`,
+    addDatasetEndpoint: `${config.url}${config.gatewayCatalogPath}/datasets`
 }
 
 export const managmentEndpoints = {
-    getOrganization: `${config.url}${config.provider}${config.gatewatManagmentPath}/organization`,
-    postOrganization: `${config.url}${config.provider}${config.gatewatManagmentPath}/organization`,
+    getOrganization: `${config.url}${config.gatewatManagmentPath}/organization`,
+    postOrganization: `${config.url}${config.gatewatManagmentPath}/organization`,
 }

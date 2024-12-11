@@ -1,8 +1,8 @@
 // Config values
+const port = import.meta.env.VITE_API_PORT;
+
 const config = {
-    url: 'http://localhost:',
-    provider: '8081',
-    consumer: '9081',
+    url: `http://localhost:${port}`,
     gatewayCatalogPath: '/api/v1/catalog',
     gatewayNegotiationsPath: '/api/v1/negotiations',
     gatewayTransfersPath: '/api/v1/transfers',

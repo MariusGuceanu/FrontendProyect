@@ -45,6 +45,7 @@ const RequestModal = ({ isModalOpen, handleOk, handleCancel }) => {
         try {
             const response = await axios.get(`${negotiationEndpoints.selfDescriptionEndpoint}${encodeURIComponent(inputValue.trim())}`);
             setSelfDescription(response.data);
+            console.log(response)
             openNotification('success', 'Self-Description Retrieved', 'The self-description was successfully retrieved.');
         } catch (error) {
             openNotification('error', 'Error getting Self-description', error.response?.data?.message || 'Could not retrieve self-description from provider.');

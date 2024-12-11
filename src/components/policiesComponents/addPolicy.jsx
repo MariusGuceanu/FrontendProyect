@@ -54,11 +54,14 @@ const PolicyModal = ({ isModalOpen, handlePolicyOk, handlePolicyCancel, addRowTo
     const handleCreatePolicy = async () => {
         setLoading(true);
         const url = catalogEndpoints.addPolicyEndpoint
+        console.log(url)
         try {
             const response = await axios.post(url, {
                 target,
                 rules,
             });
+            console.log(response)
+
             if (response.status === 200) {
                 const { policyId } = response.data;
                 openNotification('success', 'Policy created successfully', `Policy ID: ${policyId}`);
@@ -67,6 +70,7 @@ const PolicyModal = ({ isModalOpen, handlePolicyOk, handlePolicyCancel, addRowTo
                 setRules([]);
                 addRowToTable(policyId, target, rules);
                 handlePolicyOk();
+                console.log(url)
             }
         } catch (error) {
             console.error("Error creating policy:", error);
