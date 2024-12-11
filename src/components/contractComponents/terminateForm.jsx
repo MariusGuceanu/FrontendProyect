@@ -34,7 +34,9 @@ const TerminateModal = ({ isTerminateModalOpen, handleTerminateOk, handleTermina
                 .map((constraint) => constraint.value);
             // Sends providerPid or consumerPid depending the value of the boolean from the table
             const idKey = provider ? "providerPid" : "consumerPid";
-            const url = negotiationEndpoints.terminateEndpoint(endpoint, negotiationId);
+            const url = negotiationEndpoints.terminateEndpoint(negotiationId);
+            console.log(url)
+
             // Sends the request 
             const response = await axios.post(url, {
                 [idKey]: negotiationId,

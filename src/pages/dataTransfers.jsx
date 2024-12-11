@@ -145,7 +145,7 @@ const DataTransfers = () => {
 
     const handleAgreement = async (agreementId) => {
         try {
-            const response = await axios.get(`${config.url}${config.provider}${config.gatewayNegotiationsPath}/${agreementId}/agreements/${agreementId}`);
+            const response = await axios.get(`${config.url}${config.gatewayNegotiationsPath}/${agreementId}/agreements/${agreementId}`);
             if (response.data) {
                 setAgreementData(response.data);
                 setIsAgreementModalOpen(true);

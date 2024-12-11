@@ -102,7 +102,6 @@ const ContractNegotiations = () => {
                 currentState: newNegotiation.state.replace('dspace:', ''),
                 initiatedDate: new Date().toLocaleString(),
             };
-            const agreementId = message.params?.agreement?.["@id"];
             // Retrieve the existing data
             const existingData = JSON.parse(localStorage.getItem('Data')) || [];
 
@@ -226,7 +225,7 @@ const ContractNegotiations = () => {
 
     const handleAgreement = async (agreementId) => {
         try {
-            const response = await axios.get(`${config.url}${config.provider}${config.gatewayNegotiationsPath}/${agreementId}/agreements/${agreementId}`);
+            const response = await axios.get(`${config.url}${config.gatewayNegotiationsPath}/${agreementId}/agreements/${agreementId}`);
             if (response.data) {
                 setAgreementData(response.data);
                 setIsAgreementModalOpen(true);
@@ -255,12 +254,6 @@ const ContractNegotiations = () => {
         const stateTransitions = cnStateMachine[state]?.transitions || {};
 
         return Object.keys(stateTransitions);
-    };
-
-    // Gets the endpoint depending if it is a provider or a consumer
-    const getEndpoint = () => {
-        if (!selectedRow) return null;
-        return selectedRow.provider === 'true' ? config.provider : config.consumer;
     };
 
     // Renders buttons depending selected current state
@@ -323,7 +316,7 @@ const ContractNegotiations = () => {
                             <TerminateModal isTerminateModalOpen={isTerminateModalOpen} handleTerminateOk={handleTerminateOk} handleTerminateCancel={handleTerminateCancel}
                                 provider={selectedRow.provider === "true"}
                                 negotiationId={selectedRow.processId}
-                                endpoint={getEndpoint()} />
+                            />
                         )}
                     </>
                 )}
@@ -333,8 +326,7 @@ const ContractNegotiations = () => {
                         {selectedRow && (
                             <TerminateModal isTerminateModalOpen={isTerminateModalOpen} handleTerminateOk={handleTerminateOk} handleTerminateCancel={handleTerminateCancel}
                                 provider={selectedRow.provider === "true"}
-                                negotiationId={selectedRow.processId}
-                                endpoint={getEndpoint()} />
+                                negotiationId={selectedRow.processId} />
                         )}
                     </>
                 )}
@@ -344,8 +336,7 @@ const ContractNegotiations = () => {
                         {selectedRow && (
                             <TerminateModal isTerminateModalOpen={isTerminateModalOpen} handleTerminateOk={handleTerminateOk} handleTerminateCancel={handleTerminateCancel}
                                 provider={selectedRow.provider === "true"}
-                                negotiationId={selectedRow.processId}
-                                endpoint={getEndpoint()} />
+                                negotiationId={selectedRow.processId} />
                         )}
                     </>
                 )}
@@ -355,8 +346,7 @@ const ContractNegotiations = () => {
                         {selectedRow && (
                             <TerminateModal isTerminateModalOpen={isTerminateModalOpen} handleTerminateOk={handleTerminateOk} handleTerminateCancel={handleTerminateCancel}
                                 provider={selectedRow.provider === "true"}
-                                negotiationId={selectedRow.processId}
-                                endpoint={getEndpoint()} />
+                                negotiationId={selectedRow.processId} />
                         )}
                     </>
                 )}
@@ -401,14 +391,14 @@ const ContractNegotiations = () => {
                                     ...rowSelection,
                                 }} columns={columns} dataSource={filteredData}
                                 pagination={{ pageSize: 10 }}
-                                scroll={{x: '1480px', y: 55 * 6 }} />
+                                scroll={{ x: '1480px', y: 55 * 6 }} />
                         ) : (
                             <Table style={{ padding: '2%', overflowX: 'auto' }} className="table-contracts"
                                 columns={columns}
                                 dataSource={historyData}
                                 pagination={{ pageSize: 10 }}
-                                scroll={{x: '1480px', y: 55 * 6 }} />
-                                
+                                scroll={{ x: '1480px', y: 55 * 6 }} />
+
                         )}
                     </Col>
                 </Row>

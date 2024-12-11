@@ -1,6 +1,7 @@
 import config from "../config";
 
 export const negotiationEndpoints = {
+    getNegotiations: `${config.url}${config.gatewayNegotiationsPath}`,
     requestEndpoint:
         `${config.url}${config.gatewayNegotiationsPath}/request`,
     selfDescriptionEndpoint:
@@ -15,20 +16,20 @@ export const negotiationEndpoints = {
         `${config.url}${config.gatewayNegotiationsPath}/${encodeURIComponent(negotiationId)}/agreements/${encodeURIComponent(agreementId)}/verification`,
     finalizeEndpoint: (negotiationId) =>
         `${config.url}${config.gatewayNegotiationsPath}/${encodeURIComponent(negotiationId)}/finalization`,
-    terminateEndpoint: (endpoint, negotiationId) =>
-        `${config.url}${endpoint}${config.gatewayNegotiationsPath}/${encodeURIComponent(negotiationId)}/termination`,
+    terminateEndpoint: (negotiationId) =>
+        `${config.url}${config.gatewayNegotiationsPath}/${encodeURIComponent(negotiationId)}/termination`,
 };
 
 export const transferEndpoints = {
     requestTransferEndpoint: `${config.url}${config.gatewayTransfersPath}/request`,
-    startEndpoint: (transferId, endpoint) =>
-        `${config.url}${endpoint}${config.gatewayTransfersPath}/${encodeURIComponent(transferId)}/start`,
-    suspendEndpoint: (transferId, endpoint) =>
-        `${config.url}${endpoint}${config.gatewayTransfersPath}/${encodeURIComponent(transferId)}/suspension`,
-    completeEndpoint: (transferId, endpoint) =>
-        `${config.url}${endpoint}${config.gatewayTransfersPath}/${encodeURIComponent(transferId)}/completion`,
-    terminateTEndpoint: (transferId, endpoint) =>
-        `${config.url}${endpoint}${config.gatewayTransfersPath}/${encodeURIComponent(transferId)}/termination`,
+    startEndpoint: (transferId) =>
+        `${config.url}${config.gatewayTransfersPath}/${encodeURIComponent(transferId)}/start`,
+    suspendEndpoint: (transferId) =>
+        `${config.url}${config.gatewayTransfersPath}/${encodeURIComponent(transferId)}/suspension`,
+    completeEndpoint: (transferId) =>
+        `${config.url}${config.gatewayTransfersPath}/${encodeURIComponent(transferId)}/completion`,
+    terminateTEndpoint: (transferId) =>
+        `${config.url}${config.gatewayTransfersPath}/${encodeURIComponent(transferId)}/termination`,
 };
 
 export const catalogEndpoints = {
