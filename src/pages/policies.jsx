@@ -10,7 +10,7 @@ function Policies() {
 
     // Main table columns
     const columns = [
-        { title: 'Policy ID', dataIndex: 'policyId', key: 'policyId', width: '11%' },
+        { title: 'Policy ID', dataIndex: 'policyId', key: 'policyId', width: '9.5%' },
         { title: 'Target', dataIndex: 'target', key: 'target', width: '5%' },
         {
             title: 'Permissions', key: 'permissions',
@@ -18,11 +18,11 @@ function Policies() {
         },
         {
             title: 'Prohibitions', key: 'prohibitions',
-            render: (record) => renderExpandableColumn(record, 'prohibitions', 'prohibitions'), width: '25%'
+            render: (record) => renderExpandableColumn(record, 'prohibitions', 'prohibitions'), width: '26%'
         },
         {
             title: 'Obligations', key: 'obligations',
-            render: (record) => renderExpandableColumn(record, 'obligations', 'obligations'), width: '25%'
+            render: (record) => renderExpandableColumn(record, 'obligations', 'obligations'), width: '26%'
         },
         {
             title: '',
@@ -32,7 +32,7 @@ function Policies() {
                     <Button size="small" type='primary' danger>Delete</Button>
                 </Space>
             ),
-            width: '9%',
+            width: '8.5%',
         },
     ];
 
@@ -78,7 +78,7 @@ function Policies() {
     // Function made to render a nested table
     const renderNestedTable = (data, parentKey) => {
         const columns = [
-            { title: 'Action', dataIndex: 'action', key: 'action', width: '15%' },
+            { title: 'Action', dataIndex: 'action', key: 'action', width: '12%' },
             {
                 title: 'Constraints',
                 dataIndex: 'constraints',
@@ -86,16 +86,17 @@ function Policies() {
                 // Calls operands table to render
                 render: (_, record, index) =>
                     renderNestedContraintsTable(record.constraints, `${parentKey}-${index}`),
-                width: '85%'
+                width: '88%'
             },
         ];
         // Action/constraints table
         return (
-            <Table style={{ border: 'solid 1px', borderRadius: '2%', }}
+            <Table style={{ width: '100%', border: 'solid 1px', borderRadius: '2%', tableLayout: 'fixed', overflowX: 'auto' }}
                 dataSource={data.map((item, index) => ({
                     key: index,
                     ...item,
                 }))}
+                scroll={{ x: 'max-content' }}
                 columns={columns}
                 pagination={false}
             />
@@ -126,9 +127,9 @@ function Policies() {
                             ...constraint, key: `${uniqueKey}-${index}`,
                         }))}
                         columns={[
-                            { title: 'Left Operand', dataIndex: 'leftOperand', key: 'leftOperand' },
-                            { title: 'Operator', dataIndex: 'operator', key: 'operator' },
-                            { title: 'Right Operand', dataIndex: 'rightOperand', key: 'rightOperand' },
+                            { title: 'Left Operand', dataIndex: 'leftOperand', key: 'leftOperand', width: '34%' },
+                            { title: 'Operator', dataIndex: 'operator', key: 'operator', width: '33%' },
+                            { title: 'Right Operand', dataIndex: 'rightOperand', key: 'rightOperand', width: '34%' },
                         ]}
                         pagination={false}
                     />
@@ -183,7 +184,7 @@ function Policies() {
             </Col>
             <Table style={{ marginTop: '2%' }} className='table-contracts'
                 columns={columns} dataSource={data}
-                scroll={{ x: '1500px', y: 93 * 6 }}
+                scroll={{ x: '1570px', y: 93 * 6 }}
                 pagination={false} />
         </>
 

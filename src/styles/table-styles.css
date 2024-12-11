@@ -94,6 +94,11 @@
 }
 
 /* Table and reactive buttons */
+.table-contracts .ant-table-cell {
+  text-align: center;
+  vertical-align: middle; 
+}
+
 .provider-false .ant-table-cell {
   background-color: #1A4B4D !important;
   color: white;
@@ -102,6 +107,10 @@
 .provider-false:hover .ant-table-cell {
   background-color: #2d6f6f !important;
   color: white;
+}
+
+.ant-table-tbody .ant-table-row:hover > .ant-table-cell {
+  background-color: #23467a
 }
 
 .table-contracts .ant-table {
@@ -114,16 +123,6 @@
   background: #1e3c79;
 }
 
-:where(.css-dev-only-do-not-override-5pbk6d).ant-table-wrapper .ant-table-thead>tr>th,
-:where(.css-dev-only-do-not-override-5pbk6d).ant-table-wrapper .ant-table-thead>tr>td {
-  position: relative;
-  color: rgba(255, 255, 255, 255);
-  font-weight: 600;
-  text-align: start;
-  background: #1e4792;
-  border-bottom: 1px solid #f0f0f0;
-  transition: background 0.2s ease;
-}
 
 .table-contracts .ant-table td {
   background: #1c2755;
@@ -137,6 +136,8 @@
 }
 
 .table-contracts .ant-table-thead>tr>th {
+  background: #1e4792;
+  color: white;
   text-align: center !important;
   vertical-align: middle !important;
 }
