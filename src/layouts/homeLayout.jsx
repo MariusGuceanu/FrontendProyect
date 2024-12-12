@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { Layout, Menu, theme } from 'antd';
 import '../styles/home.css';
+import logo from '../images/logo.svg'
 import Profile from '../components/profile';
 import Dashboard from '../pages/dashboard';
 import ContractNegotiations from '../pages/contractNegotiations';
 import DataTransfers from '../pages/dataTransfers';
-import Organizations from '../pages/organization';
 import Policies from '../pages/policies'
 import Catalogs from '../pages/catalogs'
 import SiderItems from '../components/menuItems';
@@ -38,8 +38,7 @@ const HomeLayout = () => {
         height: '100%',
         color: 'black',
         opacity: 0.25,
-      }}
-    >
+      }}>
       <h1 style={{ fontSize: '3rem', textAlign: 'center' }}>Select from the side menu</h1>
     </div>
   );
@@ -48,15 +47,15 @@ const HomeLayout = () => {
     <Layout
       style={{
         minHeight: '100vh',
-      }}
-    >
-      <Header style={{ padding: 0, background: '#001529', width: '100%', minHeight: 150 }}>
-        <div style={{ padding: '0 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h2 style={{ color: 'white', textAlign: 'center', alignSelf: 'end', flexGrow: '1', marginLeft: '8%' }}>Data space: Railway data space </h2>
+      }}>
+      <Header style={{ padding: 0, background: '#001529', width: '100%', minHeight: 140 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '100%', padding: '0 16px', }}>
+          <img src={logo} alt="Logo" style={{ height: '80%', maxHeight: '80px' }} />
+          <h2 style={{ color: 'white', textAlign: 'center', flexGrow: '1', margin: '0',  lineHeight: 1,
+          }}>Data space: Railway data space </h2>
           <Profile />
         </div>
       </Header>
-
       <Layout>
         <Content style={{ margin: '0', }}>
           <Layout

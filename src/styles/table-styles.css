@@ -96,7 +96,24 @@
 /* Table and reactive buttons */
 .table-contracts .ant-table-cell {
   text-align: center;
-  vertical-align: middle; 
+  vertical-align: middle;
+}
+
+.table-contracts .ant-empty-description {
+  color: white !important;
+  background-color: transparent;
+  padding: 10px;
+  transition: background-color 0.3s ease;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.table-contracts .ant-table-expanded-row-fixed:hover {
+  background-color: #23467a;
+}
+
+.ant-table-cell>td {
+  background-color: #23467a;
 }
 
 .provider-false .ant-table-cell {
@@ -109,7 +126,7 @@
   color: white;
 }
 
-.ant-table-tbody .ant-table-row:hover > .ant-table-cell {
+.ant-table-tbody .ant-table-row:hover>.ant-table-cell {
   background-color: #23467a
 }
 

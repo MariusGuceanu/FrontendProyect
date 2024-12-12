@@ -12,25 +12,26 @@ import {
 const SiderItems = () => [
     {
         key: 'sub1',
-        label: 'Ceit Connector',
+        label: <Link to="/home/dashboard">Dashboard</Link>,
         icon: <PieChartOutlined />,
-        children: [
+    },
+    {
+        key: 'sub2',
+        label: 'Connector',
+        icon: <ApiOutlined />,
+        children: [,
             {
                 key: '1',
-                label: <Link to="/home/dashboard">Dashboard</Link>,
-            },
-            {
-                key: '2',
                 label: <Link to="/home/policies">Policies</Link>,
             },
             {
-                key: '3',
-                label: <Link to="/home/catalogs">Catalog</Link>,
+                key: '2',
+                label: <Link to="/home/catalogs">Datasets</Link>,
             },
         ],
     },
     {
-        key: 'sub2',
+        key: 'sub3',
         label: 'Brokers',
         icon: <SnippetsOutlined />,
         children: [
@@ -45,21 +46,6 @@ const SiderItems = () => [
             {
                 key: '7',
                 label: 'Broker2',
-            },
-        ],
-    },
-    {
-        key: 'sub3',
-        label: 'Connectors',
-        icon: <ApiOutlined />,
-        children: [
-            {
-                key: '8',
-                label: 'Connector 1',
-            },
-            {
-                key: '9',
-                label: 'Connector 2',
             },
         ],
     },

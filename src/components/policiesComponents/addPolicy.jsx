@@ -85,7 +85,15 @@ const PolicyModal = ({ isModalOpen, handlePolicyOk, handlePolicyCancel, addRowTo
         constraints.map((constraint, constraintIndex) => (
             <div style={{ display: "flex", marginBottom: 12, marginTop: 12 }} key={constraintIndex}>
                 <Input placeholder="Left Operand" style={{ flex: 1, marginRight: 8 }} value={constraint.leftOperand} onChange={(e) => handleFieldChange(ruleIndex, "leftOperand", e.target.value, constraintIndex)} />
-                <Input placeholder="Operator" style={{ flex: 1, marginRight: 8 }} value={constraint.operator} onChange={(e) => handleFieldChange(ruleIndex, "operator", e.target.value, constraintIndex)} />
+                <Select placeholder="Operator" style={{ flex: 1, marginRight: 8 }} value={constraint.operator} onChange={(value) => handleFieldChange(ruleIndex, "operator", value, constraintIndex)} >
+                    <Option value="eq">eq</Option>
+                    <Option value="gt">gt</Option>
+                    <Option value="gteq">gteq</Option>
+                    <Option value="it">it</Option>
+                    <Option value="iteq">iteq</Option>
+                    <Option value="neq"> neq</Option>
+                    <Option value="isA">isA</Option>
+                </Select>
                 <Input placeholder="Right Operand" style={{ flex: 1, marginRight: 8 }} value={constraint.rightOperand} onChange={(e) => handleFieldChange(ruleIndex, "rightOperand", e.target.value, constraintIndex)} />
                 <MinusCircleOutlined style={{ color: "red" }} onClick={() => removeConstraint(ruleIndex, constraintIndex)} />
             </div>

@@ -63,7 +63,7 @@ const ContractNegotiations = () => {
             )
         },
         { title: 'Title', dataIndex: 'title', width: '10%' },
-        { title: 'Provider', dataIndex: 'provider', width: '10%' },
+        { title: 'Role', dataIndex: 'provider', width: '10%' },
         { title: 'Current state', dataIndex: 'currentState', width: '10%' },
         { title: 'Initiated date', dataIndex: 'initiatedDate', width: '10%' },
     ];
@@ -134,6 +134,7 @@ const ContractNegotiations = () => {
                 }
 
                 updatedData = [...existingData];
+                setSelectedRow(false);
             } else {
 
                 // If processId doesn't exist, adds the new row
@@ -169,58 +170,37 @@ const ContractNegotiations = () => {
 
     // Request-contract modal functions
     const showRequestModal = () => setIsRequestModalOpen(true);
-    const handleRequestOk = () => {
-        setIsRequestModalOpen(false)
-        setSelectedRow(false);
-    };
+    const handleRequestOk = () => setIsRequestModalOpen(false)
     const handleRequestCancel = () => setIsRequestModalOpen(false);
 
     // Offer-contract modal functions
     const showOfferModal = () => setIsOfferModalOpen(true);
-    const handleOfferOk = () => {
-        setIsOfferModalOpen(false)
-        setSelectedRow(false);
-    };
+    const handleOfferOk = () => setIsOfferModalOpen(false)
     const handleOfferCancel = () => setIsOfferModalOpen(false);
 
     // Verify-agreement modal functions
     const showAcceptModal = () => setIsAcceptModalOpen(true);
-    const handleAcceptOk = () => {
-        setIsAcceptModalOpen(false)
-        setSelectedRow(false);
-    };
+    const handleAcceptOk = () => setIsAcceptModalOpen(false)
     const handleAcceptCancel = () => setIsAcceptModalOpen(false);
 
     // Agree-negotiations modal functions
     const showAgreeModal = () => setIsAgreeModalOpen(true);
-    const handleAgreeOk = () => {
-        setIsAgreeModalOpen(false)
-        setSelectedRow(false);
-    };
+    const handleAgreeOk = () => setIsAgreeModalOpen(false)
     const handleAgreeCancel = () => setIsAgreeModalOpen(false);
 
     // Verify-agreement modal functions
     const showVerifyModal = () => setIsVerifyModalOpen(true);
-    const handleVerifyOk = () => {
-        setIsVerifyModalOpen(false)
-        setSelectedRow(false);
-    };
+    const handleVerifyOk = () => setIsVerifyModalOpen(false)
     const handleVerifyCancel = () => setIsVerifyModalOpen(false);
 
     // Finalize-contract modal functions
     const showFinalizeModal = () => setIsFinalizeModalOpen(true);
-    const handleFinalizeOk = () => {
-        setIsFinalizeModalOpen(false)
-        setSelectedRow(false);
-    };
+    const handleFinalizeOk = () => setIsFinalizeModalOpen(false)
     const handleFinalizeCancel = () => setIsFinalizeModalOpen(false);
 
     // Terminate contract modal functions
     const showTerminateModal = () => setIsTerminateModalOpen(true);
-    const handleTerminateOk = () => {
-        setIsTerminateModalOpen(false)
-        setSelectedRow(false);
-    };
+    const handleTerminateOk = () => setIsTerminateModalOpen(false)
     const handleTerminateCancel = () => setIsTerminateModalOpen(false);
 
     const handleAgreement = async (agreementId) => {
@@ -255,6 +235,7 @@ const ContractNegotiations = () => {
 
         return Object.keys(stateTransitions);
     };
+
 
     // Renders buttons depending selected current state
     const changeActionButtons = () => {
@@ -398,7 +379,6 @@ const ContractNegotiations = () => {
                                 dataSource={historyData}
                                 pagination={{ pageSize: 10 }}
                                 scroll={{ x: '1480px', y: 55 * 6 }} />
-
                         )}
                     </Col>
                 </Row>

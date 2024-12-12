@@ -53,7 +53,7 @@ const CatalogModal = ({ isModalOpen, handleCatalogCancel, handleCatalogOk, addRo
                     <Button style={{ width: '30%' }} size="large" key="cancel" onClick={handleCatalogCancel}>Cancel</Button>
                 </div>]}>
                 <h2>Add a new Dataset</h2>
-                <Form form={form} autoComplete="off" layout="horizontal" labelCol={{ span: 3 }} wrapperCol={{ span: 24 }}>
+                <Form form={form} autoComplete="off" layout="horizontal" labelCol={{ span: 4 }} wrapperCol={{ span: 18 }}>
                     <Form.Item label="Title" name="title"  >
                         <Input rules={[{ required: true, message: 'Please input the endpoint' }]} />
                     </Form.Item>
@@ -62,7 +62,7 @@ const CatalogModal = ({ isModalOpen, handleCatalogCancel, handleCatalogOk, addRo
                         <Input.TextArea rows={4} />
                     </Form.Item>
 
-                    <Form.Item label="Endpoints" name="endpoint" rules={[{ required: true, message: 'Please input the endpoint' }]} >
+                    <Form.Item label="Source Endpoint" name="endpoint" rules={[{ required: true, message: 'Please input the endpoint' }]} >
                         <Input />
                     </Form.Item>
 
@@ -70,7 +70,7 @@ const CatalogModal = ({ isModalOpen, handleCatalogCancel, handleCatalogOk, addRo
                         <Input placeholder="Enter offer ID (e.g. urn:uuid:xxxx)" />
                     </Form.Item>
 
-                    <Form.Item label="Keywords" name="keywords"  >
+                    <Form.Item label="Keywords" name="keywords" rules={[{ required: true, message: 'Please input a keyword' }]} >
                         <Input />
                     </Form.Item>
 
