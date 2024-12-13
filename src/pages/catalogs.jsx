@@ -13,7 +13,7 @@ function Catalogs() {
         { title: 'Description', dataIndex: 'description', key: 'description', width: '17%' },
         { title: 'Endpoints', dataIndex: 'endpoints', key: 'endpoints', width: '15%' },
         { title: 'Offer Ids', dataIndex: 'offerIds', key: 'offerIds', width: '15%' },
-        { title: 'Keywords', dataIndex: 'keywords', key: 'keywords', width: '15%' },
+        { title: 'Keywords', dataIndex: 'keywords', key: 'keywords', width: '15%', render: (keywords) => (keywords ? keywords.join(', ') : 'N/A') },
         { title: 'Format', dataIndex: 'format', key: 'format', width: '10%' },
         {
             title: '',
@@ -41,7 +41,7 @@ function Catalogs() {
             title,
             description,
             endpoints: endpoint,
-            offerIds: offerId,  
+            offerIds: offerId,
             keywords,
             format,
         };

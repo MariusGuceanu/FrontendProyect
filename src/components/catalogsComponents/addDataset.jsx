@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Modal, Form, Input, Button, Select } from "antd";
 import { SendOutlined } from "@ant-design/icons";
+import { TagsInput } from "react-tag-input-component";
 import axios from "axios";
 import Notification from '../notifications';
 import { catalogEndpoints } from "../endpoints";
@@ -11,6 +12,7 @@ const CatalogModal = ({ isModalOpen, handleCatalogCancel, handleCatalogOk, addRo
     const [form] = Form.useForm();
     const { openNotification, contextHolder } = Notification();
     const [loading, setLoading] = useState(false);
+    const [keywords, setKeywords] = useState([])
 
     // Main function to create a dataset catalog by sending a request
     const handleCreateDataset = async () => {
@@ -24,14 +26,15 @@ const CatalogModal = ({ isModalOpen, handleCatalogCancel, handleCatalogOk, addRo
                 description: [values.description],
                 endpoints: [values.endpoint],
                 offerIds: [values.offerId],
-                keywords: values.keywords.split(",").map((keyword) => keyword.trim()),
+                keywords: keywords,
                 format: values.format
             });
             if (response.status === 200) {
                 const { datasetId } = response.data;
                 openNotification('success', 'Dataset created successfully', `Dataset ID: ${datasetId}`);
                 form.resetFields();
-                addRowToTable(datasetId, values.title, values.description, values.endpoint, values.offerId, values.keywords, values.format);
+                setKeywords([]);
+                addRowToTable(datasetId, values.title, values.description, values.endpoint, values.offerId, keywords, values.format);
                 handleCatalogOk();
             }
         } catch (error) {
@@ -70,8 +73,16 @@ const CatalogModal = ({ isModalOpen, handleCatalogCancel, handleCatalogOk, addRo
                         <Input placeholder="Enter offer ID (e.g. urn:uuid:xxxx)" />
                     </Form.Item>
 
-                    <Form.Item label="Keywords" name="keywords" rules={[{ required: true, message: 'Please input a keyword' }]} >
-                        <Input />
+                    <Form.Item label="Keywords" style={{ marginBottom: 24 }} rules={[{ required: true, message: 'Please enter keywords' }]}>
+                        <div style={{ padding: 4 }}>
+                            <TagsInput
+                                value={keywords || []}
+                                onChange={setKeywords}
+                                separators={[',']}
+                                name="keywords"
+                                placeHolder='Enter keywords using ","'
+                            />
+                        </div>
                     </Form.Item>
 
                     <Form.Item label="Format" name="format" rules={[{ required: true, message: 'Please select the format' }]} >
