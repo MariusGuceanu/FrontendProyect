@@ -14,6 +14,9 @@ const CatalogModal = ({ isModalOpen, handleCatalogCancel, handleCatalogOk, addRo
     const [loading, setLoading] = useState(false);
     const [keywords, setKeywords] = useState([])
 
+    const handleFormatChange = (value) => {
+        form.setFieldsValue({ format: `HTTP_${value}` });
+    };
     // Main function to create a dataset catalog by sending a request
     const handleCreateDataset = async () => {
         try {
@@ -86,10 +89,18 @@ const CatalogModal = ({ isModalOpen, handleCatalogCancel, handleCatalogOk, addRo
                     </Form.Item>
 
                     <Form.Item label="Format" name="format" rules={[{ required: true, message: 'Please select the format' }]} >
-                        <Select placeholder="Select format">
-                            <Option value="HTTP_PULL">HTTP_PULL</Option>
-                            <Option value="HTTP_PUSH">HTTP_PUSH</Option>
-                        </Select>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <Input
+                                style={{ width: '60%' }}
+                                value="HTTP_" />
+                            <Select
+                                onChange={handleFormatChange}
+                                style={{ width: '40%' }}
+                                placeholder="Select format" >
+                                <Option value="PULL">PULL</Option>
+                                <Option value="PUSH">PUSH</Option>
+                            </Select>
+                        </div>
                     </Form.Item>
                 </Form>
             </Modal>

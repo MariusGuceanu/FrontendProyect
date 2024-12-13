@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Space, Button, Col } from 'antd';
 import { PlusCircleOutlined, MinusCircleOutlined } from '@ant-design/icons';
-import PolicyModal from '../components/policiesComponents/addPolicy';
+import PolicyModal from '../components/catalogsComponents/addPolicy';
 
 function Policies() {
     const [expandedCells, setExpandedCells] = useState({});
