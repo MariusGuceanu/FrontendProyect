@@ -317,7 +317,7 @@ const DataTransfers = () => {
                 <Button className="large-buttons" type="primary" onClick={() => setShowHistory(true)} style={showHistory ? { backgroundColor: '#3C8AE8' } : {}}>History</Button>
             </div>
 
-            <div style={{ width: '100%', margin: 'auto', border: 'solid', borderRadius: 6 }}>
+            <div style={{ width: '100%', margin: 'auto', border: 'solid #001529', borderRadius: 6 }}>
                 <Row gutter={16} />
                 <Col span={24} className="button-gridT" style={{ padding: '2%' }}>
                     <Button onClick={showRequestTransferModal} className='large-button' size='large' type='primary'>Request transfer</Button>

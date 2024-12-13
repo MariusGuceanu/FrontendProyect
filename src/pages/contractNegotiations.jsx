@@ -345,7 +345,7 @@ const ContractNegotiations = () => {
             </div>
 
             {/* Action buttons */}
-            <div style={{ width: '100%', margin: 'auto', border: 'solid', borderRadius: 6 }}>
+            <div style={{ width: '100%', margin: 'auto', border: 'solid #001529', borderRadius: 6 }}>
                 <Row gutter={16} />
                 <Col span={24} className="button-grid" style={{ padding: '2%' }}>
                     {/* Request contract form display */}
