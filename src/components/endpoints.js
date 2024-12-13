@@ -21,6 +21,7 @@ export const negotiationEndpoints = {
 };
 
 export const transferEndpoints = {
+    getTransfers: `${config.url}${config.gatewayTransfersPath}`,
     requestTransferEndpoint: `${config.url}${config.gatewayTransfersPath}/request`,
     startEndpoint: (transferId) =>
         `${config.url}${config.gatewayTransfersPath}/${encodeURIComponent(transferId)}/start`,

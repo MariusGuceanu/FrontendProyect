@@ -16,6 +16,7 @@ import cnStateMachine from '../components/stateMachines/cnStateMachine';
 import config from '../config';
 import axios from 'axios';
 import { useWebSocket } from '../WebSocketProvider';
+import { negotiationEndpoints } from '../components/endpoints';
 
 
 const ContractNegotiations = () => {
@@ -63,18 +64,61 @@ const ContractNegotiations = () => {
             )
         },
         { title: 'Title', dataIndex: 'title', width: '10%' },
-        { title: 'Role', dataIndex: 'provider', width: '10%' },
+        { title: 'Provider', dataIndex: 'provider', width: '10%' },
         { title: 'Current state', dataIndex: 'currentState', width: '10%' },
         { title: 'Initiated date', dataIndex: 'initiatedDate', width: '10%' },
     ];
 
     // Gets the data of the table to keep it stored (reloading purposes)
     useEffect(() => {
-        const storedData = JSON.parse(localStorage.getItem('Data') || '[]');
-        const storedHistory = JSON.parse(localStorage.getItem('HistoryData') || '[]');
-        setData(storedData);
-        setFilteredData(storedData);
-        setHistoryData(storedHistory);
+        const fetchInitialData = async () => {
+            const url = negotiationEndpoints.getNegotiations
+            try {
+                const response = await axios.get(url);
+                const formattedData = response.data.map(item => {
+                    const processId = item.Params?.isProvider ? item['dspace:providerPid'] : item['dspace:consumerPid'];
+                    const currentState = item['dspace:state'].replace('dspace:', '');
+
+                    // If the state of the process is FINALIZED or TERMINATED, send the data to the History table
+                    if (['FINALIZED', 'TERMINATED'].includes(currentState.toUpperCase())) {
+                        return {
+                            key: processId,
+                            processId: processId,
+                            offerId: item.Params?.offerId || 'N/A',
+                            agreementId: item.Params?.agreementId || null,
+                            params: item.Params,
+                            title: item.title || 'Title',
+                            provider: item.Params?.isProvider ? 'true' : 'false',
+                            currentState: currentState,
+                            initiatedDate: new Date().toLocaleString(),
+                            isHistory: true,
+                        };
+                    }
+                    // If the state is different from FINALIZED or TERMINATED
+                    return {
+                        key: processId,
+                        processId: processId,
+                        offerId: item.Params?.offerId || 'N/A',
+                        agreementId: item.Params?.agreementId || null,
+                        params: item.Params,
+                        title: item.title || 'Title',
+                        provider: item.Params?.isProvider ? 'true' : 'false',
+                        currentState: item['dspace:state'].replace('dspace:', ''),
+                        initiatedDate: new Date().toLocaleString(),
+                        isHistory: false,
+                    };
+                });
+                const ongoingData = formattedData.filter(item => !item.isHistory);
+                const historyData = formattedData.filter(item => item.isHistory);
+
+                setData(ongoingData);
+                setFilteredData(ongoingData);
+                setHistoryData(historyData);
+            } catch (error) {
+                console.error('Error fetching initial data:', error);
+            }
+        };
+        fetchInitialData();
     }, []);
 
     // Updates the data from the table every request through websocket connection
@@ -103,7 +147,7 @@ const ContractNegotiations = () => {
                 initiatedDate: new Date().toLocaleString(),
             };
             // Retrieve the existing data
-            const existingData = JSON.parse(localStorage.getItem('Data')) || [];
+            const existingData = [...data];
 
             // Check if the processId already exists
             const existingIndex = existingData.findIndex(item => item.processId === formattedData.processId);
@@ -129,7 +173,6 @@ const ContractNegotiations = () => {
                     );
 
                     setHistoryData(uniqueHistory);
-                    localStorage.setItem('HistoryData', JSON.stringify(uniqueHistory));
                     existingData.splice(existingIndex, 1);
                 }
 
@@ -144,7 +187,6 @@ const ContractNegotiations = () => {
             // Updates the data of the table and saves it locally
             setData(updatedData);
             setFilteredData(updatedData);
-            localStorage.setItem('Data', JSON.stringify(updatedData));
 
         };
         // close and error ws functions
@@ -154,7 +196,7 @@ const ContractNegotiations = () => {
         ws.onerror = (error) => {
             console.error('WebSocket error:', error);
         };
-    }, [ws, historyData]);
+    }, [ws, data, historyData]);
 
     // Row selection logic
     const rowSelection = {

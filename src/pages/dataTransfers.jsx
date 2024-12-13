@@ -14,6 +14,7 @@ import dtStateMachine from '../components/stateMachines/dtStateMachine';
 import config from '../config';
 import axios from 'axios';
 import { useWebSocket } from '../WebSocketProvider';
+import { transferEndpoints } from '../components/endpoints';
 
 
 const DataTransfers = () => {
@@ -64,13 +65,70 @@ const DataTransfers = () => {
         { title: 'Initiated date', dataIndex: 'initiatedDate', width: '17.5%' },
     ];
 
+    [
+        {
+            "@context": "https://w3id.org/dspace/2024/1/context.json",
+            "@type": "dspace:TransferProcess",
+            "dspace:providerPid": "urn:uuid:328f9711-b940-11ef-9ab3-1860248dfb10",
+            "dspace:consumerPid": "urn:uuid:328f8d58-b940-11ef-b6de-1860248dfb10",
+            "dspace:state": "dspace:TERMINATED",
+            "Params": {
+                "isProvider": false,
+                "agreementId": "urn:uuid:328af15f-b940-11ef-9ab3-1860248dfb10",
+                "transferFormat": "dspace:postgresql+pull"
+            }
+        },
+    ]
     // Gets the data of the table to keep it stored (reloading purposes)
     useEffect(() => {
-        const storedData = JSON.parse(localStorage.getItem('TransfersData') || '[]');
-        const storedHistory = JSON.parse(localStorage.getItem('HistoryTransferData') || '[]');
-        setData(storedData);
-        setFilteredData(storedData);
-        setHistoryTransferData(storedHistory);
+        const fetchInitialData = async () => {
+            const url = transferEndpoints.getTransfers
+            try {
+                const response = await axios.get(url);
+                const formattedData = response.data.map(item => {
+                    const transferId = item.Params?.isProvider ? item['dspace:providerPid'] : item['dspace:consumerPid'];
+                    const currentState = item['dspace:state'].replace('dspace:', '');
+
+                    // If the state of the process is COMPLETED or TERMINATED, send the data to the History table
+                    if (['COMPLETED', 'TERMINATED'].includes(currentState.toUpperCase())) {
+                        return {
+                            key: transferId,
+                            transferId: transferId,
+                            agreementId: item.Params?.agreementId || null,
+                            params: item.Params,
+                            transferFormat: item.Params?.transferFormat,
+                            title: item.title || 'Title',
+                            provider: item.Params?.isProvider ? 'true' : 'false',
+                            currentState: currentState,
+                            initiatedDate: new Date().toLocaleString(),
+                            isHistory: true,
+                        };
+                    }
+                    // If the state is different from COMPLETED or TERMINATED
+                    return {
+                        key: transferId,
+                        transferId: transferId,
+                        agreementId: item.Params?.agreementId || null,
+                        params: item.Params,
+                        transferFormat: item.Params?.transferFormat,
+                        title: item.title || 'Title',
+                        provider: item.Params?.isProvider ? 'true' : 'false',
+                        currentState: item['dspace:state'].replace('dspace:', ''),
+                        initiatedDate: new Date().toLocaleString(),
+                        isHistory: false,
+                    };
+                });
+                const ongoingData = formattedData.filter(item => !item.isHistory);
+                const historyData = formattedData.filter(item => item.isHistory);
+
+                setData(ongoingData);
+                setFilteredData(ongoingData);
+                setHistoryTransferData(historyData);
+            } catch (error) {
+                console.error('Error fetching initial data:', error);
+            }
+        };
+        fetchInitialData();
     }, []);
 
     // Updates the data from the table every request through websocket connection
@@ -99,7 +157,7 @@ const DataTransfers = () => {
             };
 
             // Retrieve the existing data
-            const existingData = JSON.parse(localStorage.getItem('TransfersData')) || [];
+            const existingData = [...data];
 
             // Check if the transferId already exists
             const existingIndex = existingData.findIndex(item => item.transferId === formattedData.transferId);
@@ -119,11 +177,11 @@ const DataTransfers = () => {
                     );
 
                     setHistoryTransferData(uniqueHistory);
-                    localStorage.setItem('HistoryTransferData', JSON.stringify(uniqueHistory));
                     existingData.splice(existingIndex, 1);
                 }
 
                 updatedData = [...existingData];
+                setSelectedRow(false);
             } else {
 
                 // If transferId doesn't exist, add the new row               
@@ -133,7 +191,6 @@ const DataTransfers = () => {
             // Updates the data of the table and saves it locally
             setData(updatedData);
             setFilteredData(updatedData);
-            localStorage.setItem('TransfersData', JSON.stringify(updatedData));
         };
 
         // close and error ws functions

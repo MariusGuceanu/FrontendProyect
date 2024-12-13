@@ -92,7 +92,7 @@ const CatalogModal = ({ isModalOpen, handleCatalogCancel, handleCatalogOk, addRo
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                             <Input
                                 style={{ width: '60%' }}
-                                value="HTTP_" />
+                                placeholder="HTTP, HTTPS, etc..."/>
                             <Select
                                 onChange={handleFormatChange}
                                 style={{ width: '40%' }}
